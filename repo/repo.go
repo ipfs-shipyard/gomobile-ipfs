@@ -1,8 +1,6 @@
 package repo
 
 import (
-	"sync"
-
 	host "github.com/berty/gomobile-ipfs/host"
 
 	ma "github.com/multiformats/go-multiaddr"
@@ -18,8 +16,6 @@ type MobileRepo struct {
 	mobileConfig *host.MobileConfig
 	repo         *ipfs_repo.Repo
 	path         string
-
-	muConfig sync.Mutex
 }
 
 func Open(path string) *MobileRepo {
