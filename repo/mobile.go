@@ -22,12 +22,12 @@ func (r *MobileRepo) getPath() string {
 }
 
 func (r *MobileRepo) SetMobileConfig(tmp map[string]interface{}) (err error) {
-	// mobilePath := r.getPath()
+	mobilePath := r.getPath()
 
-	// var template interface{}
-	// if err = json.Unmarshal(rawcfg, &template); err != nil {
-	// 	return
-	// }
+	var template interface{}
+	if err = json.Unmarshal(rawcfg, &template); err != nil {
+		return
+	}
 
 	if mapcfg, ok := template.(map[string]interface{}); ok {
 		var cfg *ipfs_config.Config
@@ -43,7 +43,7 @@ func (r *MobileRepo) SetMobileConfig(tmp map[string]interface{}) (err error) {
 	return
 }
 
-func (r *MobileRepo) GetMobileConfig() (rawcfg []byte, err error) {
+func (r *MobileRepo) GetMobileConfig() (map[string]interface{}, err error) {
 	if r.config == nil {
 		err = fmt.Errorf("no config loaded")
 		return

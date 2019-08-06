@@ -2,42 +2,99 @@ package node
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"net"
 
-	mobile_host "github.com/berty/gomobile-ipfs/host"
+	host "github.com/berty/gomobile-ipfs/host"
+
+	ipfs_config "github.com/ipfs/go-ipfs-config"
+	ipfs_oldcmds "github.com/ipfs/go-ipfs/commands"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
-	ipfs_repo "github.com/ipfs/go-ipfs/core/repo"
+	ipfs_corehttp "github.com/ipfs/go-ipfs/core/corehttp"
+	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 )
 
-// type Node interface {
-// 	// Close ipfs node
-// 	Close() error
-// }
-
 type IpfsMobile struct {
+	lapi     []manet.Listener
 	ipfsNode *ipfs_core.IpfsNode
 }
 
 func (im *IpfsMobile) Close() error {
+	for _, l := range im.lapi {
+		_ = l.Close()
+	}
+
 	return im.ipfsNode.Close()
 }
 
-func NewNode(ctx context.Context, repo *ipfs_repo.Repo) (*IpfsMobile, error) {
-	mcfg := mobile_host.NewMobileConfigFromRepo(repo)
-	cfg := &ipfs_core.BuildCfg{
+func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
+	cfg, err := repo.Config()
+	if err != nil {
+		return nil, fmt.Errorf("config error: %s", err)
+	}
+
+	// build config
+	buildcfg := &ipfs_core.BuildCfg{
 		Online:                      true,
 		Permanent:                   false,
 		DisableEncryptedConnections: false,
 		NilRepo:                     false,
-		Repo:                        ipfsrepo,
-		Host:                        mobile_host.NewMobileHostOption(mcfg),
+		Repo:                        repo,
+		Host:                        host.NewMobileHostOption(mcfg),
 	}
 
-	inode, err := ipfs_core.NewNode(context.Background(), cfg)
+	// Configure API if needed
+	lapi := make([]manet.Listener, len(cfg.Addresses.API))
+	for i, addr := range cfg.Addresses.API {
+		maddr, err := ma.NewMultiaddr(addr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse ma: %s, %s", addr, err)
+		}
+
+		l, err := manet.Listen(maddr)
+		if err != nil {
+			return nil, fmt.Errorf("API: manet.Listen(%s) failed: %s", addr, err)
+		}
+
+		lapi[i] = l
+	}
+
+	// create ipfs node
+	inode, err := ipfs_core.NewNode(context.Background(), buildcfg)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
+	}
+
+	cctx := ipfs_oldcmds.Context{
+		ReqLog: &ipfs_oldcmds.ReqLog{},
+		ConstructNode: func() (*ipfs_core.IpfsNode, error) {
+			return inode, nil
+		},
+		LoadConfig: func(_ string) (*ipfs_config.Config, error) {
+			return cfg.Clone()
+		},
+	}
+
+	opts := []ipfs_corehttp.ServeOption{
+		ipfs_corehttp.CommandsOption(cctx),
+	}
+
+	for _, ml := range lapi {
+		l := manet.NetListener(ml)
+		go func(l net.Listener) {
+			if err := ipfs_corehttp.Serve(inode, l, opts...); err != nil {
+				log.Printf("serve error: %s", err)
+			}
+		}(l)
+
 	}
 
 	return &IpfsMobile{
+		lapi:     lapi,
 		ipfsNode: inode,
 	}, nil
 }

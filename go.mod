@@ -3,19 +3,41 @@ module github.com/berty/gomobile-ipfs
 go 1.12
 
 require (
-	berty.tech/go-ipfs-log v0.0.0-20190805145225-165c94541925
 	github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9 // indirect
+	github.com/btcsuite/goleveldb v1.0.0 // indirect
 	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/ipfs/go-datastore v0.0.5
 	github.com/ipfs/go-filestore v0.0.2
 	github.com/ipfs/go-ipfs v0.4.21
+	github.com/ipfs/go-ipfs-api v0.0.2
 	github.com/ipfs/go-ipfs-config v0.0.3
+	github.com/jtolds/gls v4.2.2-0.20181110203027-b4936e06046b+incompatible // indirect
+	github.com/kisielk/errcheck v1.2.0 // indirect
+	github.com/kkdai/bstream v0.0.0-20181106074824-b3251f7901ec // indirect
 	github.com/libp2p/go-libp2p v0.3.0
+	github.com/libp2p/go-libp2p-connmgr v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-core v0.2.0
+	github.com/libp2p/go-libp2p-host v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-interface-connmgr v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-kad-dht v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-metrics v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-net v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-pnet v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-protocol v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-quic-transport v0.1.2-0.20190602113809-9400928a835e // indirect
+	github.com/libp2p/go-libp2p-tls v0.1.0 // indirect
+	github.com/libp2p/go-stream-muxer v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.0.4
+	github.com/multiformats/go-multiaddr-net v0.0.1
+	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
+	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
 	github.com/spf13/cobra v0.0.5 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
+	go.opencensus.io v0.22.0 // indirect
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
+	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
+	golang.org/x/tools v0.0.0-20190521203540-521d6ed310dd // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 )
 

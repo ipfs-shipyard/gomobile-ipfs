@@ -126,7 +126,7 @@ func (mh *MobileHost) Close() error {
 
 // ConnManager returns this hosts connection manager
 func (mh *MobileHost) ConnManager() p2p_connmgr.ConnManager {
-	return mh.ConnManager()
+	return mh.Host.ConnManager()
 }
 
 // EventBus returns the hosts eventbus
