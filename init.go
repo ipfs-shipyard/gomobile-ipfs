@@ -12,7 +12,7 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
-func Init(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
+func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 	identity, err := identityConfig(out, nBitsForKeypair)
 	if err != nil {
 		return nil, err
@@ -80,9 +80,9 @@ func Init(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 		},
 		Swarm: ipfs_config.SwarmConfig{
 			ConnMgr: ipfs_config.ConnMgr{
-				LowWater:    DefaultConnMgrLowWater,
-				HighWater:   DefaultConnMgrHighWater,
-				GracePeriod: DefaultConnMgrGracePeriod.String(),
+				LowWater:    defaultConnMgrLowWater,
+				HighWater:   defaultConnMgrHighWater,
+				GracePeriod: defaultConnMgrGracePeriod.String(),
 				Type:        "basic",
 			},
 		},
@@ -90,7 +90,7 @@ func Init(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 			FilestoreEnabled:     false,
 			Libp2pStreamMounting: false,
 			P2pHttpProxy:         false,
-			QUIC:                 true,
+			QUIC:                 false,
 			ShardingEnabled:      false,
 			UrlstoreEnabled:      false,
 			PreferTLS:            true,
@@ -100,17 +100,17 @@ func Init(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 	return conf, nil
 }
 
-// DefaultConnMgrHighWater is the default value for the connection managers
+// defaultConnMgrHighWater is the default value for the connection managers
 // 'high water' mark
-const DefaultConnMgrHighWater = 200
+const defaultConnMgrHighWater = 200
 
-// DefaultConnMgrLowWater is the default value for the connection managers 'low
+// defaultConnMgrLowWater is the default value for the connection managers 'low
 // water' mark
-const DefaultConnMgrLowWater = 100
+const defaultConnMgrLowWater = 100
 
-// DefaultConnMgrGracePeriod is the default value for the connection managers
+// defaultConnMgrGracePeriod is the default value for the connection managers
 // grace period
-const DefaultConnMgrGracePeriod = time.Second * 20
+const defaultConnMgrGracePeriod = time.Second * 20
 
 func addressesConfig() ipfs_config.Addresses {
 	return ipfs_config.Addresses{
@@ -118,8 +118,8 @@ func addressesConfig() ipfs_config.Addresses {
 			"/ip4/0.0.0.0/tcp/0",
 			"/ip6/::/tcp/0",
 
-			"/ip4/0.0.0.0/udp/0/quic",
-			"/ip6/::/udp/0/quic",
+			// "/ip4/0.0.0.0/udp/0/quic",
+			// "/ip6/::/udp/0/quic",
 		},
 		Announce:   []string{},
 		NoAnnounce: []string{},
