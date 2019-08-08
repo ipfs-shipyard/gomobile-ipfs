@@ -128,31 +128,31 @@ func TestMobile(t *testing.T) {
 			// do not bootstrap
 			err = testCfg.SetKey("Bootstrap", []byte("[]"))
 			So(err, ShouldBeNil)
-
-			// @TODO: use ipfs identity to make this happen
-			// err = json.Unmarshal(val, &identity)
-			// So(err, ShouldBeNil)
-			// So(identity, ShouldNotBeEmpty)
 		})
 
 		Convey("test repo", FailureHalts, func() {
 			var cfg Config
 			var ok bool
 
+			// check if repo is initialized
 			ok = RepoIsInitialized(tmpdir)
 			So(ok, ShouldBeFalse)
 
+			// init repo
 			err = InitRepo(tmpdir, testCfg)
 			So(err, ShouldBeNil)
 
+			// open repo
 			testRepo, err = OpenRepo(tmpdir)
 			So(err, ShouldBeNil)
 			So(testRepo, ShouldNotBeNil)
 
+			// get repo config
 			cfg, err = testRepo.GetConfig()
 			So(err, ShouldBeNil)
 			So(testCfg.getConfig(), ShouldResemble, cfg.getConfig())
 
+			// re check if repo is initialized
 			ok = RepoIsInitialized(tmpdir)
 			So(ok, ShouldBeTrue)
 		})

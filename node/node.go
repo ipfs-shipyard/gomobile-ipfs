@@ -7,7 +7,6 @@ import (
 	"net"
 
 	host "github.com/berty/gomobile-ipfs/host"
-
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_oldcmds "github.com/ipfs/go-ipfs/commands"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
@@ -69,6 +68,7 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
 	}
 
+	// @TODO: no sure about how to init this, must be another way
 	cctx := ipfs_oldcmds.Context{
 		ReqLog: &ipfs_oldcmds.ReqLog{},
 		ConstructNode: func() (*ipfs_core.IpfsNode, error) {
