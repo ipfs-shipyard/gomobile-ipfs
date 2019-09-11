@@ -17,30 +17,49 @@ import {
 } from 'react-native';
 
 
+const asyncTimeout = (cb, time) =>
+      new Promise(res => setTimeout(cb, time))
+
 class App extends Component {
   state = {
     loading: true,
+    url: '',
   }
 
-  checkGateway = () => {
-    fetch('http://127.0.0.1:5001/webui')
-      .then(res => {
-        if (res.ok) {
-          this.setState({ loading: false })
-        } else {
-          throw new Error(`gateway unavailable: [${res.status}] ${res.statusText}`)
-        }
-      }).catch(err => {
-        console.warn(err)
-        setTimeout(this.checkGateway, 1000)
-      })
+  checkGateway = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5001/webui')
+      if (res.ok) {
+        this.setState({
+          loading: false,
+          url: res.url,
+        })
+      }
+    } catch (err) {
+      console.warn(err)
+      return asyncTimeout(this.checkGateway, 2000)
+    }
+  }
+
+  startDaemon = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5001/api/v0/id')
+      const id = await res.json()
+      return id.ID
+    } catch (err) {
+      console.warn(err)
+    }
+
+    await NativeModules.BridgeModule.start()
+    return this.startDaemon()
   }
 
   componentDidMount() {
-    NativeModules.BridgeModule.start()
-      .then(() => {})
+    this.startDaemon()
+      .then(id => console.info('peerID:', id))
       .catch(err => console.error(err))
-      .then(() => this.checkGateway())
+      .then(this.checkGateway)
+      .catch(err => console.Warn(err))
   }
 
   render() {
@@ -54,13 +73,14 @@ class App extends Component {
 
     return (
       <Fragment>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
+
           <WebView
-            source={{uri: 'http://127.0.0.1:5001/webui'}}
-            style={{marginTop: 20}}
+            source={{uri: this.state.url}}
+            originWhitelist={['*']}
+            onError={err => console.warn(err)}
+            onMessage={msg => console.log(msg)}
+
           />
-        </SafeAreaView>
       </Fragment>
     );
   };
