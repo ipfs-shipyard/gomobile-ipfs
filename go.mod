@@ -3,6 +3,8 @@ module github.com/berty/gomobile-ipfs
 go 1.12
 
 require (
+	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
+	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/ipfs/go-ipfs v0.4.21
 	github.com/ipfs/go-ipfs-api v0.0.2
@@ -28,6 +30,7 @@ require (
 	go.opencensus.io v0.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
+	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
 )
 
 // @HOTFIX
