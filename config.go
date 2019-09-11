@@ -30,8 +30,12 @@ func (c *config) Set(raw_json []byte) (err error) {
 	return
 }
 
-func (c *config) Get() ([]byte, error) {
-	return json.Marshal(c.cfg)
+func (c *config) Get() *ByteErr {
+	b, err := json.Marshal(c.cfg)
+	return &ByteErr{
+		b:   b,
+		err: err,
+	}
 }
 
 func (c *config) SetKey(key string, raw_value []byte) error {
@@ -58,16 +62,20 @@ func (c *config) SetKey(key string, raw_value []byte) error {
 	return err
 }
 
-func (c *config) GetKey(key string) ([]byte, error) {
+func (c *config) GetKey(key string) *ByteErr {
 	cfg, err := ipfs_config.ToMap(c.cfg)
 	if err != nil {
-		return nil, err
+		return &ByteErr{err: err}
 	}
 
 	val, err := ipfs_common.MapGetKV(cfg, key)
 	if err != nil {
-		return nil, err
+		return &ByteErr{err: err}
 	}
 
-	return json.Marshal(&val)
+	b, err := json.Marshal(&val)
+	return &ByteErr{
+		b:   b,
+		err: err,
+	}
 }

@@ -33,6 +33,11 @@ func NewNode(r Repo) (Node, error) {
 	return node.NewNode(ctx, repo, &host.MobileConfig{})
 }
 
+type ByteErr struct {
+	b   []byte
+	err error
+}
+
 type Config interface {
 	// Set replace the current config with the given config
 	Set(raw_json []byte) error
@@ -41,10 +46,14 @@ type Config interface {
 	SetKey(key string, raw_json []byte) error
 
 	// GetKey return the value associated with the given key
-	GetKey(key string) (raw_json []byte, err error)
+	// @FIXME: there is a problem returning two arguments
+	// with gomobile on interface's methods
+	GetKey(key string) *ByteErr
 
 	// Get the current config
-	Get() (raw_json []byte, err error)
+	// @FIXME: there is a problem returning two arguments
+	// with gomobile on interface methods
+	Get() *ByteErr
 
 	// get original config
 	getConfig() *ipfs_config.Config
@@ -65,6 +74,11 @@ func NewDefaultConfig() (Config, error) {
 	return &config{cfg}, nil
 }
 
+type ConfErr struct {
+	cfg Config
+	err error
+}
+
 type Repo interface {
 	// return the repo actual path
 	GetPath() string
@@ -73,7 +87,9 @@ type Repo interface {
 	SetConfig(c Config) error
 
 	// GetConfig
-	GetConfig() (Config, error)
+	// @FIXME: there is a problem returning two arguments
+	// with gomobile on interface methods
+	GetConfig() *ConfErr
 
 	// Close
 	Close() error

@@ -22,13 +22,13 @@ func (r *repo) SetConfig(c Config) error {
 	return r.irepo.SetConfig(c.getConfig())
 }
 
-func (r *repo) GetConfig() (Config, error) {
+func (r *repo) GetConfig() *ConfErr {
 	cfg, err := r.irepo.Config()
 	if err != nil {
-		return nil, err
+		return &ConfErr{err: err}
 	}
 
-	return &config{cfg}, nil
+	return &ConfErr{cfg: &config{cfg}}
 }
 
 func (r *repo) Close() error {

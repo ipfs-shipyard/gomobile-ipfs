@@ -27,11 +27,15 @@ require (
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
+	github.com/spf13/cobra v0.0.5 // indirect
 	go.opencensus.io v0.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
+	google.golang.org/appengine v1.4.0 // indirect
 )
 
 // @HOTFIX
 replace github.com/dgraph-io/badger v2.0.0-rc.2+incompatible => github.com/dgraph-io/badger v2.0.0-rc2+incompatible
+
+replace github.com/libp2p/go-libp2p-quic-transport => github.com/libp2p/go-libp2p-quic-transport v0.1.2-0.20190830164807-17543aa14ed2

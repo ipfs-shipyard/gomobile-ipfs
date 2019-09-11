@@ -79,7 +79,10 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		},
 	}
 
+	gatewayOpt := ipfs_corehttp.GatewayOption(false, ipfs_corehttp.WebUIPaths...)
 	opts := []ipfs_corehttp.ServeOption{
+		ipfs_corehttp.WebUIOption,
+		gatewayOpt,
 		ipfs_corehttp.CommandsOption(cctx),
 	}
 
