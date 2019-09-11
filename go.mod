@@ -3,13 +3,11 @@ module github.com/berty/gomobile-ipfs
 go 1.12
 
 require (
-	github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9 // indirect
-	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
-	github.com/ipfs/go-filestore v0.0.2 // indirect
 	github.com/ipfs/go-ipfs v0.4.21
 	github.com/ipfs/go-ipfs-api v0.0.2
 	github.com/ipfs/go-ipfs-config v0.0.3
+	github.com/ipfs/go-merkledag v0.1.0 // indirect
 	github.com/jtolds/gls v4.2.2-0.20181110203027-b4936e06046b+incompatible // indirect
 	github.com/libp2p/go-libp2p v0.3.0
 	github.com/libp2p/go-libp2p-connmgr v0.1.0 // indirect
@@ -27,12 +25,9 @@ require (
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
-	github.com/spf13/cobra v0.0.5 // indirect
 	go.opencensus.io v0.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
-	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
-	google.golang.org/appengine v1.4.0 // indirect
 )
 
 // @HOTFIX
