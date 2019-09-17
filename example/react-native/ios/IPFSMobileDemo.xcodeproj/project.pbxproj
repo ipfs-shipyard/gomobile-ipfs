@@ -11,13 +11,14 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* IPFSMobileDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IPFSMobileDemoTests.m */; };
 		2ED37F470C07148703FCDC0E /* libPods-IPFSMobileDemo-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF4DC0312695147F6CA6DC0 /* libPods-IPFSMobileDemo-tvOSTests.a */; };
 		379A3A6022EA73D7C6F0F93C /* libPods-IPFSMobileDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B96ADA8E7608D58CC684751 /* libPods-IPFSMobileDemo.a */; };
+		48259C092331329B005BC5E8 /* IpfsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48259C082331329B005BC5E8 /* IpfsBridge.swift */; };
+		48259C0B23313A83005BC5E8 /* IpfsBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 48259C0A23313A83005BC5E8 /* IpfsBridge.m */; };
+		48259C0D23313D44005BC5E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 48259C0C23313D44005BC5E8 /* main.m */; };
 		4CD5036D3009D165A7C24859 /* libPods-IPFSMobileDemoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4F6064E471D47364E156777 /* libPods-IPFSMobileDemoTests.a */; };
 		8D0A22C023312E3600147033 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0A22BF23312E3600147033 /* Mobile.framework */; };
 		AB82E3A5B8B5785076E0B7C5 /* libPods-IPFSMobileDemo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B43721E6742622C2931C19A /* libPods-IPFSMobileDemo-tvOS.a */; };
@@ -51,13 +52,16 @@
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = IPFSMobileDemo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = IPFSMobileDemo/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = IPFSMobileDemo/main.m; sourceTree = "<group>"; };
 		15725473E06078ED5275A446 /* Pods-IPFSMobileDemo-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemo-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemo-tvOS/Pods-IPFSMobileDemo-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		2B43721E6742622C2931C19A /* libPods-IPFSMobileDemo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IPFSMobileDemo-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* IPFSMobileDemo-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IPFSMobileDemo-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* IPFSMobileDemo-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IPFSMobileDemo-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F88D714CCECD3D74754A647 /* Pods-IPFSMobileDemo-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemo-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemo-tvOSTests/Pods-IPFSMobileDemo-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		4168D273AC8774053EDDCCEC /* Pods-IPFSMobileDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemo.debug.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemo/Pods-IPFSMobileDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		48259C072331329B005BC5E8 /* IPFSMobileDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IPFSMobileDemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		48259C082331329B005BC5E8 /* IpfsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpfsBridge.swift; sourceTree = "<group>"; };
+		48259C0A23313A83005BC5E8 /* IpfsBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IpfsBridge.m; sourceTree = "<group>"; };
+		48259C0C23313D44005BC5E8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = IPFSMobileDemo/main.m; sourceTree = "<group>"; };
 		4C2539FCF1F97CA52C576E0C /* Pods-IPFSMobileDemo-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemo-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemo-tvOSTests/Pods-IPFSMobileDemo-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4D2DC5F8D75CC940EF84309A /* Pods-IPFSMobileDemo-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemo-tvOS.release.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemo-tvOS/Pods-IPFSMobileDemo-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		6D42D330CA345EFB20CB03CC /* Pods-IPFSMobileDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPFSMobileDemoTests.release.xcconfig"; path = "Target Support Files/Pods-IPFSMobileDemoTests/Pods-IPFSMobileDemoTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -134,7 +138,10 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
-				13B07FB71A68108700A75B9A /* main.m */,
+				48259C082331329B005BC5E8 /* IpfsBridge.swift */,
+				48259C0C23313D44005BC5E8 /* main.m */,
+				48259C0A23313A83005BC5E8 /* IpfsBridge.m */,
+				48259C072331329B005BC5E8 /* IPFSMobileDemo-Bridging-Header.h */,
 			);
 			name = IPFSMobileDemo;
 			sourceTree = "<group>";
@@ -294,6 +301,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1030;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -532,8 +542,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48259C092331329B005BC5E8 /* IpfsBridge.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				48259C0D23313D44005BC5E8 /* main.m in Sources */,
+				48259C0B23313A83005BC5E8 /* IpfsBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,7 +553,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -586,6 +597,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8F81BFD1554D4C2DAF7D6A57 /* Pods-IPFSMobileDemoTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -609,6 +621,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6D42D330CA345EFB20CB03CC /* Pods-IPFSMobileDemoTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = IPFSMobileDemoTests/Info.plist;
@@ -630,6 +643,7 @@
 			baseConfigurationReference = 4168D273AC8774053EDDCCEC /* Pods-IPFSMobileDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -645,6 +659,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = IPFSMobileDemo;
+				SWIFT_OBJC_BRIDGING_HEADER = "IPFSMobileDemo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -654,6 +671,7 @@
 			baseConfigurationReference = DB869B0F5D50C455C2397F17 /* Pods-IPFSMobileDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -668,6 +686,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = IPFSMobileDemo;
+				SWIFT_OBJC_BRIDGING_HEADER = "IPFSMobileDemo-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
