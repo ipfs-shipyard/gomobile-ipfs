@@ -3,112 +3,100 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow
  */
 
-import React, {Fragment} from 'react';
+import React, { Fragment, Component } from 'react';
+import WebView from 'react-native-webview';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
+  SafeAreaView,
   View,
-  Text,
+  ActivityIndicator,
   StatusBar,
+  NativeModules,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-const App = () => {
-  return (
-    <Fragment>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </Fragment>
-  );
-};
+const asyncTimeout = (cb, time) =>
+      new Promise(res => setTimeout(cb, time))
+
+class App extends Component {
+  state = {
+    loading: true,
+    url: '',
+  }
+
+  checkGateway = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5001/webui')
+      if (res.ok) {
+        console.warn(res.url)
+        this.setState({
+          loading: false,
+          url: res.url,
+        })
+      }
+    } catch (err) {
+      console.warn(err)
+      return asyncTimeout(this.checkGateway, 2000)
+    }
+  }
+
+  startDaemon = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5001/api/v0/id')
+      const id = await res.json()
+      return id.ID
+    } catch (err) {
+      console.warn(err)
+    }
+
+    await NativeModules.BridgeModule.start()
+    return this.startDaemon()
+  }
+
+  componentDidMount() {
+    this.startDaemon()
+      .then(id => console.info('peerID:', id))
+      .catch(err => console.error(err))
+      .then(this.checkGateway)
+      .catch(err => console.Warn(err))
+  }
+
+  render() {
+    if (this.state.loading) {
+      return (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )
+    }
+
+    return (
+      <Fragment>
+
+          <WebView
+            source={{uri: this.state.url}}
+            originWhitelist={['*']}
+            onError={err => console.warn(err)}
+            onMessage={msg => console.log(msg)}
+
+          />
+      </Fragment>
+    );
+  };
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    justifyContent: 'center'
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  }
+})
 
 export default App;
