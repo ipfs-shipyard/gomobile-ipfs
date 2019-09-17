@@ -1,5 +1,5 @@
-ROOT = $(PWD)/../../
-BUILD_DIR_IOS = $(PWD)/ios/Frameworks
+ROOT = $(PWD)/../..
+BUILD_DIR_IOS = $(PWD)/ios
 BUILD_DIR_ANDROID = $(PWD)/android/app/libs/ipfs
 
 build.go: build.go.ios build.go.android

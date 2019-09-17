@@ -15,7 +15,7 @@ build.android: deps
 
 build.ios: deps
 	@mkdir -p $(BUILD_DIR_IOS)
-	GO111MODULE=off gomobile bind -v $(GOMOBILES_OPT) -target=ios -o $(BUILD_DIR_IOS)/ipfs.framework github.com/berty/gomobile-ipfs
+	GO111MODULE=off gomobile bind -v $(GOMOBILES_OPT) -target=ios -o $(BUILD_DIR_IOS)/Mobile.framework github.com/berty/gomobile-ipfs
 
 test:
 	go test -v ./...
