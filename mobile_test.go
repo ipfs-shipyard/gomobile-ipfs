@@ -33,8 +33,8 @@ const sampleFakeConfig = `
 
 func TestMobile(t *testing.T) {
 	var (
-		testCfg  Config
-		testRepo Repo
+		testCfg  *Config
+		testRepo *Repo
 		testNode Node
 		testID   *ipfs_config.Identity
 
@@ -60,7 +60,7 @@ func TestMobile(t *testing.T) {
 
 	Convey("test config", t, FailureHalts, func() {
 		Convey("test get/set config", FailureHalts, func() {
-			var cfg Config
+			var cfg *Config
 			var val []byte
 			var apiAddr string
 			var bootstrapAddrs []string
@@ -131,7 +131,7 @@ func TestMobile(t *testing.T) {
 		})
 
 		Convey("test repo", FailureHalts, func() {
-			var cfg Config
+			var cfg *Config
 			var ok bool
 
 			// check if repo is initialized
