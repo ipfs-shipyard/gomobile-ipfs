@@ -34,8 +34,5 @@ allprojects {
 
         google()
         jcenter()
-        flatDir {
-            dirs 'libs'
-        }
     }
 }

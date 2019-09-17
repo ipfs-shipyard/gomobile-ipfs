@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ipfs"
+        applicationId "com.ipfsmobiledemo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -198,13 +198,10 @@ dependencies {
     } else {
       implementation jscFlavor
     }
-
-    // catch up our ipfs module here
-    implementation(name: 'ipfs/ipfs', ext: 'aar')
 }
 
 // Run this once to be able to run the application with BUCK
-// puts all compile dependencies into folder libs fori BUCK to use
+// puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'

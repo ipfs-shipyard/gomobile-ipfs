@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ipfs.app"
-               BlueprintName = "ipfs"
-               ReferencedContainer = "container:ipfs.xcodeproj">
+               BuildableName = "IPFSMobileDemo.app"
+               BlueprintName = "IPFSMobileDemo"
+               ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ipfsTests.xctest"
-               BlueprintName = "ipfsTests"
-               ReferencedContainer = "container:ipfs.xcodeproj">
+               BuildableName = "IPFSMobileDemoTests.xctest"
+               BlueprintName = "IPFSMobileDemoTests"
+               ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ipfsTests.xctest"
-               BlueprintName = "ipfsTests"
-               ReferencedContainer = "container:ipfs.xcodeproj">
+               BuildableName = "IPFSMobileDemoTests.xctest"
+               BlueprintName = "IPFSMobileDemoTests"
+               ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ipfs.app"
-            BlueprintName = "ipfs"
-            ReferencedContainer = "container:ipfs.xcodeproj">
+            BuildableName = "IPFSMobileDemo.app"
+            BlueprintName = "IPFSMobileDemo"
+            ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ipfs.app"
-            BlueprintName = "ipfs"
-            ReferencedContainer = "container:ipfs.xcodeproj">
+            BuildableName = "IPFSMobileDemo.app"
+            BlueprintName = "IPFSMobileDemo"
+            ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ipfs.app"
-            BlueprintName = "ipfs"
-            ReferencedContainer = "container:ipfs.xcodeproj">
+            BuildableName = "IPFSMobileDemo.app"
+            BlueprintName = "IPFSMobileDemo"
+            ReferencedContainer = "container:IPFSMobileDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
