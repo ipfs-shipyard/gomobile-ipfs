@@ -32,6 +32,7 @@ local.properties
 
 # gomobile build
 android/app/libs/ipfs
+ios/Frameworks/ipfs.framework
 
 # node.js
 #
