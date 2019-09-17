@@ -9,33 +9,33 @@ import (
 
 var plugins *ipfs_loader.PluginLoader
 
-type repo struct {
+type Repo struct {
 	irepo ipfs_repo.Repo
 	path  string
 }
 
-func (r *repo) GetPath() string {
+func (r *Repo) GetPath() string {
 	return r.path
 }
 
-func (r *repo) SetConfig(c Config) error {
+func (r *Repo) SetConfig(c Config) error {
 	return r.irepo.SetConfig(c.getConfig())
 }
 
-func (r *repo) GetConfig() *ConfErr {
+func (r *Repo) GetConfig() (*Config, error) {
 	cfg, err := r.irepo.Config()
 	if err != nil {
-		return &ConfErr{err: err}
+		return nil, err
 	}
 
-	return &ConfErr{cfg: &config{cfg}}
+	return &Config{cfg}, nil
 }
 
-func (r *repo) Close() error {
+func (r *Repo) Close() error {
 	return r.irepo.Close()
 }
 
-func (r *repo) getRepo() ipfs_repo.Repo {
+func (r *Repo) getRepo() ipfs_repo.Repo {
 	return r.irepo
 }
 
