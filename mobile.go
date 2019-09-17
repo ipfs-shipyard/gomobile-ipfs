@@ -13,8 +13,6 @@ import (
 
 	host "github.com/berty/gomobile-ipfs/host"
 	node "github.com/berty/gomobile-ipfs/node"
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 )
 
@@ -23,7 +21,7 @@ type Node interface {
 	Close() error
 }
 
-func NewNode(r Repo) (Node, error) {
+func NewNode(r *Repo) (Node, error) {
 	if _, err := loadPlugins(r.GetPath()); err != nil {
 		return nil, err
 	}
@@ -33,76 +31,26 @@ func NewNode(r Repo) (Node, error) {
 	return node.NewNode(ctx, repo, &host.MobileConfig{})
 }
 
-type ByteErr struct {
-	b   []byte
-	err error
-}
-
-type Config interface {
-	// Set replace the current config with the given config
-	Set(raw_json []byte) error
-
-	// SetKey with the given value
-	SetKey(key string, raw_json []byte) error
-
-	// GetKey return the value associated with the given key
-	// @FIXME: there is a problem returning two arguments
-	// with gomobile on interface's methods
-	GetKey(key string) *ByteErr
-
-	// Get the current config
-	// @FIXME: there is a problem returning two arguments
-	// with gomobile on interface methods
-	Get() *ByteErr
-
-	// get original config
-	getConfig() *ipfs_config.Config
-}
-
-func NewConfig(raw_json []byte) (cfg Config, err error) {
-	cfg = &config{}
+func NewConfig(raw_json []byte) (cfg *Config, err error) {
+	cfg = &Config{}
 	err = cfg.Set(raw_json)
 	return cfg, err
 }
 
-func NewDefaultConfig() (Config, error) {
+func NewDefaultConfig() (*Config, error) {
 	cfg, err := initConfig(ioutil.Discard, 2048)
 	if err != nil {
 		return nil, err
 	}
 
-	return &config{cfg}, nil
-}
-
-type ConfErr struct {
-	cfg Config
-	err error
-}
-
-type Repo interface {
-	// return the repo actual path
-	GetPath() string
-
-	// SetConfig
-	SetConfig(c Config) error
-
-	// GetConfig
-	// @FIXME: there is a problem returning two arguments
-	// with gomobile on interface methods
-	GetConfig() *ConfErr
-
-	// Close
-	Close() error
-
-	// get original repo
-	getRepo() ipfs_repo.Repo
+	return &Config{cfg}, nil
 }
 
 func RepoIsInitialized(path string) bool {
 	return ipfs_fsrepo.IsInitialized(path)
 }
 
-func InitRepo(path string, cfg Config) error {
+func InitRepo(path string, cfg *Config) error {
 	if _, err := loadPlugins(path); err != nil {
 		return err
 	}
@@ -110,7 +58,7 @@ func InitRepo(path string, cfg Config) error {
 	return ipfs_fsrepo.Init(path, cfg.getConfig())
 }
 
-func OpenRepo(path string) (Repo, error) {
+func OpenRepo(path string) (*Repo, error) {
 	if _, err := loadPlugins(path); err != nil {
 		return nil, err
 	}
@@ -120,5 +68,5 @@ func OpenRepo(path string) (Repo, error) {
 		return nil, err
 	}
 
-	return &repo{r, path}, nil
+	return &Repo{r, path}, nil
 }
