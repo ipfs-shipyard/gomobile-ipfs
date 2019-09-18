@@ -25,7 +25,7 @@ class BridgeModule: NSObject {
   }
 
   @objc func getApiAddrs(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
-    if self.node {
+    if self.node != nil {
       if let addrs = self.node?.getApiAddrs() {
         resolve(addrs)
       } else {

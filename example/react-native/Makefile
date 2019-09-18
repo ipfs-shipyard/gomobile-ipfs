@@ -21,7 +21,7 @@ RN = react-native
 CONCURRENTLY = $(NODE_MODULES)/concurrently/bin/concurrently.js
 IOS_UDID ?=
 
-.PHONY: help include.android.lib build.android.lib include.ios.lib build.ios.lib deps.android deps.ios
+.PHONY: help build.android.debug build.android.release build.ios.debug build.ios.release build.android.lib build.ios.lib deps.android deps.ios clean.android fclean.ios clean.ios
 
 help:
 	@echo "Commands:"

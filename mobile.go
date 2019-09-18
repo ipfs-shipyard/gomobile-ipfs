@@ -17,6 +17,7 @@ import (
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
+	ipfs_log "github.com/ipfs/go-log"
 )
 
 type Node interface {
@@ -84,4 +85,8 @@ func OpenRepo(path string) (*Repo, error) {
 	}
 
 	return &Repo{r, path}, nil
+}
+
+func init() {
+	ipfs_log.SetDebugLogging()
 }
