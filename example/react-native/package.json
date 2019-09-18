@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "concurrently": "^4.1.2",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-webview": "^7.0.5"
