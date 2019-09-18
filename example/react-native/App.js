@@ -1,18 +1,11 @@
-import React, { Fragment, Component } from 'react';
-import WebView from 'react-native-webview';
+import React, { Component } from 'react'
+import WebView from 'react-native-webview'
 import {
   StyleSheet,
   SafeAreaView,
-  View,
   ActivityIndicator,
-  StatusBar,
-  NativeModules,
-  Text,
-} from 'react-native';
-
-
-const asyncTimeout = time =>
-      new Promise(res => setTimeout(res, time))
+  NativeModules
+} from 'react-native'
 
 class App extends Component {
   state = {
@@ -20,24 +13,28 @@ class App extends Component {
     url: '',
   }
 
+  asyncTimeout = time =>
+      new Promise(res => setTimeout(res, time))
+
   checkGateway = async () => {
     const api = await this.getApiUrl()
     if (!api || api.length == 0) {
       throw new Error('cannot get api url...')
     }
 
-    const url = `http://${api[0]}/webui`
+    const webui = `http://${api[0]}/webui`
     let res = null
-    for (;;) {
-        res = await fetch(url)
-        if (res.ok) {
-          this.setState({
-            loading: false,
-            url: res.url,
-          })
-          return
-        }
+    while(42) {
+      res = await fetch(webui)
+      if (res.ok) {
+        this.setState({
+          loading: false,
+          url: res.url,
+        })
+        return
       }
+
+      console.warn(`[${res.Status}]: ${res.statusText}`)
       await asyncTimeout(2000)
     }
   }
@@ -55,16 +52,19 @@ class App extends Component {
     try {
       const api = await this.getApiUrl()
       if (api && api.length > 0) {
-        const url = `http://${api[0]}`
-        const res = await fetch(`${url}/api/v0/id`)
+        const apiUrl = `http://${api[0]}`
+        console.info('api url:', apiUrl)
+
+        const res = await fetch(`${apiUrl}/api/v0/id`)
         const id = await res.json()
         return id.ID
       }
     } catch (err) {
-      console.warn(err)
+      console.warn('start daemon warn:', err)
     }
 
     console.info('starting ipfs node')
+
     await NativeModules.BridgeModule.start()
     return this.startDaemon()
   }
@@ -79,38 +79,36 @@ class App extends Component {
   render() {
     if (this.state.loading) {
       return (
-        <View style={[styles.container, styles.horizontal]}>
+        <SafeAreaView style={[styles.spinner_container]}>
           <ActivityIndicator size="large" color="#4ca1a3" />
-        </View>
+        </SafeAreaView>
       )
     }
 
     return (
-      <Fragment>
+      <SafeAreaView style={{flex: 1}}>
           <WebView
             source={{uri: this.state.url}}
             originWhitelist={['*']}
+            mediaPlaybackRequiresUserAction={false}
+            allowFileAccess={true}
+            onMessage={msg => console.log('webview message:', msg)}
             onError={err => console.warn('webview error:', err)}
           />
-      </Fragment>
-    );
-  };
+      </SafeAreaView>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  spinner_container: {
     flex: 1,
     justifyContent: 'center',
     width: '100%',
     height: '60%',
     position: 'absolute',
     bottom: 0
-  },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10
   }
 })
 
-export default App;
+export default App
