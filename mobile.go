@@ -10,9 +10,12 @@ package mobile
 import (
 	"context"
 	"io/ioutil"
+	"log"
 
 	host "github.com/berty/gomobile-ipfs/host"
 	node "github.com/berty/gomobile-ipfs/node"
+
+	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 )
 
@@ -28,7 +31,16 @@ func NewNode(r *Repo) (Node, error) {
 
 	ctx := context.Background()
 	repo := r.getRepo()
-	return node.NewNode(ctx, repo, &host.MobileConfig{})
+	node, err := node.NewNode(ctx, repo, &host.MobileConfig{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := node.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
+		log.Printf("unable to start node: `%s`", err)
+	}
+
+	return node, nil
 }
 
 func NewConfig(raw_json []byte) (cfg *Config, err error) {

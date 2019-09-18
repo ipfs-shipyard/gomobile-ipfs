@@ -18,8 +18,8 @@ import {
 } from 'react-native';
 
 
-const asyncTimeout = (cb, time) =>
-      new Promise(res => setTimeout(cb, time))
+const asyncTimeout = time =>
+      new Promise(res => setTimeout(res, time))
 
 class App extends Component {
   state = {
@@ -28,18 +28,17 @@ class App extends Component {
   }
 
   checkGateway = async () => {
-    try {
-      const res = await fetch('http://127.0.0.1:5001/webui')
+    let res = null
+    for (;;) {
+      res = await fetch('http://127.0.0.1:5001/webui')
       if (res.ok) {
-        console.warn(res.url)
         this.setState({
           loading: false,
           url: res.url,
         })
+        return
       }
-    } catch (err) {
-      console.warn(err)
-      return asyncTimeout(this.checkGateway, 2000)
+      await asyncTimeout(2000)
     }
   }
 
@@ -61,7 +60,6 @@ class App extends Component {
       .then(id => console.info('peerID:', id))
       .catch(err => console.error(err))
       .then(this.checkGateway)
-      .catch(err => console.Warn(err))
   }
 
   render() {
@@ -78,8 +76,7 @@ class App extends Component {
           <WebView
             source={{uri: this.state.url}}
             originWhitelist={['*']}
-            onError={err => console.warn(err)}
-            onMessage={msg => console.log(msg)}
+            onError={err => console.warn('webview error:', err)}
           />
       </Fragment>
     );
