@@ -24,6 +24,16 @@ class BridgeModule: NSObject {
     return false
   }
 
+  @objc func getApiAddrs(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+    if self.node {
+      if let addrs = self.node?.getApiAddrs() {
+        resolve(addrs)
+      } else {
+        resolve("")
+      }
+    }
+  }
+
   @objc func start(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     var err: NSError?
 
@@ -53,7 +63,7 @@ class BridgeModule: NSObject {
       reject("\(String(describing: error.code))", error.userInfo.description, error)
       return
     }
-    
+
     self.node = MobileNewNode(repo, &err)
     if let error = err {
       reject("\(String(describing: error.code))", error.userInfo.description, error)
