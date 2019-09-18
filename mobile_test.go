@@ -18,16 +18,16 @@ import (
 
 const sampleFakeConfig = `
 {
-    "Addresses": {
-        "API": "/ip4/127.0.0.1/tcp/5001",
-        "Swarm": [
-            "/ip4/0.0.0.0/tcp/0",
-            "/ip6/::/tcp/0"
-        ]
-    },
-    "Bootstrap": [
-        "/ip4/127.0.0.1/tcp/4001/ipfs/12D3KooWDWJ473M3fXMEcajbaGtqgr6i6SvDdh5Ru9i5ZzoJ9Qy8"
-    ]
+	"Addresses": {
+		"API": "/ip4/127.0.0.1/tcp/5001",
+		"Swarm": [
+			"/ip4/0.0.0.0/tcp/0",
+			"/ip6/::/tcp/0"
+		]
+	},
+	"Bootstrap": [
+		"/ip4/127.0.0.1/tcp/4001/ipfs/12D3KooWDWJ473M3fXMEcajbaGtqgr6i6SvDdh5Ru9i5ZzoJ9Qy8"
+	]
 }
 `
 
