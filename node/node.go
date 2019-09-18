@@ -19,7 +19,7 @@ import (
 
 type IpfsMobile struct {
 	lapi     []manet.Listener
-	ipfsNode *ipfs_core.IpfsNode
+	IpfsNode *ipfs_core.IpfsNode
 }
 
 func (im *IpfsMobile) Close() error {
@@ -27,7 +27,7 @@ func (im *IpfsMobile) Close() error {
 		_ = l.Close()
 	}
 
-	return im.ipfsNode.Close()
+	return im.IpfsNode.Close()
 }
 
 func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
@@ -90,7 +90,7 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		l := manet.NetListener(ml)
 		go func(l net.Listener) {
 			if err := ipfs_corehttp.Serve(inode, l, opts...); err != nil {
-				log.Printf("serve error: %s", err)
+				log.Printf("serve error: `%s`", err)
 			}
 		}(l)
 
@@ -98,6 +98,6 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 
 	return &IpfsMobile{
 		lapi:     lapi,
-		ipfsNode: inode,
+		IpfsNode: inode,
 	}, nil
 }
