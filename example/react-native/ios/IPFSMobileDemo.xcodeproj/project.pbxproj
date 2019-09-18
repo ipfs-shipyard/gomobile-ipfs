@@ -21,6 +21,13 @@
 		48259C0D23313D44005BC5E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 48259C0C23313D44005BC5E8 /* main.m */; };
 		4CD5036D3009D165A7C24859 /* libPods-IPFSMobileDemoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4F6064E471D47364E156777 /* libPods-IPFSMobileDemoTests.a */; };
 		8D0A22C023312E3600147033 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0A22BF23312E3600147033 /* Mobile.framework */; };
+		8D0A22C12332271E00147033 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		8D0A22C22332278400147033 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		8D0A22C32332278800147033 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0A22BF23312E3600147033 /* Mobile.framework */; };
+		8D0A22C42332278F00147033 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0A22BF23312E3600147033 /* Mobile.framework */; };
+		8D0A22C52332279100147033 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
+		8D0A22C62332279700147033 /* Mobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0A22BF23312E3600147033 /* Mobile.framework */; };
+		8D0A22C72332279D00147033 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		AB82E3A5B8B5785076E0B7C5 /* libPods-IPFSMobileDemo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B43721E6742622C2931C19A /* libPods-IPFSMobileDemo-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -80,7 +87,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D0A22C32332278800147033 /* Mobile.framework in Frameworks */,
 				4CD5036D3009D165A7C24859 /* libPods-IPFSMobileDemoTests.a in Frameworks */,
+				8D0A22C22332278400147033 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +99,7 @@
 			files = (
 				8D0A22C023312E3600147033 /* Mobile.framework in Frameworks */,
 				379A3A6022EA73D7C6F0F93C /* libPods-IPFSMobileDemo.a in Frameworks */,
+				8D0A22C12332271E00147033 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +107,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D0A22C42332278F00147033 /* Mobile.framework in Frameworks */,
 				AB82E3A5B8B5785076E0B7C5 /* libPods-IPFSMobileDemo-tvOS.a in Frameworks */,
+				8D0A22C52332279100147033 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,7 +117,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D0A22C62332279700147033 /* Mobile.framework in Frameworks */,
 				2ED37F470C07148703FCDC0E /* libPods-IPFSMobileDemo-tvOSTests.a in Frameworks */,
+				8D0A22C72332279D00147033 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,6 +613,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -624,6 +642,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = IPFSMobileDemoTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -673,6 +695,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -704,6 +727,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "IPFSMobileDemo-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -732,6 +759,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "IPFSMobileDemo-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -759,6 +790,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "IPFSMobileDemo-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -786,6 +821,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "IPFSMobileDemo-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
