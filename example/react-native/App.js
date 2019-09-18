@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   StatusBar,
   NativeModules,
+  Text,
 } from 'react-native';
 
 
@@ -67,20 +68,18 @@ class App extends Component {
     if (this.state.loading) {
       return (
         <View style={[styles.container, styles.horizontal]}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#4ca1a3" />
         </View>
       )
     }
 
     return (
       <Fragment>
-
           <WebView
             source={{uri: this.state.url}}
             originWhitelist={['*']}
             onError={err => console.warn(err)}
             onMessage={msg => console.log(msg)}
-
           />
       </Fragment>
     );
@@ -90,7 +89,11 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+	width: '100%',
+	height: '60%',
+	position: 'absolute',
+	bottom: 0
   },
   horizontal: {
     flexDirection: 'row',
