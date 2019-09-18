@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, { Fragment, Component } from 'react';
 import WebView from 'react-native-webview';
 import {
@@ -87,10 +80,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-	width: '100%',
-	height: '60%',
-	position: 'absolute',
-	bottom: 0
+    width: '100%',
+    height: '60%',
+    position: 'absolute',
+    bottom: 0
   },
   horizontal: {
     flexDirection: 'row',
