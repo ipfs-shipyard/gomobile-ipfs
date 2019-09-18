@@ -123,8 +123,8 @@ func addressesConfig() ipfs_config.Addresses {
 		},
 		Announce:   []string{},
 		NoAnnounce: []string{},
-		API:        ipfs_config.Strings{"/ip4/127.0.0.1/tcp/5001"},
-		Gateway:    ipfs_config.Strings{"/ip4/127.0.0.1/tcp/8080"},
+		API:        ipfs_config.Strings{"/ip4/127.0.0.1/tcp/0"},
+		Gateway:    ipfs_config.Strings{"/ip4/127.0.0.1/tcp/0"},
 	}
 }
 

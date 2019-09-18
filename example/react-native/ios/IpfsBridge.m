@@ -28,4 +28,7 @@ RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)
 RCT_EXTERN_METHOD(start:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(getApiAddrs:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 @end

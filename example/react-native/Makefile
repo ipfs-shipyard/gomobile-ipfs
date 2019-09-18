@@ -74,7 +74,6 @@ clean.android:
 		&& ./gradlew cleanBuildCache
 
 fclean.ios: clean.ios
-	rm -rf $(HOME)/Library/Caches/CocoaPods
 	rm -rf $(HOME)/Library/Developer/Xcode/DerivedData
 
 clean.ios:

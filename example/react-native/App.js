@@ -21,29 +21,50 @@ class App extends Component {
   }
 
   checkGateway = async () => {
+    const api = await this.getApiUrl()
+    if (!api || api.length == 0) {
+      throw new Error('cannot get api url...')
+    }
+
+    const url = `http://${api[0]}/webui`
     let res = null
     for (;;) {
-      res = await fetch('http://127.0.0.1:5001/webui')
-      if (res.ok) {
-        this.setState({
-          loading: false,
-          url: res.url,
-        })
-        return
+        res = await fetch(url)
+        if (res.ok) {
+          this.setState({
+            loading: false,
+            url: res.url,
+          })
+          return
+        }
       }
       await asyncTimeout(2000)
     }
   }
 
+  getApiUrl = async () => {
+    const addrs = await NativeModules.BridgeModule.getApiAddrs()
+    if (!addrs) {
+      return []
+    }
+
+    return addrs.split(',')
+  }
+
   startDaemon = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5001/api/v0/id')
-      const id = await res.json()
-      return id.ID
+      const api = await this.getApiUrl()
+      if (api && api.length > 0) {
+        const url = `http://${api[0]}`
+        const res = await fetch(`${url}/api/v0/id`)
+        const id = await res.json()
+        return id.ID
+      }
     } catch (err) {
       console.warn(err)
     }
 
+    console.info('starting ipfs node')
     await NativeModules.BridgeModule.start()
     return this.startDaemon()
   }

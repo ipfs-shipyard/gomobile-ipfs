@@ -3,15 +3,12 @@ package mobile
 import (
 	"encoding/json"
 	"io/ioutil"
-	"net"
 	"os"
+	"strings"
 	"testing"
 
 	ipfs_api "github.com/ipfs/go-ipfs-api"
 	ipfs_config "github.com/ipfs/go-ipfs-config"
-
-	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -158,28 +155,15 @@ func TestMobile(t *testing.T) {
 		})
 
 		Convey("test node", FailureHalts, func() {
-			var (
-				val     []byte
-				addr    net.Addr
-				apiAddr string
-				m       ma.Multiaddr
-				id      *ipfs_api.IdOutput
-			)
+			var id *ipfs_api.IdOutput
 
 			testNode, err = NewNode(testRepo)
 			So(err, ShouldBeNil)
 
-			val, err = testCfg.GetKey("Addresses.API")
-			So(err, ShouldBeNil)
+			addrs := strings.Split(testNode.GetApiAddrs(), ",")
+			So(len(addrs), ShouldBeGreaterThan, 0)
 
-			err = json.Unmarshal(val, &apiAddr)
-			So(err, ShouldBeNil)
-
-			m, err = ma.NewMultiaddr(apiAddr)
-			addr, err := manet.ToNetAddr(m)
-			So(err, ShouldBeNil)
-
-			shell := ipfs_api.NewShell(addr.String())
+			shell := ipfs_api.NewShell(addrs[0])
 			id, err = shell.ID()
 			So(err, ShouldBeNil)
 			So(id.ID, ShouldEqual, testID.PeerID)

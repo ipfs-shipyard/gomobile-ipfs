@@ -22,6 +22,9 @@ import (
 type Node interface {
 	// Close ipfs node
 	Close() error
+
+	// GetApiAddrs return current api listeners (separate with a comma)
+	GetApiAddrs() string
 }
 
 func NewNode(r *Repo) (Node, error) {

@@ -32,6 +32,15 @@ public class BridgeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getApiAddrs(Promise promise) {
+        if (this.node != null) {
+            promise.resolve(this.node.getApiAddrs());
+        } else {
+            promise.resolve("");
+        }
+    }
+
+    @ReactMethod
     public void start(Promise promise) {
         if (this.node != null) {
             promise.resolve(true);

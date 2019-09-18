@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 
 	host "github.com/berty/gomobile-ipfs/host"
 	ipfs_config "github.com/ipfs/go-ipfs-config"
@@ -28,6 +29,16 @@ func (im *IpfsMobile) Close() error {
 	}
 
 	return im.IpfsNode.Close()
+}
+
+// GetApiAddrs return current api listeners (separate with a comma)
+func (im *IpfsMobile) GetApiAddrs() string {
+	var addrs []string
+	for _, l := range im.lapi {
+		addrs = append(addrs, l.Addr().String())
+	}
+
+	return strings.Join(addrs, ",")
 }
 
 func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
@@ -90,7 +101,7 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		l := manet.NetListener(ml)
 		go func(l net.Listener) {
 			if err := ipfs_corehttp.Serve(inode, l, opts...); err != nil {
-				log.Printf("serve error: `%s`", err)
+				log.Printf("serve error: %s", err)
 			}
 		}(l)
 
