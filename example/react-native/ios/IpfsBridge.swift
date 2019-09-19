@@ -28,10 +28,11 @@ class BridgeModule: NSObject {
     if self.node != nil {
       if let addrs = self.node?.getApiAddrs() {
         resolve(addrs)
-      } else {
-        resolve("")
+        return
       }
     }
+
+    resolve("")
   }
 
   @objc func start(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
