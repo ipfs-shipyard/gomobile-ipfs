@@ -24,11 +24,11 @@ _:warning: this repo is planned to be moved on the IPFS organization_
   * Lower watermarks in conn manager
   * Use QUIC transport to be more resilient in case of switching between wifi/cellular
   * Background uploads & tasks
-  * Connections prioritization by assigning them weight depending on their types, the platform, and the connectivity context
+  * Connections prioritization by assigning them weight depending on their types, the platform and the connectivity context
 * Solutions we'd like to see
   * Native libp2p implementations
   * Better discovery of peers
-  * Better cache solutions to avoid a long warm-up that doesn't fit in a short time frame (switch foreground -> background)
+  * Better caching solutions to avoid a long warm-up that doesn't fit in a short time frame (switch foreground -> background)
 * Shared resources for mobile IPFS best practices
   * [**gomobile-ipfs** issues](https://github.com/berty/gomobile-ipfs/issues) _(this repo)_
   * [**go-ipfs** issues](https://github.com/ipfs/go-ipfs/issues)
@@ -44,7 +44,22 @@ _(alphabetically sorted)_
 
 ## Install
 
-_FIXME: TODO_
+### Prerequisites
+
+* For Android: you need to install and configure properly the Android SDK/NDK on your machine
+* For iOS: you need to install XCode on a macOS machine
+
+_More info [here](https://godoc.org/golang.org/x/mobile/cmd/gomobile#hdr-Build_a_library_for_Android_and_iOS)_
+
+### Build
+
+* Run `make build.android` or `make build.ios`
+
+_Run `make` to display the command list_
+
+### Code example
+
+* A code example/demo is available [here](./example/react-native)
 
 ## Maintainers
 
@@ -58,5 +73,4 @@ The current maintainers of this repo are (sorted alphabetically):
 
 ## License
 
-
-_FIXME: TODO_
+Dual [MIT](./LICENSE-MIT)/[Apache-2.0](./LICENSE-APACHE) license
