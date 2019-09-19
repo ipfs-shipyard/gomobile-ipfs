@@ -47,9 +47,9 @@ $(GOMOBILE):
 
 $(VENDOR): $(MOD_FILES)
 ifneq ($(wildcard /bin/bash),)
-	@bash -c 'echo "go mod vendor" && go mod vendor 2> >(grep -v "warning: ignoring symlink" 1>&2)'
+	@bash -c 'echo "GO111MODULE=on go mod vendor" && GO111MODULE=on go mod vendor 2> >(grep -v "warning: ignoring symlink" 1>&2)'
 else
-	go mod vendor
+	GO111MODULE=on go mod vendor
 endif
 
 clean: clean.android clean.ios

@@ -1,6 +1,6 @@
 module github.com/berty/gomobile-ipfs
 
-go 1.13
+go 1.12
 
 require (
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
@@ -9,6 +9,7 @@ require (
 	github.com/ipfs/go-ipfs v0.4.21
 	github.com/ipfs/go-ipfs-api v0.0.2
 	github.com/ipfs/go-ipfs-config v0.0.3
+	github.com/ipfs/go-log v0.0.1
 	github.com/ipfs/go-merkledag v0.1.0 // indirect
 	github.com/jtolds/gls v4.2.2-0.20181110203027-b4936e06046b+incompatible // indirect
 	github.com/libp2p/go-libp2p v0.3.0
