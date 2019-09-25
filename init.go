@@ -23,13 +23,12 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 		return nil, err
 	}
 
-	datastore := ipfs_config.DefaultDatastoreConfig()
-
+	datastore := defaultDatastoreConfig()
 	conf := &ipfs_config.Config{
 		API: ipfs_config.API{
 			HTTPHeaders: map[string][]string{
 				"Access-Control-Allow-Credentials": []string{"true"},
-				"Access-Control-Allow-Origin":      []string{"*"},
+				"Access-Control-Allow-Origin":      []string{"http://127.0.0.1:43453"},
 				"Access-Control-Allow-Methods":     []string{"GET", "PUT", "POST"},
 			},
 		},
@@ -123,13 +122,14 @@ func addressesConfig() ipfs_config.Addresses {
 		},
 		Announce:   []string{},
 		NoAnnounce: []string{},
-		API:        ipfs_config.Strings{"/ip4/127.0.0.1/tcp/0"},
-		Gateway:    ipfs_config.Strings{"/ip4/127.0.0.1/tcp/0"},
+		// @FIXME: use random port here to avoid collision
+		API:     ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43453"},
+		Gateway: ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43454"},
 	}
 }
 
-// DefaultDatastoreConfig is an internal function exported to aid in testing.
-func DefaultDatastoreConfig() ipfs_config.Datastore {
+// defaultDatastoreConfig is an internal function exported to aid in testing.
+func defaultDatastoreConfig() ipfs_config.Datastore {
 	return ipfs_config.Datastore{
 		StorageMax:         "10GB",
 		StorageGCWatermark: 90, // 90%
