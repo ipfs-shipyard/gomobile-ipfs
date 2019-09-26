@@ -2,6 +2,8 @@ package mobile
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_common "github.com/ipfs/go-ipfs/repo/common"
@@ -9,6 +11,21 @@ import (
 
 type Config struct {
 	cfg *ipfs_config.Config
+}
+
+func NewConfig(raw_json []byte) (cfg *Config, err error) {
+	cfg = &Config{}
+	err = cfg.Set(raw_json)
+	return cfg, err
+}
+
+func NewDefaultConfig() (*Config, error) {
+	cfg, err := initConfig(ioutil.Discard, 2048)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Config{cfg}, nil
 }
 
 func (c *Config) getConfig() (cfg *ipfs_config.Config) {
@@ -70,4 +87,39 @@ func (c *Config) GetKey(key string) ([]byte, error) {
 	}
 
 	return json.Marshal(&val)
+}
+
+// Helpers
+
+// Setup unix domain socket api
+func (c *Config) SetupUnixSocketAPI(sockpath string) {
+	// add it to our api config
+	c.cfg.Addresses.API = append(c.cfg.Addresses.API, "/unix/"+sockpath)
+}
+
+// Setup unix domain socket gateway
+func (c *Config) SetupUnixSocketGateway(sockpath string) {
+	c.cfg.Addresses.Gateway = append(c.cfg.Addresses.Gateway, "/unix/"+sockpath)
+}
+
+// Setup tcp api
+func (c *Config) SetupTCPAPI(port string) {
+	c.cfg.API.HTTPHeaders = map[string][]string{
+		"Access-Control-Allow-Credentials": []string{"true"},
+		"Access-Control-Allow-Origin":      []string{"http://127.0.0.1:" + port},
+		"Access-Control-Allow-Methods":     []string{"GET", "PUT", "POST"},
+	}
+
+	c.cfg.Addresses.API = append(c.cfg.Addresses.API, fmt.Sprintf("/ip4/127.0.0.1/tcp/"+port))
+}
+
+// Setup tcp gateway
+func (c *Config) SetupTCPGateway(port string) {
+	c.cfg.Gateway.HTTPHeaders = map[string][]string{
+		"Access-Control-Allow-Origin":  []string{"http://127.0.0.1:" + port},
+		"Access-Control-Allow-Methods": []string{"GET"},
+		"Access-Control-Allow-Headers": []string{"X-Requested-With", "Range", "User-Agent"},
+	}
+
+	c.cfg.Addresses.Gateway = append(c.cfg.Addresses.Gateway, fmt.Sprintf("/ip4/127.0.0.1/tcp/"+port))
 }

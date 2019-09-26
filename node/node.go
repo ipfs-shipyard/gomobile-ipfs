@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"strings"
+	"sync"
 
 	host "github.com/berty/gomobile-ipfs/host"
+
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_oldcmds "github.com/ipfs/go-ipfs/commands"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
@@ -18,13 +21,24 @@ import (
 	manet "github.com/multiformats/go-multiaddr-net"
 )
 
+type PathGetter interface {
+	GetRootPath() string
+}
+
+type MobileRepo interface {
+	PathGetter
+	ipfs_repo.Repo
+}
+
 type IpfsMobile struct {
-	lapi     []manet.Listener
+	listeners   []manet.Listener
+	muListeners sync.Mutex
+
 	IpfsNode *ipfs_core.IpfsNode
 }
 
 func (im *IpfsMobile) Close() error {
-	for _, l := range im.lapi {
+	for _, l := range im.listeners {
 		_ = l.Close()
 	}
 
@@ -34,11 +48,96 @@ func (im *IpfsMobile) Close() error {
 // GetApiAddrs return current api listeners (separate with a comma)
 func (im *IpfsMobile) GetApiAddrs() string {
 	var addrs []string
-	for _, l := range im.lapi {
-		addrs = append(addrs, l.Addr().String())
+	for _, l := range im.listeners {
+		a, err := manet.FromNetAddr(l.Addr())
+		if err != nil {
+			log.Printf("unable to get multiaddr from `%s`: %s", l.Addr().String(), err)
+			continue
+		}
+
+		addrs = append(addrs, a.String())
 	}
 
 	return strings.Join(addrs, ",")
+}
+
+func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) error {
+	cfg, err := repo.Config()
+	if err != nil {
+		return fmt.Errorf("config error: %s", err)
+	}
+
+	im.muListeners.Lock()
+	defer im.muListeners.Unlock()
+
+	// closes previous listeners if any
+	for _, l := range im.listeners {
+		_ = l.Close()
+	}
+
+	// Configure API if needed
+	im.listeners = make([]manet.Listener, len(cfg.Addresses.API))
+	for i, addr := range cfg.Addresses.API {
+		maddr, err := ma.NewMultiaddr(addr)
+		if err != nil {
+			return fmt.Errorf("failed to parse ma: %s, %s", addr, err)
+		}
+
+		// @HOTFIX: try to delete old sock, if exist, before listening.
+		// this will happen everytime the app is forced to exist until
+		// the node is properly close on the ios/android side.
+		addr, err := manet.ToNetAddr(maddr)
+		if addr.Network() == "unix" {
+			sockpath := addr.String()
+			if _, err := os.Stat(sockpath); err == nil {
+				if err = os.Remove(sockpath); err != nil {
+					log.Printf("unable to delete old sock: %s", err)
+				}
+			}
+		}
+
+		l, err := manet.Listen(maddr)
+		if err != nil {
+			return fmt.Errorf("API: manet.Listen(%s) failed: %s", addr, err)
+		}
+
+		im.listeners[i] = l
+	}
+
+	// @TODO: no sure about how to init this, must be another way
+	cctx := ipfs_oldcmds.Context{
+		ConfigRoot: repo_path,
+		ReqLog:     &ipfs_oldcmds.ReqLog{},
+		ConstructNode: func() (*ipfs_core.IpfsNode, error) {
+			return im.IpfsNode, nil
+		},
+		LoadConfig: func(_ string) (*ipfs_config.Config, error) {
+			cfg, err := repo.Config()
+			if err != nil {
+				return nil, err
+			}
+			return cfg.Clone()
+		},
+	}
+
+	gatewayOpt := ipfs_corehttp.GatewayOption(false, ipfs_corehttp.WebUIPaths...)
+	opts := []ipfs_corehttp.ServeOption{
+		ipfs_corehttp.WebUIOption,
+		gatewayOpt,
+		ipfs_corehttp.CommandsOption(cctx),
+	}
+
+	for _, ml := range im.listeners {
+		l := manet.NetListener(ml)
+		go func(l net.Listener) {
+			if err := ipfs_corehttp.Serve(im.IpfsNode, l, opts...); err != nil {
+				log.Printf("serve error: %s", err)
+			}
+		}(l)
+
+	}
+
+	return nil
 }
 
 func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
@@ -58,11 +157,24 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 	}
 
 	// Configure API if needed
-	lapi := make([]manet.Listener, len(cfg.Addresses.API))
+	listeners := make([]manet.Listener, len(cfg.Addresses.API))
 	for i, addr := range cfg.Addresses.API {
 		maddr, err := ma.NewMultiaddr(addr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse ma: %s, %s", addr, err)
+		}
+
+		// @HOTFIX: try to delete old sock, if exist, before listening.
+		// this will happen everytime the app is forced to exist until
+		// the node is properly close on the ios/android side.
+		addr, err := manet.ToNetAddr(maddr)
+		if addr.Network() == "unix" {
+			sockpath := addr.String()
+			if _, err := os.Stat(sockpath); err == nil {
+				if err = os.Remove(sockpath); err != nil {
+					log.Printf("unable to delete old sock: %s", err)
+				}
+			}
 		}
 
 		l, err := manet.Listen(maddr)
@@ -70,7 +182,7 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 			return nil, fmt.Errorf("API: manet.Listen(%s) failed: %s", addr, err)
 		}
 
-		lapi[i] = l
+		listeners[i] = l
 	}
 
 	// create ipfs node
@@ -79,36 +191,8 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
 	}
 
-	// @TODO: no sure about how to init this, must be another way
-	cctx := ipfs_oldcmds.Context{
-		ReqLog: &ipfs_oldcmds.ReqLog{},
-		ConstructNode: func() (*ipfs_core.IpfsNode, error) {
-			return inode, nil
-		},
-		LoadConfig: func(_ string) (*ipfs_config.Config, error) {
-			return cfg.Clone()
-		},
-	}
-
-	gatewayOpt := ipfs_corehttp.GatewayOption(false, ipfs_corehttp.WebUIPaths...)
-	opts := []ipfs_corehttp.ServeOption{
-		ipfs_corehttp.WebUIOption,
-		gatewayOpt,
-		ipfs_corehttp.CommandsOption(cctx),
-	}
-
-	for _, ml := range lapi {
-		l := manet.NetListener(ml)
-		go func(l net.Listener) {
-			if err := ipfs_corehttp.Serve(inode, l, opts...); err != nil {
-				log.Printf("serve error: %s", err)
-			}
-		}(l)
-
-	}
-
 	return &IpfsMobile{
-		lapi:     lapi,
-		IpfsNode: inode,
+		listeners: listeners,
+		IpfsNode:  inode,
 	}, nil
 }
