@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import WebView from 'react-native-webview'
+import base64 from 'base-64'
+import Multiaddr from 'multiaddr/dist/index.min'
+import queryString from 'query-string'
 import {
   StyleSheet,
   SafeAreaView,
@@ -10,74 +13,80 @@ import {
 class App extends Component {
   state = {
     loading: true,
-    url: '',
+    webui: '',
   }
 
-  asyncTimeout = time =>
+  _asyncTimeout = time =>
       new Promise(res => setTimeout(res, time))
 
-  checkGateway = async () => {
-    const api = await this.getApiUrl()
-    if (!api || api.length == 0) {
-      throw new Error('cannot get api url...')
-    }
+  // Native Call to ipfs through react native bridge
+  _IpfsShell = (command, params = {}, body = "") => {
+    const query       = queryString.stringify(params)
+    const uri         = query.length ? `${command}?${query}` : command
+    const encodedBody = base64.encode(body)
 
-    const webui = `http://${api[0]}/webui`
-    let res = null
-    while(42) {
-      res = await fetch(webui)
-      if (res.ok) {
-        this.setState({
+    console.info('calling:', uri)
+    return NativeModules.BridgeModule.fetchShell(uri, encodedBody)
+      .then(encoded => base64.decode(encoded))
+      .then(res => JSON.parse(res))
+  }
+
+  // Get API url through IPFS Config
+  _getApi = async () => {
+    const res = await this._IpfsShell('/config', { arg: 'Addresses.API'})
+    const addrs = res.Value
+
+    for (let i = 0; i < addrs.length; ++i) {
+      try {
+        const maddr     = new Multiaddr(addrs[i])
+        const addr      = maddr.nodeAddress()
+        const api       = `http://${addr.address}:${addr.port}`
+
+        console.info('api uri found from config:', api)
+        return this.setState({
           loading: false,
-          url: res.url,
+          webui: `${api}/webui`,
         })
-        return
+      } catch (err) {
+        console.warn(`${addrs[i]}, is not supported by js-multiaddr library: ${err.message}`)
       }
-
-      console.warn(`[${res.Status}]: ${res.statusText}`)
-      await asyncTimeout(2000)
-    }
-  }
-
-  getApiUrl = async () => {
-    const addrs = await NativeModules.BridgeModule.getApiAddrs()
-    if (!addrs) {
-      return []
     }
 
-    return addrs.split(',')
+    throw new Error('no valid addrs found for fetching WebUI')
   }
 
-  startDaemon = async () => {
+  // start ipfs node
+  _startDaemon = async () => {
     try {
-      const api = await this.getApiUrl()
-      if (api && api.length > 0) {
-        const apiUrl = `http://${api[0]}`
-        console.info('api url:', apiUrl)
-
-        const res = await fetch(`${apiUrl}/api/v0/id`)
-        const id = await res.json()
-        return id.ID
-      }
+      // is ipfs node already running ?
+      const id = await this._IpfsShell('/id')
+      console.info('ipfs node:', id)
+      return id.ID
     } catch (err) {
-      console.warn('start daemon warn:', err)
+      console.warn('start daemon warn:', err.message)
     }
 
-    console.info('starting ipfs node')
+    console.info('starting ipfs node!')
 
     await NativeModules.BridgeModule.start()
-    return this.startDaemon()
+    await this._asyncTimeout(1000)
+
+    // try to fetch api again
+    return this._startDaemon()
   }
 
   componentDidMount() {
-    this.startDaemon()
+    this._startDaemon()
       .then(id => console.info('peerID:', id))
       .catch(err => console.error(err))
-      .then(this.checkGateway)
+      .then(this._getApi)
+      .catch(err => console.warn('failed to get api url:', err.message))
   }
 
   render() {
-    if (this.state.loading) {
+    const { loading } = this.state
+
+    if (loading) {
       return (
         <SafeAreaView style={[styles.spinner_container]}>
           <ActivityIndicator size="large" color="#4ca1a3" />
@@ -87,14 +96,14 @@ class App extends Component {
 
     return (
       <SafeAreaView style={{flex: 1}}>
-          <WebView
-            source={{uri: this.state.url}}
-            originWhitelist={['*']}
-            mediaPlaybackRequiresUserAction={false}
-            allowFileAccess={true}
-            onMessage={msg => console.log('webview message:', msg)}
-            onError={err => console.warn('webview error:', err)}
-          />
+        <WebView
+          source={{uri: this.state.webui}}
+          originWhitelist={['*']}
+          mediaPlaybackRequiresUserAction={false}
+          allowFileAccess={true}
+          onMessage={msg => console.log('webview message:', msg)}
+          onError={err => console.warn('webview error:', err)}
+        />
       </SafeAreaView>
     )
   }
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
     height: '60%',
     position: 'absolute',
     bottom: 0
-  }
+  },
 })
 
 export default App

@@ -7,8 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	ipfs_api "github.com/ipfs/go-ipfs-api"
 	ipfs_config "github.com/ipfs/go-ipfs-config"
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -38,6 +39,13 @@ func TestMobile(t *testing.T) {
 		err error
 	)
 
+	tmpdir, err := ioutil.TempDir("", "gomobile_ipfs_test")
+	if err != nil {
+		panic(err)
+	}
+
+	defer os.RemoveAll(tmpdir)
+
 	defer func() {
 		if testNode != nil {
 			_ = testNode.Close()
@@ -47,13 +55,6 @@ func TestMobile(t *testing.T) {
 			_ = testRepo.Close()
 		}
 	}()
-
-	tmpdir, err := ioutil.TempDir("", "gomobile_ipfs_test")
-	if err != nil {
-		panic(err)
-	}
-
-	defer os.RemoveAll(tmpdir)
 
 	Convey("test config", t, FailureHalts, func() {
 		Convey("test get/set config", FailureHalts, func() {
@@ -135,6 +136,12 @@ func TestMobile(t *testing.T) {
 			ok = RepoIsInitialized(tmpdir)
 			So(ok, ShouldBeFalse)
 
+			testCfg.SetupTCPAPI("0")
+			testCfg.SetupUnixSocketAPI(tmpdir + "/api.sock")
+
+			testCfg.SetupTCPGateway("0")
+			testCfg.SetupUnixSocketGateway(tmpdir + "/gateway.sock")
+
 			// init repo
 			err = InitRepo(tmpdir, testCfg)
 			So(err, ShouldBeNil)
@@ -155,18 +162,59 @@ func TestMobile(t *testing.T) {
 		})
 
 		Convey("test node", FailureHalts, func() {
-			var id *ipfs_api.IdOutput
-
 			testNode, err = NewNode(testRepo)
 			So(err, ShouldBeNil)
+		})
 
+		Convey("test Unix Soscket shell", FailureHalts, func() {
+			socketaddr := "/unix/" + tmpdir + "/api.sock"
+			shell, err := NewShell(socketaddr)
+			So(err, ShouldBeNil)
+
+			req := shell.NewRequest("config")
+			req.Argument("Addresses.API")
+			res, err := req.Exec()
+			So(err, ShouldBeNil)
+
+			api := struct {
+				Addrs []string `json:"Value"`
+			}{}
+
+			err = json.Unmarshal(res, &api)
+			So(err, ShouldBeNil)
+			So(len(api.Addrs), ShouldBeGreaterThan, 0)
+		})
+
+		Convey("test TCP shell", FailureHalts, func() {
 			addrs := strings.Split(testNode.GetApiAddrs(), ",")
 			So(len(addrs), ShouldBeGreaterThan, 0)
+			apiaddr := ""
+			for _, addr := range addrs {
+				maddr, err := ma.NewMultiaddr(addr)
+				So(err, ShouldBeNil)
 
-			shell := ipfs_api.NewShell(addrs[0])
-			id, err = shell.ID()
+				naddr, err := manet.ToNetAddr(maddr)
+				So(err, ShouldBeNil)
+				if naddr.Network() == "tcp" {
+					apiaddr = addr
+				}
+			}
+
+			So(apiaddr, ShouldNotBeEmpty)
+
+			shell, err := NewShell(apiaddr)
 			So(err, ShouldBeNil)
-			So(id.ID, ShouldEqual, testID.PeerID)
+			out, err := shell.Request("id", nil)
+
+			So(err, ShouldBeNil)
+
+			id := struct {
+				PeerID string `json:"id"`
+			}{}
+
+			err = json.Unmarshal(out, &id)
+			So(err, ShouldBeNil)
+			So(id.PeerID, ShouldStartWith, "Qm")
 		})
 	})
 }

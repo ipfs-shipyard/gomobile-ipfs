@@ -9,6 +9,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "base-64": "^0.1.0",
+    "multiaddr": "^7.1.0",
+    "query-string": "^6.8.3",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-webview": "^7.0.5"

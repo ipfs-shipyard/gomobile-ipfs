@@ -5,6 +5,7 @@ import (
 
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 )
 
 var plugins *ipfs_loader.PluginLoader
@@ -14,7 +15,32 @@ type Repo struct {
 	path  string
 }
 
-func (r *Repo) GetPath() string {
+func RepoIsInitialized(path string) bool {
+	return ipfs_fsrepo.IsInitialized(path)
+}
+
+func InitRepo(path string, cfg *Config) error {
+	if _, err := loadPlugins(path); err != nil {
+		return err
+	}
+
+	return ipfs_fsrepo.Init(path, cfg.getConfig())
+}
+
+func OpenRepo(path string) (*Repo, error) {
+	if _, err := loadPlugins(path); err != nil {
+		return nil, err
+	}
+
+	irepo, err := ipfs_fsrepo.Open(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Repo{irepo, path}, nil
+}
+
+func (r *Repo) GetRootPath() string {
 	return r.path
 }
 

@@ -26,11 +26,7 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 	datastore := defaultDatastoreConfig()
 	conf := &ipfs_config.Config{
 		API: ipfs_config.API{
-			HTTPHeaders: map[string][]string{
-				"Access-Control-Allow-Credentials": []string{"true"},
-				"Access-Control-Allow-Origin":      []string{"http://127.0.0.1:43453"},
-				"Access-Control-Allow-Methods":     []string{"GET", "PUT", "POST"},
-			},
+			HTTPHeaders: map[string][]string{},
 		},
 
 		// setup the node's default addresses.
@@ -66,12 +62,8 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 			Writable:     false,
 			NoFetch:      false,
 			PathPrefixes: []string{},
-			HTTPHeaders: map[string][]string{
-				"Access-Control-Allow-Origin":  []string{"*"},
-				"Access-Control-Allow-Methods": []string{"GET"},
-				"Access-Control-Allow-Headers": []string{"X-Requested-With", "Range", "User-Agent"},
-			},
-			APICommands: []string{},
+			HTTPHeaders:  map[string][]string{},
+			APICommands:  []string{},
 		},
 		Reprovider: ipfs_config.Reprovider{
 			Interval: "12h",
@@ -122,9 +114,13 @@ func addressesConfig() ipfs_config.Addresses {
 		},
 		Announce:   []string{},
 		NoAnnounce: []string{},
+
 		// @FIXME: use random port here to avoid collision
-		API:     ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43453"},
-		Gateway: ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43454"},
+		// API:     ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43453"},
+		// Gateway: ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43454"},
+
+		API:     ipfs_config.Strings{},
+		Gateway: ipfs_config.Strings{},
 	}
 }
 
