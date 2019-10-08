@@ -1,0 +1,283 @@
+version: 2.1
+
+checkout-linux: &checkout-linux
+  attach_workspace:
+    at: /root
+
+jobs:
+  persist-checkout:
+    docker:
+      - image: python
+    steps:
+      - checkout
+      - run:
+          name: clean up git
+          command: |
+            rm -rf .git
+      - persist_to_workspace:
+          root: /root
+          paths:
+            - project
+
+  unit-test:
+    docker:
+      - image: textile/builder:1.12.5
+    steps:
+      - *checkout-linux
+      - restore_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}-{{ arch }}
+      - run:
+          name: cache mods
+          command: |
+            go mod download
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}-{{ arch }}
+          paths:
+            - /go/pkg/mod
+      - run:
+          name: run tests
+          command: |
+            make test
+
+  build-ios-framework:
+    macos:
+      xcode: '10.2.1'
+    environment:
+      GOPATH: /Users/distiller/go
+      GOROOT: /Users/distiller/gosrc/go
+    steps:
+      - checkout
+      - run:
+          name: install golang
+          command: |
+            export GOROOT=/usr/local/go
+            export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+            curl -L -o go1.12.5.darwin-amd64.tar.gz https://dl.google.com/go/go1.12.5.darwin-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.12.5.darwin-amd64.tar.gz
+            cd ~ && mkdir gosrc && cd gosrc
+            git clone https://github.com/textileio/go.git && cd go
+            git checkout sander/ptrace-hackery
+            cd src && ./all.bash
+      - restore_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}-{{ arch }}
+      - run:
+          name: cache mods
+          command: |
+            export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+            go mod download
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}-{{ arch }}
+          paths:
+            - ~/go/pkg/mod
+      - run:
+          name: build ios framework
+          command: |
+            export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+            go mod vendor
+            mkdir -p ~/go/src/github.com/berty
+            cd ~ && mv project go/src/github.com/berty/gomobile-ipfs
+            cd ~/go/src/github.com/berty/gomobile-ipfs
+            export GO111MODULE=off
+            go get golang.org/x/mobile/cmd/...
+            make build.ios
+      - run:
+          name: collect artifacts
+          command: |
+            VERSION=$(echo $CIRCLE_SHA1 | cut -c -7)
+            if [ "${CIRCLE_TAG}" != "" ]; then
+                VERSION=${CIRCLE_TAG}
+            fi
+            OUT=~/dist/ios_framework
+            mkdir -p ${OUT}
+            cd ~/go/src/github.com/berty/gomobile-ipfs/build/ios
+            tar -czvf gomobile-ipfs_${VERSION}_ios-framework.tar.gz Mobile.framework
+            mv gomobile-ipfs_${VERSION}_ios-framework.tar.gz ${OUT}/
+      - persist_to_workspace:
+          root: ~/dist
+          paths:
+            - ios_framework
+      - store_artifacts:
+          path: ~/dist/ios_framework
+
+  build-android-aar:
+    docker:
+      - image: circleci/android:api-28-ndk
+    environment:
+      GOROOT: /usr/local/go
+      GOPATH: /home/circleci/go
+    steps:
+      - checkout
+      - run:
+          name: install golang
+          command: |
+            wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
+            mkdir -p $GOPATH/bin
+      - restore_cache:
+          key: go-mod-v1-android-{{ checksum "go.sum" }}-{{ arch }}
+      - run:
+          name: cache mods
+          command: |
+            export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+            go mod download
+      - save_cache:
+          key: go-mod-v1-android-{{ checksum "go.sum" }}-{{ arch }}
+          paths:
+            - /go/pkg/mod
+      - run:
+          name: install tools
+          command: |
+            sdkmanager --licenses
+            echo y | sdkmanager "build-tools;28.0.3"
+            echo y | sdkmanager "platforms;android-28"
+            sdkmanager 'ndk-bundle'
+      - run:
+          name: build android framework
+          command: |
+            export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+            go mod vendor
+            mkdir -p ~/go/src/github.com/berty
+            cd ~ && mv project go/src/github.com/berty/gomobile-ipfs
+            cd ~/go/src/github.com/berty/gomobile-ipfs
+            export GO111MODULE=off
+            go get golang.org/x/mobile/cmd/...
+            make build.android
+      - run:
+          name: collect artifacts
+          command: |
+            VERSION=$(echo $CIRCLE_SHA1 | cut -c -7)
+            if [ "${CIRCLE_TAG}" != "" ]; then
+                VERSION=${CIRCLE_TAG}
+            fi
+            OUT=~/dist/android_aar
+            mkdir -p ${OUT}
+            cd ~/go/src/github.com/berty/gomobile-ipfs/build/android
+            tar -czvf gomobile-ipfs_${VERSION}_android-aar.tar.gz ipfs.aar
+            mv gomobile-ipfs_${VERSION}_android-aar.tar.gz ${OUT}/
+      - persist_to_workspace:
+          root: ~/go/src/github.com/berty/gomobile-ipfs/build/android
+          paths:
+            - ipfs.aar
+      - persist_to_workspace:
+          root: ~/dist
+          paths:
+            - android_aar
+      - store_artifacts:
+          path: ~/dist/android_aar
+
+  release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - *checkout-linux
+      - deploy:
+          name: release all
+          command: |
+            mkdir -p ~/dist
+            mv ~/ios_framework/* ~/dist/
+            mv ~/android_aar/* ~/dist/
+            PRE=$(echo "${CIRCLE_TAG}" | grep "rc" || true)
+            if [ "${PRE}" != "" ]; then
+                ghr -prerelease -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ~/dist/
+            else
+                ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ~/dist/
+            fi
+
+  publish-cocoapod:
+    macos:
+      xcode: '10.2.1'
+    steps:
+      - checkout
+      - run:
+          name: Fetch CocoaPods Specs
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - run:
+          name: update podspec
+          working_directory: release
+          command: |
+            VERSION=$(echo $CIRCLE_SHA1 | cut -c -7)
+            if [ "${CIRCLE_TAG}" != "" ]; then
+                VERSION=${CIRCLE_TAG}
+                VERSION=$(echo $VERSION | cut -c 2-)
+            fi
+            sed -i.bak "s/<version>/${VERSION}/g" gomobile-ipfs.podspec
+            pod trunk push gomobile-ipfs.podspec --allow-warnings
+
+  publish-aar:
+    docker:
+      - image: circleci/android:api-28-ndk
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: publish artifacts
+          working_directory: release
+          command: |
+            VERSION=$(echo $CIRCLE_SHA1 | cut -c -7)
+            if [ "${CIRCLE_TAG}" != "" ]; then
+                VERSION=${CIRCLE_TAG}
+                VERSION=$(echo $VERSION | cut -c 2-)
+            fi
+            sed "s/<VERSION>/${VERSION}/g" gomobile-ipfs-template.pom > gomobile-ipfs-${VERSION}.pom
+            cp ~/ipfs.aar gomobile-ipfs-${VERSION}.aar
+            curl -i -X PUT -u ${BINTRAY_USERNAME}:${BINTRAY_API_KEY} -T gomobile-ipfs-${VERSION}.pom https://api.bintray.com/maven/textile/maven/gomobile-ipfs/io/textile/gomobile-ipfs/${VERSION}/gomobile-ipfs-${VERSION}.pom;publish=1
+            curl -i -X PUT -u ${BINTRAY_USERNAME}:${BINTRAY_API_KEY} -T gomobile-ipfs-${VERSION}.aar https://api.bintray.com/maven/textile/maven/gomobile-ipfs/io/textile/gomobile-ipfs/${VERSION}/gomobile-ipfs-${VERSION}.aar;publish=1
+            curl -i -X POST -u ${BINTRAY_USERNAME}:${BINTRAY_API_KEY} https://api.bintray.com/content/textile/maven/gomobile-ipfs/${VERSION}/publish
+
+workflows:
+  version: 2
+  gomobile-ipfs:
+    jobs:
+      - persist-checkout:
+          filters:
+            tags:
+              only: /.*/
+      - unit-test:
+          requires:
+            - persist-checkout
+          filters:
+            tags:
+              only: /.*/
+      - build-ios-framework:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /.*/
+      - build-android-aar:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /.*/
+      - release:
+          requires:
+            - build-ios-framework
+            - build-android-aar
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - publish-cocoapod:
+          requires:
+            - release
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - publish-aar:
+          requires:
+            - release
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
