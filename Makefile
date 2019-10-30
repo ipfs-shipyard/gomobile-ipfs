@@ -1,5 +1,7 @@
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 GO_DIR = $(MAKEFILE_DIR)/go
+IOS_DIR = $(MAKEFILE_DIR)/ios
+ANDROID_DIR = $(MAKEFILE_DIR)/android
 GO_SRC = $(shell find $(GO_DIR) -not \( -path $(GO_DIR)/vendor -prune \) -name \*.go)
 
 GOMOBILE = $(GOPATH)/bin/gomobile
@@ -8,7 +10,7 @@ GOMOBILE_OPT ?=
 VENDOR = $(GO_DIR)/vendor
 MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.mod
 
-BUILD_DIR_IOS = $(GO_DIR)/build/ios
+BUILD_DIR_IOS = $(IOS_DIR)/Frameworks
 BUILD_LIB_IOS = $(BUILD_DIR_IOS)/Mobile.framework
 BUILD_DIR_ANDROID = $(GO_DIR)/build/android
 BUILD_LIB_ANDROID = $(BUILD_DIR_ANDROID)/ipfs.aar
