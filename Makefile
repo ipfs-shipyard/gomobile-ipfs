@@ -1,15 +1,16 @@
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-GO_SRC = $(shell find . -not \( -path ./vendor -prune \) -not \( -path ./example -prune \) -not \( -path ./build -prune \) -name \*.go)
+GO_DIR = $(MAKEFILE_DIR)/go
+GO_SRC = $(shell find $(GO_DIR) -not \( -path $(GO_DIR)/vendor -prune \) -name \*.go)
 
 GOMOBILE = $(GOPATH)/bin/gomobile
 GOMOBILE_OPT ?=
 
-VENDOR = $(MAKEFILE_DIR)/vendor
-MOD_FILES = $(MAKEFILE_DIR)/go.mod $(MAKEFILE_DIR)/go.mod
+VENDOR = $(GO_DIR)/vendor
+MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.mod
 
-BUILD_DIR_IOS = $(MAKEFILE_DIR)/build/ios
+BUILD_DIR_IOS = $(GO_DIR)/build/ios
 BUILD_LIB_IOS = $(BUILD_DIR_IOS)/Mobile.framework
-BUILD_DIR_ANDROID = $(MAKEFILE_DIR)/build/android
+BUILD_DIR_ANDROID = $(GO_DIR)/build/android
 BUILD_LIB_ANDROID = $(BUILD_DIR_ANDROID)/ipfs.aar
 
 .PHONY: help build build.android build.ios test deps clean clean.android clean.ios re re.ios re.android
@@ -23,7 +24,7 @@ build: build.android build.ios
 build.android: $(BUILD_LIB_ANDROID)
 
 $(BUILD_LIB_ANDROID): $(BUILD_DIR_ANDROID) $(GO_SRC) $(VENDOR) | $(GOMOBILE)
-	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android -o $(BUILD_LIB_ANDROID) github.com/berty/gomobile-ipfs
+	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android -o $(BUILD_LIB_ANDROID) github.com/berty/gomobile-ipfs/go
 
 $(BUILD_DIR_ANDROID):
 	mkdir -p $(BUILD_DIR_ANDROID)
@@ -31,13 +32,13 @@ $(BUILD_DIR_ANDROID):
 build.ios: $(BUILD_LIB_IOS)
 
 $(BUILD_LIB_IOS): $(BUILD_DIR_IOS) $(GO_SRC) $(VENDOR) | $(GOMOBILE)
-	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=ios -o $(BUILD_LIB_IOS) github.com/berty/gomobile-ipfs
+	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=ios -o $(BUILD_LIB_IOS) github.com/berty/gomobile-ipfs/go
 
 $(BUILD_DIR_IOS):
 	mkdir -p $(BUILD_DIR_IOS)
 
 test: $(VENDOR)
-	go test -v $(MAKEFILE_DIR)/...
+	go test -v $(GO_DIR)/...
 
 deps: $(VENDOR)
 
@@ -47,9 +48,9 @@ $(GOMOBILE):
 
 $(VENDOR): $(MOD_FILES)
 ifneq ($(wildcard /bin/bash),)
-	@bash -c 'echo "GO111MODULE=on go mod vendor" && GO111MODULE=on go mod vendor 2> >(grep -v "warning: ignoring symlink" 1>&2)'
+	@bash -c 'echo "GO111MODULE=on go mod vendor" && cd $(GO_DIR) && GO111MODULE=on go mod vendor 2> >(grep -v "warning: ignoring symlink" 1>&2)'
 else
-	GO111MODULE=on go mod vendor
+	cd $(GO_DIR) && GO111MODULE=on go mod vendor
 endif
 
 clean: clean.android clean.ios

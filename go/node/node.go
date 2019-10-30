@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	host "github.com/berty/gomobile-ipfs/host"
+	host "github.com/berty/gomobile-ipfs/go/host"
 
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_oldcmds "github.com/ipfs/go-ipfs/commands"

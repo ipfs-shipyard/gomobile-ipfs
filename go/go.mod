@@ -1,4 +1,4 @@
-module github.com/berty/gomobile-ipfs
+module github.com/berty/gomobile-ipfs/go
 
 go 1.12
 

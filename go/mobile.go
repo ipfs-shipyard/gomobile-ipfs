@@ -14,8 +14,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	host "github.com/berty/gomobile-ipfs/host"
-	node "github.com/berty/gomobile-ipfs/node"
+	host "github.com/berty/gomobile-ipfs/go/host"
+	node "github.com/berty/gomobile-ipfs/go/node"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	// ipfs_log "github.com/ipfs/go-log"
