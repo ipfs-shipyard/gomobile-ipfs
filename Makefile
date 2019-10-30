@@ -40,7 +40,7 @@ $(BUILD_DIR_IOS):
 	mkdir -p $(BUILD_DIR_IOS)
 
 test: $(VENDOR)
-	go test -v $(GO_DIR)/...
+	cd $(GO_DIR) && go test -v ./...
 
 deps: $(VENDOR)
 
