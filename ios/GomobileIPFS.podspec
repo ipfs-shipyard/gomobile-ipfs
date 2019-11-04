@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.ios.vendored_frameworks = 'Frameworks/Mobile.framework'
   s.source_files = 'GomobileIPFS/Classes/**/*'
+  # s.xcconfig = { 'OTHER_LDFLAGS' => '-framework Mobile' }
 
   # s.resource_bundles = {
   #   'GomobileIPFS' => ['GomobileIPFS/Assets/*.png']

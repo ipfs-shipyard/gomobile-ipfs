@@ -137,10 +137,10 @@ func TestMobile(t *testing.T) {
 			So(ok, ShouldBeFalse)
 
 			testCfg.SetupTCPAPI("0")
-			testCfg.SetupUnixSocketAPI(tmpdir + "/api.sock")
+			testCfg.SetupUnixSocketAPI("api.sock")
 
 			testCfg.SetupTCPGateway("0")
-			testCfg.SetupUnixSocketGateway(tmpdir + "/gateway.sock")
+			testCfg.SetupUnixSocketGateway("gateway.sock")
 
 			// init repo
 			err = InitRepo(tmpdir, testCfg)

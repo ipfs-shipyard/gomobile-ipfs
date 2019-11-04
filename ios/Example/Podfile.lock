@@ -11,7 +11,7 @@ DEPENDENCIES:
   - GomobileIPFS (from `../`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - FBSnapshotTestCase
 
 EXTERNAL SOURCES:
@@ -22,6 +22,6 @@ SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   GomobileIPFS: 050e6167b1786c047f9b4a51df82ec436ddb18d6
 
-PODFILE CHECKSUM: 601c73b0b1f8e1adde8bd8bcce9c3de74a3fbdee
+PODFILE CHECKSUM: b45f1652965217a3a80a8b94b9989999f6727e6c
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4

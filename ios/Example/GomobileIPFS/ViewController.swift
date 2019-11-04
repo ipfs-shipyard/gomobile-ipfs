@@ -7,12 +7,25 @@
 //
 
 import UIKit
+import GomobileIPFS
 
 class ViewController: UIViewController {
-
+    @IBOutlet weak var PeerID: UILabel!
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        let bridge = BridgeModule()
+        do {
+            try bridge.start()
+            let raw = try bridge.fetchShell("id", b64Body: "")
+
+            if let dict = try JSONSerialization.jsonObject(with: raw, options: []) as? [String: Any] {
+                self.PeerID.text = dict["ID"] as? String
+            }
+        } catch let error {
+            print(error)
+        }
     }
 
     override func didReceiveMemoryWarning() {

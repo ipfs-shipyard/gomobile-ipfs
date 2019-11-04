@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -62,7 +63,10 @@ func (im *IpfsMobile) GetApiAddrs() string {
 }
 
 func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) error {
-	cfg, err := repo.Config()
+	var cfg *ipfs_config.Config
+	var err error
+
+	cfg, err = repo.Config()
 	if err != nil {
 		return fmt.Errorf("config error: %s", err)
 	}
@@ -76,33 +80,60 @@ func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) erro
 	}
 
 	// Configure API if needed
-	im.listeners = make([]manet.Listener, len(cfg.Addresses.API))
+	listeners := make([]manet.Listener, len(cfg.Addresses.API))
 	for i, addr := range cfg.Addresses.API {
-		maddr, err := ma.NewMultiaddr(addr)
+		var listener manet.Listener
+		var maddr ma.Multiaddr
+
+		maddr, err = ma.NewMultiaddr(addr)
 		if err != nil {
 			return fmt.Errorf("failed to parse ma: %s, %s", addr, err)
 		}
 
-		// @HOTFIX: try to delete old sock, if exist, before listening.
-		// this will happen everytime the app is forced to exist until
-		// the node is properly close on the ios/android side.
-		addr, err := manet.ToNetAddr(maddr)
-		if addr.Network() == "unix" {
-			sockpath := addr.String()
-			if _, err := os.Stat(sockpath); err == nil {
-				if err = os.Remove(sockpath); err != nil {
-					log.Printf("unable to delete old sock: %s", err)
+		ma.ForEach(maddr, func(c ma.Component) bool {
+			switch c.Protocol().Code {
+			case ma.P_IP4, ma.P_IP6:
+				listener, err = manet.Listen(maddr)
+			case ma.P_UNIX:
+				// convert relative path to absolute path based
+				// on repo path
+				sockpath := c.Value()
+				if !strings.HasPrefix(sockpath, "//") {
+					sockpath = filepath.Join(repo_path, sockpath)
+					if maddr, err = ma.NewMultiaddr("/unix/" + sockpath); err != nil {
+						return true
+					}
 				}
+
+				// @HOTFIX: try to delete old sock, if exist, before listening.
+				// this will happen everytime the app is forced to exist until
+				// the node is properly close on the ios/android side.
+				if _, serr := os.Stat(sockpath); serr == nil {
+					if serr := os.Remove(sockpath); serr != nil {
+						log.Printf("unable to delete old sock: %s", serr)
+					}
+				}
+
+				listener, err = manet.Listen(maddr)
+			default:
+				return false
 			}
-		}
 
-		l, err := manet.Listen(maddr)
+			return true
+		})
+
 		if err != nil {
-			return fmt.Errorf("API: manet.Listen(%s) failed: %s", addr, err)
+			return fmt.Errorf("Listen on `%s` failed: %s", maddr.String(), err)
 		}
 
-		im.listeners[i] = l
+		if listener == nil {
+			return fmt.Errorf("`%s` is not supported", maddr.String())
+		}
+
+		listeners[i] = listener
 	}
+
+	im.listeners = listeners
 
 	// @TODO: no sure about how to init this, must be another way
 	cctx := ipfs_oldcmds.Context{
@@ -141,11 +172,6 @@ func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) erro
 }
 
 func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
-	cfg, err := repo.Config()
-	if err != nil {
-		return nil, fmt.Errorf("config error: %s", err)
-	}
-
 	// build config
 	buildcfg := &ipfs_core.BuildCfg{
 		Online:                      true,
@@ -156,35 +182,6 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 		Host:                        host.NewMobileHostOption(mcfg),
 	}
 
-	// Configure API if needed
-	listeners := make([]manet.Listener, len(cfg.Addresses.API))
-	for i, addr := range cfg.Addresses.API {
-		maddr, err := ma.NewMultiaddr(addr)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse ma: %s, %s", addr, err)
-		}
-
-		// @HOTFIX: try to delete old sock, if exist, before listening.
-		// this will happen everytime the app is forced to exist until
-		// the node is properly close on the ios/android side.
-		addr, err := manet.ToNetAddr(maddr)
-		if addr.Network() == "unix" {
-			sockpath := addr.String()
-			if _, err := os.Stat(sockpath); err == nil {
-				if err = os.Remove(sockpath); err != nil {
-					log.Printf("unable to delete old sock: %s", err)
-				}
-			}
-		}
-
-		l, err := manet.Listen(maddr)
-		if err != nil {
-			return nil, fmt.Errorf("API: manet.Listen(%s) failed: %s", addr, err)
-		}
-
-		listeners[i] = l
-	}
-
 	// create ipfs node
 	inode, err := ipfs_core.NewNode(context.Background(), buildcfg)
 	if err != nil {
@@ -192,7 +189,7 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 	}
 
 	return &IpfsMobile{
-		listeners: listeners,
+		listeners: make([]manet.Listener, 0),
 		IpfsNode:  inode,
 	}, nil
 }

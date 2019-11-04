@@ -1,5 +1,8 @@
 use_frameworks!
 
+platform :ios, '9.0'
+
+
 target 'GomobileIPFS_Example' do
   pod 'GomobileIPFS', :path => '../'
 
@@ -8,4 +11,13 @@ target 'GomobileIPFS_Example' do
 
     pod 'FBSnapshotTestCase' , '~> 2.1.4'
   end
+
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+      end
+    end
+  end
+
 end
