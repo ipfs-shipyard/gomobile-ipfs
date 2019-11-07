@@ -16,11 +16,16 @@ buildscript {
 
 allprojects {
     repositories {
+        // If gomobile-ipfs is available locally, use it first
+        maven { url "${rootDir.getPath()}/local_repo" }
+        // If not available locally, download it from IPFS maven repo
+        // maven { url "TODO: setup IPFS maven repo" }
         google()
         jcenter()
         
     }
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -1,6 +1,9 @@
 # Created by https://www.gitignore.io/api/android,intellij+iml,gradle
 
 ### Android ###
+# Local repository
+local_repo
+
 # Built application files
 *.apk
 *.ap_

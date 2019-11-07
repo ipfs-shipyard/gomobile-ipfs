@@ -23,9 +23,10 @@ android {
 
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+String libVersion = new File("${rootDir.getPath()}/../version").readLines()[0]
 
+dependencies {
+    implementation "ipfs.gomobile:gomobile-ipfs:$libVersion"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

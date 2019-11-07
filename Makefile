@@ -1,19 +1,24 @@
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 GO_DIR = $(MAKEFILE_DIR)/go
-IOS_DIR = $(MAKEFILE_DIR)/ios
 ANDROID_DIR = $(MAKEFILE_DIR)/android
+IOS_DIR = $(MAKEFILE_DIR)/ios
 GO_SRC = $(shell find $(GO_DIR) -not \( -path $(GO_DIR)/vendor -prune \) -name \*.go)
 
 GOMOBILE = $(GOPATH)/bin/gomobile
 GOMOBILE_OPT ?=
 
+VERSION_FILE = $(MAKEFILE_DIR)/version
+LIB_VERSION = $(shell cat $(VERSION_FILE))
+
 VENDOR = $(GO_DIR)/vendor
-MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.mod
+MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.sum
 
 BUILD_DIR_IOS = $(IOS_DIR)/Frameworks
 BUILD_LIB_IOS = $(BUILD_DIR_IOS)/Mobile.framework
-BUILD_DIR_ANDROID = $(GO_DIR)/build/android
-BUILD_LIB_ANDROID = $(BUILD_DIR_ANDROID)/ipfs.aar
+BUILD_DIR_ANDROID = $(ANDROID_DIR)/local_repo/ipfs/gomobile/gomobile-ipfs/$(LIB_VERSION)
+BUILD_LIB_ANDROID = $(BUILD_DIR_ANDROID)/gomobile-ipfs-$(LIB_VERSION).aar
+BUILD_POM_ANDROID = $(BUILD_DIR_ANDROID)/gomobile-ipfs-$(LIB_VERSION).pom
+POM_TEMPLATE = $(ANDROID_DIR)/pom_template
 
 .PHONY: help build build.android build.ios test deps clean clean.android clean.ios re re.ios re.android
 
@@ -23,13 +28,16 @@ help:
 
 build: build.android build.ios
 
-build.android: $(BUILD_LIB_ANDROID)
+build.android: $(BUILD_LIB_ANDROID) $(BUILD_POM_ANDROID)
 
 $(BUILD_LIB_ANDROID): $(BUILD_DIR_ANDROID) $(GO_SRC) $(VENDOR) | $(GOMOBILE)
 	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android -o $(BUILD_LIB_ANDROID) github.com/berty/gomobile-ipfs/go
 
 $(BUILD_DIR_ANDROID):
 	mkdir -p $(BUILD_DIR_ANDROID)
+
+$(BUILD_POM_ANDROID):
+	sed -e 's/{{LIB_VERSION}}/$(LIB_VERSION)/g' $(POM_TEMPLATE) > $(BUILD_POM_ANDROID)
 
 build.ios: $(BUILD_LIB_IOS)
 
