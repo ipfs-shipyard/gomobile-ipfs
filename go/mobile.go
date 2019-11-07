@@ -50,20 +50,6 @@ func NewNode(r *Repo) (Node, error) {
 		log.Printf("failed to bootstrap node: `%s`", err)
 	}
 
-	sigc := make(chan os.Signal, 1)
-	signal.Notify(sigc, os.Interrupt, os.Kill, syscall.SIGTERM)
-
-	go func(c chan os.Signal) {
-		// Wait for a SIGINT or SIGKILL:
-		sig := <-c
-
-		log.Printf("Caught signal %s: shutting down.", sig)
-
-		// Close the node
-		node.Close()
-		os.Exit(0)
-	}(sigc)
-
 	return node, nil
 }
 
