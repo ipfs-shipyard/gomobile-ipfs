@@ -12,17 +12,21 @@ import GomobileIPFS
 class ViewController: UIViewController {
     @IBOutlet weak var PeerID: UILabel!
         
+    var ipfs: IPFS? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let bridge = BridgeModule()
+        let dirurl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let repoPath = dirurl.appendingPathComponent("repo", isDirectory: true)
+        
         do {
-            try bridge.start()
-            let raw = try bridge.fetchShell("id", b64Body: "")
+            let ipfs = try IPFS(repoPath)
+            try ipfs.start()
 
-            if let dict = try JSONSerialization.jsonObject(with: raw, options: []) as? [String: Any] {
-                self.PeerID.text = dict["ID"] as? String
-            }
+            let res = try ipfs.shell("id", b64Body: "")
+
+            self.PeerID.text = res["ID"] as? String
         } catch let error {
             print(error)
         }
@@ -32,6 +36,4 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
-

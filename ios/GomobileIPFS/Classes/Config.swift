@@ -68,4 +68,27 @@ public class Config {
         
         throw ConfigError.error("json deserialization error")
     }
+    
+    // Helper
+    
+    // set tcp api
+    public func setTCPAPIWithPort(_ port: String) {
+        self.goConfig.setupTCPAPI(port)
+    }
+    
+    // set tcp api
+    public func setupTCPGateway(_ port: String) {
+        self.goConfig.setupTCPGateway(port)
+    }
+    
+    // set unix socket api (sockfile is relative to repo folder)
+    public func setupUnixSocketAPI(_ sockfile: String) {
+        self.goConfig.setupUnixSocketAPI(sockfile)
+    }
+
+    // set unix socket gateway (sockfile is relative to repo folder)
+    public func setupUnixSocketGateway(_ sockfile: String) {
+        self.goConfig.setupUnixSocketGateway(sockfile)
+    }
+
 }

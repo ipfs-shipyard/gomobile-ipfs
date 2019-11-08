@@ -24,24 +24,38 @@ public class Repo {
         var err: NSError?
         if let repo = MobileOpenRepo(url.path, &err) {
             self.goRepo = repo
+        } else if let error = err {
+            throw RepoError.runtimeError(error, "failed to open repo")
         } else {
             throw RepoError.error("failed to open repo, unknow error")
         }
-
-        if let error = err {
-             throw RepoError.runtimeError(error, "failed to open repo")
-         }
     }
-        
-    public static func isInitialize(url: URL) throws -> Bool{
-        return !(MobileRepoIsInitialized(url.path))
+
+    public static func isInitialized(url: URL) throws -> Bool{
+        return MobileRepoIsInitialized(url.path)
     }
     
     public static func initialize(url: URL, config: Config) throws {
         var err: NSError?
+        var isDirectory: ObjCBool = true
+        let exist = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
+        if !exist {
+            try FileManager.default.createDirectory(atPath: url.path, withIntermediateDirectories: true, attributes: nil)
+        }
+        
         MobileInitRepo(url.path, config.goConfig, &err)
         if let error = err {
-             throw RepoError.runtimeError(error, "failed to open repo")
+             throw RepoError.runtimeError(error, "failed to init repo")
          }
     }
+    
+    public func getConfig() throws -> Config {
+        let goconfig = try self.goRepo.getConfig()
+        return Config(goconfig)
+    }
+    
+    public func setConfig(_ config: Config) throws {
+        try self.goRepo.setConfig(config.goConfig)
+    }
+
 }

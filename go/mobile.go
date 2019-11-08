@@ -10,9 +10,6 @@ package mobile
 import (
 	"context"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
 	host "github.com/berty/gomobile-ipfs/go/host"
 	node "github.com/berty/gomobile-ipfs/go/node"

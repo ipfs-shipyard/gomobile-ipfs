@@ -15,22 +15,20 @@ public enum NodeError: Error {
 
 public class Node {
     let node: MobileNodeProtocol
-
+    
     public init(_ repo: Repo) throws {
         var err: NSError?
         
         if let node = MobileNewNode(repo.goRepo, &err) {
             self.node = node
+        } else if let error = err {
+            throw NodeError.runtimeError(error, "failed to start node")
         } else {
             throw RepoError.error("failed start node, unknow error")
-        }
-        
-        if let error = err {
-            throw NodeError.runtimeError(error, "failed to create node")
         }
     }
     
     public func close() throws{
-        self.node.close()
+        try self.node.close()
     }
 }
