@@ -44,7 +44,7 @@ func (r *Repo) GetRootPath() string {
 	return r.path
 }
 
-func (r *Repo) SetConfig(c Config) error {
+func (r *Repo) SetConfig(c *Config) error {
 	return r.irepo.SetConfig(c.getConfig())
 }
 

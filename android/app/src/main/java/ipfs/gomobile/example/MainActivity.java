@@ -13,18 +13,18 @@ import android.util.Base64;
 
 import org.json.JSONObject;
 
-import ipfs.gomobile.android.Bridge;
+import ipfs.gomobile.android.IPFS;
 
 public class MainActivity extends AppCompatActivity {
     static private final String TAG = "IPFS_Mobile_Example";
-    private Bridge bridge;
+    private IPFS bridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bridge = new Bridge(getApplicationContext());
+        bridge = new IPFS(getApplicationContext());
 
         new AsyncTask<Void, Void, String>() {
             @Override
