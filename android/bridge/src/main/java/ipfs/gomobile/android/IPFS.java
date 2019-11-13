@@ -18,10 +18,10 @@ public final class IPFS {
     private static final String defaultRepoPath = "/ipfs/repo";
     private static final String apiSockFilename = "api.sock";
 
+    // Absolute repo path
     private final String absRepoPath;
 
     // Go IPFS objects
-    private Repo repo;
     private Node node;
     private Shell shell;
 
@@ -36,7 +36,6 @@ public final class IPFS {
 
         if (!Mobile.repoIsInitialized(absRepoPath)) {
             Config config;
-
             try {
                 config = Mobile.newDefaultConfig();
                 config.setupUnixSocketAPI(apiSockFilename);
@@ -53,9 +52,13 @@ public final class IPFS {
             try {
                 Mobile.initRepo(absRepoPath, config);
             } catch (Exception e) {
-                throw new RepoInitException("Repo initialisation failed", e);
+                throw new RepoInitException("Repo initialization failed", e);
             }
         }
+    }
+
+    synchronized public String getRepoPath() {
+        return absRepoPath;
     }
 
     synchronized public void start()
@@ -64,6 +67,8 @@ public final class IPFS {
             throw new NodeStartException("Node already started");
         }
 
+
+        Repo repo;
         try {
             repo = Mobile.openRepo(absRepoPath);
         } catch (Exception e) {
@@ -124,34 +129,34 @@ public final class IPFS {
     }
 
     public class ConfigCreationException extends Exception {
-        public ConfigCreationException(String message, Throwable err) { super(message, err); }
+        ConfigCreationException(String message, Throwable err) { super(message, err); }
     }
 
     public class NodeStartException extends Exception {
-        public NodeStartException(String message) { super(message); }
-        public NodeStartException(String message, Throwable err) { super(message, err); }
+        NodeStartException(String message) { super(message); }
+        NodeStartException(String message, Throwable err) { super(message, err); }
     }
 
     public class NodeStopException extends Exception {
-        public NodeStopException(String message) { super(message); }
-        public NodeStopException(String message, Throwable err) { super(message, err); }
+        NodeStopException(String message) { super(message); }
+        NodeStopException(String message, Throwable err) { super(message, err); }
     }
 
     public class ShellInitException extends Exception {
-        public ShellInitException(String message, Throwable err) { super(message, err); }
+        ShellInitException(String message, Throwable err) { super(message, err); }
     }
 
     public class ShellRequestException extends Exception {
-        public ShellRequestException(String message) { super(message); }
-        public ShellRequestException(String message, Throwable err) { super(message, err); }
+        ShellRequestException(String message) { super(message); }
+        ShellRequestException(String message, Throwable err) { super(message, err); }
     }
 
     public class RepoInitException extends Exception {
-        public RepoInitException(String message) { super(message); }
-        public RepoInitException(String message, Throwable err) { super(message, err); }
+        RepoInitException(String message) { super(message); }
+        RepoInitException(String message, Throwable err) { super(message, err); }
     }
 
     public class RepoOpenException extends Exception {
-        public RepoOpenException(String message, Throwable err) { super(message, err); }
+        RepoOpenException(String message, Throwable err) { super(message, err); }
     }
 }
