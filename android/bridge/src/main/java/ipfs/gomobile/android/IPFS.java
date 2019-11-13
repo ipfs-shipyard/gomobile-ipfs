@@ -61,9 +61,13 @@ public final class IPFS {
         return absRepoPath;
     }
 
+	synchronized public boolean isStarted() {
+		return node != null;
+	}
+
     synchronized public void start()
             throws NodeStartException, RepoOpenException, ShellInitException {
-        if (node != null) {
+        if (isStarted()) {
             throw new NodeStartException("Node already started");
         }
 
@@ -89,7 +93,7 @@ public final class IPFS {
     }
 
     synchronized public void stop() throws NodeStopException {
-        if (node == null) {
+        if (!isStarted()) {
             throw new NodeStopException("Node not started yet");
         }
 
@@ -109,7 +113,7 @@ public final class IPFS {
 
     synchronized public String shellRequest(String command, String b64Body)
             throws ShellRequestException {
-        if (node == null) {
+        if (!isStarted()) {
             throw new ShellRequestException("Shell request failed: node isn't started");
         }
 
