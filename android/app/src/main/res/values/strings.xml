@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">GomobileIPFSExample</string>
     <string name="title">Your Peer ID is:</string>
-    <string name="button">Open WebUI</string>
+    <string name="titleErr">Error:</string>
 </resources>

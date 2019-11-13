@@ -2,7 +2,6 @@ package ipfs.gomobile.android;
 
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -19,8 +18,10 @@ public final class IPFS {
     private static final String defaultRepoPath = "/ipfs/repo";
     private static final String apiSockFilename = "api.sock";
 
+    private final String absRepoPath;
+
     // Go IPFS objects
-    private final Repo repo;
+    private Repo repo;
     private Node node;
     private Shell shell;
 
@@ -31,7 +32,7 @@ public final class IPFS {
 
     public IPFS(@NonNull Context context, @NonNull String repoPath)
             throws ConfigCreationException, RepoInitException {
-        String absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
+        absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
 
         if (!Mobile.repoIsInitialized(absRepoPath)) {
             Config config;
@@ -55,17 +56,18 @@ public final class IPFS {
                 throw new RepoInitException("Repo initialisation failed", e);
             }
         }
+    }
+
+    synchronized public void start()
+            throws NodeStartException, RepoOpenException, ShellInitException {
+        if (node != null) {
+            throw new NodeStartException("Node already started");
+        }
 
         try {
             repo = Mobile.openRepo(absRepoPath);
         } catch (Exception e) {
-            throw new RepoInitException("Repo opening failed", e);
-        }
-    }
-
-    synchronized public void start() throws NodeStartException, ShellInitException {
-        if (node != null) {
-            throw new NodeStartException("Node already started");
+            throw new RepoOpenException("Repo opening failed", e);
         }
 
         try {
@@ -75,7 +77,7 @@ public final class IPFS {
         }
 
         try {
-            shell = Mobile.newUDSShell(apiSockFilename);
+            shell = Mobile.newUDSShell(absRepoPath + "/" + apiSockFilename);
         } catch (Exception e) {
             throw new ShellInitException("Shell init failed", e);
         }
@@ -95,7 +97,7 @@ public final class IPFS {
     }
 
     synchronized public void restart()
-            throws NodeStartException, ShellInitException, NodeStopException {
+            throws NodeStartException, RepoOpenException, ShellInitException, NodeStopException {
         stop();
         start();
     }
@@ -125,6 +127,16 @@ public final class IPFS {
         public ConfigCreationException(String message, Throwable err) { super(message, err); }
     }
 
+    public class NodeStartException extends Exception {
+        public NodeStartException(String message) { super(message); }
+        public NodeStartException(String message, Throwable err) { super(message, err); }
+    }
+
+    public class NodeStopException extends Exception {
+        public NodeStopException(String message) { super(message); }
+        public NodeStopException(String message, Throwable err) { super(message, err); }
+    }
+
     public class ShellInitException extends Exception {
         public ShellInitException(String message, Throwable err) { super(message, err); }
     }
@@ -139,13 +151,7 @@ public final class IPFS {
         public RepoInitException(String message, Throwable err) { super(message, err); }
     }
 
-    public class NodeStartException extends Exception {
-        public NodeStartException(String message) { super(message); }
-        public NodeStartException(String message, Throwable err) { super(message, err); }
-    }
-
-    public class NodeStopException extends Exception {
-        public NodeStopException(String message) { super(message); }
-        public NodeStopException(String message, Throwable err) { super(message, err); }
+    public class RepoOpenException extends Exception {
+        public RepoOpenException(String message, Throwable err) { super(message, err); }
     }
 }

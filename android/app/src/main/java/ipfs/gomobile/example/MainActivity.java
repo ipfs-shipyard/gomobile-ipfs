@@ -2,6 +2,7 @@ package ipfs.gomobile.example;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
 import ipfs.gomobile.android.IPFS;
 
 public class MainActivity extends AppCompatActivity {
-    static private final String TAG = "IPFS_Mobile_Example";
+    static private final String TAG = "IPFSMobileExample";
     private IPFS bridge;
 
     @Override
@@ -24,43 +25,72 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bridge = new IPFS(getApplicationContext());
+        try {
+            bridge = new IPFS(getApplicationContext());
+        } catch (Exception err) {
+            displayError(exceptionToString(err));
+        } finally {
+            new AsyncTask<Void, Void, String>() {
+                private boolean backgroundError;
 
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected void onPreExecute() {}
+                @Override
+                protected void onPreExecute() {}
 
-            @Override
-            protected String doInBackground(Void... v) {
-                if (bridge.start()) {
-                    return bridge.fetchShell("/id", "");
-                }
-
-                return null;
-            }
-
-            protected void onPostExecute(String result) {
-                TextView text = findViewById(R.id.textView2);
-                ProgressBar progress = findViewById(R.id.progressBar);
-                String value;
-
-                if (result != null) {
-                    byte[] decodedBytes = Base64.decode(result, Base64.DEFAULT);
+                @Override
+                protected String doInBackground(Void... v) {
                     try {
-                        JSONObject reader = new JSONObject(new String(decodedBytes));
-                        value = reader.getString("ID");
+                        bridge.start();
+                        return bridge.shellRequest("/id", "");
                     } catch (Exception err) {
-                        Log.e(TAG, err.toString());
-                        value = "error: can't parse JSON response";
+                        backgroundError = true;
+                        return exceptionToString(err);
                     }
-                } else {
-                    value = "error: can't fetch on shell";
                 }
 
+                protected void onPostExecute(String result) {
+                    if (backgroundError) {
+                        displayError(result);
+                    } else {
+                        byte[] decodedBytes = Base64.decode(result, Base64.DEFAULT);
+                        try {
+                            JSONObject reader = new JSONObject(new String(decodedBytes));
+                            displayMessage(reader.getString("ID"));
+                        } catch (Exception err) {
+                            displayError(exceptionToString(err));
+                        }
+                    }
+                }
+            }.execute();
+        }
+    }
 
-                progress.setVisibility(View.INVISIBLE);
-                text.setText(value);
-            }
-        }.execute();
+    private String exceptionToString(Exception error) {
+        String string = error.getMessage();
+
+        if (error.getCause() != null) {
+            string += ": " + error.getCause().getMessage();
+        }
+
+        return string;
+    }
+
+    private void displayError(String error) {
+        TextView title = findViewById(R.id.textViewTitle);
+        TextView result = findViewById(R.id.textViewResult);
+
+        title.setTextColor(Color.RED);
+        title.setText(getString(R.string.titleErr));
+        result.setTextColor(Color.RED);
+
+        displayMessage(error);
+        Log.e(TAG, error);
+    }
+
+    private void displayMessage(String message) {
+        TextView result = findViewById(R.id.textViewResult);
+        ProgressBar progress = findViewById(R.id.progressBar);
+
+        progress.setVisibility(View.INVISIBLE);
+        result.setText(message);
     }
 }
