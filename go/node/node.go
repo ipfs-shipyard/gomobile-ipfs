@@ -40,23 +40,25 @@ type IpfsMobile struct {
 	repoPath string
 }
 
-type repoLocks struct {
-	pathsMap   map[string]bool
-	muPathsMap sync.Mutex
+type repoLock struct {
+	locked map[string]bool
+	mu     sync.Mutex
 }
 
-var gRepoLocks = &repoLocks{
-	pathsMap: make(map[string]bool),
+var gRepoLock = &repoLock{
+	locked: make(map[string]bool),
 }
 
 func (im *IpfsMobile) Close() error {
+	err := im.IpfsNode.Close()
+
 	for _, l := range im.listeners {
 		_ = l.Close()
 	}
 
 	unlockRepo(im.repoPath)
 
-	return im.IpfsNode.Close()
+	return err
 }
 
 // GetApiAddrs return current api listeners (separate with a comma)
@@ -118,9 +120,9 @@ func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) erro
 					}
 				}
 
-				// @HOTFIX: try to delete old sock, if exist, before listening.
-				// this will happen everytime the app is forced to exist until
-				// the node is properly close on the ios/android side.
+				// @HOTFIX: if api sock already exists, delete it before listening.
+				// This will happen everytime the app is killed and
+				// the node isn't properly closed on the ios/android side.
 				if _, serr := os.Stat(sockpath); serr == nil {
 					if serr := os.Remove(sockpath); serr != nil {
 						log.Printf("unable to delete old sock: %s", serr)
@@ -185,21 +187,21 @@ func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) erro
 }
 
 func lockRepo(repoPath string) error {
-	gRepoLocks.muPathsMap.Lock()
-	defer gRepoLocks.muPathsMap.Unlock()
+	gRepoLock.mu.Lock()
+	defer gRepoLock.mu.Unlock()
 
-	if gRepoLocks.pathsMap[repoPath] {
+	if gRepoLock.locked[repoPath] {
 		return errors.New("repo is locked by another node")
 	}
-	gRepoLocks.pathsMap[repoPath] = true
+	gRepoLock.locked[repoPath] = true
 
 	return nil
 }
 
 func unlockRepo(repoPath string) {
-	gRepoLocks.muPathsMap.Lock()
-	gRepoLocks.pathsMap[repoPath] = false
-	gRepoLocks.muPathsMap.Unlock()
+	gRepoLock.mu.Lock()
+	gRepoLock.locked[repoPath] = false
+	gRepoLock.mu.Unlock()
 }
 
 func NewNode(ctx context.Context, repo ipfs_repo.Repo, repoPath string, mcfg *host.MobileConfig) (*IpfsMobile, error) {
