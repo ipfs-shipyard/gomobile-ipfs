@@ -33,7 +33,8 @@ func NewNode(r *Repo) (Node, error) {
 
 	ctx := context.Background()
 	repo := r.getRepo()
-	node, err := node.NewNode(ctx, repo, &host.MobileConfig{})
+	path := r.path
+	node, err := node.NewNode(ctx, repo, path, &host.MobileConfig{})
 	if err != nil {
 		return nil, err
 	}

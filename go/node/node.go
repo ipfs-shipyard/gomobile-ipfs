@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -36,12 +37,24 @@ type IpfsMobile struct {
 	muListeners sync.Mutex
 
 	IpfsNode *ipfs_core.IpfsNode
+	repoPath string
+}
+
+type repoLocks struct {
+	pathsMap   map[string]bool
+	muPathsMap sync.Mutex
+}
+
+var gRepoLocks = &repoLocks{
+	pathsMap: make(map[string]bool),
 }
 
 func (im *IpfsMobile) Close() error {
 	for _, l := range im.listeners {
 		_ = l.Close()
 	}
+
+	unlockRepo(im.repoPath)
 
 	return im.IpfsNode.Close()
 }
@@ -171,7 +184,29 @@ func (im *IpfsMobile) SetupListeners(repo ipfs_repo.Repo, repo_path string) erro
 	return nil
 }
 
-func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
+func lockRepo(repoPath string) error {
+	gRepoLocks.muPathsMap.Lock()
+	defer gRepoLocks.muPathsMap.Unlock()
+
+	if gRepoLocks.pathsMap[repoPath] {
+		return errors.New("repo is locked by another node")
+	}
+	gRepoLocks.pathsMap[repoPath] = true
+
+	return nil
+}
+
+func unlockRepo(repoPath string) {
+	gRepoLocks.muPathsMap.Lock()
+	gRepoLocks.pathsMap[repoPath] = false
+	gRepoLocks.muPathsMap.Unlock()
+}
+
+func NewNode(ctx context.Context, repo ipfs_repo.Repo, repoPath string, mcfg *host.MobileConfig) (*IpfsMobile, error) {
+	if err := lockRepo(repoPath); err != nil {
+		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
+	}
+
 	// build config
 	buildcfg := &ipfs_core.BuildCfg{
 		Online:                      true,
@@ -185,11 +220,13 @@ func NewNode(ctx context.Context, repo ipfs_repo.Repo, mcfg *host.MobileConfig) 
 	// create ipfs node
 	inode, err := ipfs_core.NewNode(context.Background(), buildcfg)
 	if err != nil {
+		unlockRepo(repoPath)
 		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
 	}
 
 	return &IpfsMobile{
 		listeners: make([]manet.Listener, 0),
 		IpfsNode:  inode,
+		repoPath:  repoPath,
 	}, nil
 }
