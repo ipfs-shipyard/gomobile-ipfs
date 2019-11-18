@@ -6,6 +6,7 @@ GO_SRC = $(shell find $(GO_DIR) -not \( -path $(GO_DIR)/vendor -prune \) -name \
 
 GOMOBILE = $(GOPATH)/bin/gomobile
 GOMOBILE_OPT ?=
+ADDITIONAL_GO_PKG ?=
 
 VERSION_FILE = $(MAKEFILE_DIR)/version
 LIB_VERSION = $(shell cat $(VERSION_FILE))
@@ -31,7 +32,7 @@ build: build.android build.ios
 build.android: $(BUILD_LIB_ANDROID) $(BUILD_POM_ANDROID)
 
 $(BUILD_LIB_ANDROID): $(BUILD_DIR_ANDROID) $(GO_SRC) $(VENDOR) | $(GOMOBILE)
-	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android -o $(BUILD_LIB_ANDROID) github.com/berty/gomobile-ipfs/go
+	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android -o $(BUILD_LIB_ANDROID) github.com/berty/gomobile-ipfs/go $(ADDITIONAL_GO_PKG)
 
 $(BUILD_DIR_ANDROID):
 	mkdir -p $(BUILD_DIR_ANDROID)
@@ -42,7 +43,7 @@ $(BUILD_POM_ANDROID):
 build.ios: $(BUILD_LIB_IOS)
 
 $(BUILD_LIB_IOS): $(BUILD_DIR_IOS) $(GO_SRC) $(VENDOR) | $(GOMOBILE)
-	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=ios -o $(BUILD_LIB_IOS) github.com/berty/gomobile-ipfs/go
+	GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=ios -o $(BUILD_LIB_IOS) github.com/berty/gomobile-ipfs/go $(ADDITIONAL_GO_PKG)
 
 $(BUILD_DIR_IOS):
 	mkdir -p $(BUILD_DIR_IOS)
