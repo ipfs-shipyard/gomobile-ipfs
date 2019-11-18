@@ -15,9 +15,9 @@ public enum RepoError: Error {
 
 public class Repo {
     let goRepo: MobileRepo
-    
+
     private let url: URL
-    
+
     public init(_ url: URL) throws {
         self.url = url
 
@@ -34,7 +34,7 @@ public class Repo {
     public static func isInitialized(url: URL) throws -> Bool{
         return MobileRepoIsInitialized(url.path)
     }
-    
+
     public static func initialize(url: URL, config: Config) throws {
         var err: NSError?
         var isDirectory: ObjCBool = true
@@ -42,18 +42,18 @@ public class Repo {
         if !exist {
             try FileManager.default.createDirectory(atPath: url.path, withIntermediateDirectories: true, attributes: nil)
         }
-        
+
         MobileInitRepo(url.path, config.goConfig, &err)
         if let error = err {
              throw RepoError.runtimeError(error, "failed to init repo")
          }
     }
-    
+
     public func getConfig() throws -> Config {
         let goconfig = try self.goRepo.getConfig()
         return Config(goconfig)
     }
-    
+
     public func setConfig(_ config: Config) throws {
         try self.goRepo.setConfig(config.goConfig)
     }

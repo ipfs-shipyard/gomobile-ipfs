@@ -20,43 +20,57 @@ public enum IpfsError: CustomNSError {
     }
 }
 
-let sockName = "api.sock"
-
 public class IPFS: NSObject {
     var node: Node? = nil
     var shell: MobileShell? = nil
     var repo: Repo? = nil
 
-    let repoPath: URL
+    public static let defaultRepoPath = "ipfs/repo"
+    private static let sockName = "sock" // FIXME: Use sockManager
 
-    // init ipfs repo with the given path
-    public init(_ repoPath: URL) throws {
+    let absRepoPath: URL
+
+    // init ipfs repo with the default or given path
+    public init(_ repoPath: String = defaultRepoPath) throws {
+        let absDirUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let absRepoPath = absDirUrl.appendingPathComponent(repoPath, isDirectory: true)
+
+        // FIXME: Init sockManager with tmp folder
+
         // init repo if needed
-        if !(try Repo.isInitialized(url: repoPath)) {
+        if !(try Repo.isInitialized(url: absRepoPath)) {
             let config = try Config.defaultConfig()
-            config.setupUnixSocketAPI(sockName)
-            try Repo.initialize(url: repoPath, config: config)
+            config.setupUnixSocketAPI(IPFS.sockName)
+            try Repo.initialize(url: absRepoPath, config: config)
         }
 
-        self.repoPath = repoPath
+        self.absRepoPath = absRepoPath
         super.init()
     }
 
+    public func getRepoPath() -> URL {
+		return self.absRepoPath
+	}
+
+    public func isStarted() -> Bool {
+        return self.node != nil
+    }
+
     public func start() throws {
-        guard self.node == nil else {
+        if self.isStarted() {
             throw IpfsError.nodeAlreadyStarted
         }
 
         var err: NSError?
 
         // open repo
-        let repo = try Repo(self.repoPath)
+        let repo = try Repo(self.absRepoPath)
 
         // init node
         let node = try Node(repo)
 
         // init shell
-        let sock = self.repoPath.appendingPathComponent(sockName)
+        let sock = self.absRepoPath.appendingPathComponent(IPFS.sockName)
         if let shell = MobileNewUDSShell(sock.path, &err) {
             self.shell = shell
         } else {
@@ -71,8 +85,22 @@ public class IPFS: NSObject {
         self.node = node
     }
 
-    public func shell(_ command: String, b64Body: String) throws -> [String: Any] {
-        guard node != nil else {
+    public func stop() throws {
+        if !self.isStarted() {
+            throw IpfsError.nodeNotStarted
+        }
+
+        try self.node?.close()
+		self.node = nil
+    }
+
+	public func restart() throws {
+		try self.stop()
+		try self.start()
+	}
+
+    public func shellRequest(_ command: String, b64Body: String) throws -> [String: Any] {
+        if !self.isStarted() {
             throw IpfsError.nodeNotStarted
         }
 
@@ -84,23 +112,15 @@ public class IPFS: NSObject {
         guard let rawJson = try self.shell?.request(command, body: body) else {
             throw IpfsError.runtimeError("failed to fetch shell, empty response")
         }
-        
+
         guard let json = try? JSONSerialization.jsonObject(with: rawJson, options: []) else {
             throw IpfsError.runtimeError("failed to deserialize response, empty response")
         }
-        
+
         guard let dict = json as? [String: Any] else {
             throw IpfsError.runtimeError("failed to convert json to dictionary")
         }
 
         return dict
-    }
-
-    public func stop() throws {
-        guard node != nil else {
-            throw IpfsError.nodeNotStarted
-        }
-
-        try self.node?.close()
     }
 }

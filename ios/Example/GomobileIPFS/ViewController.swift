@@ -11,24 +11,22 @@ import GomobileIPFS
 
 class ViewController: UIViewController {
     @IBOutlet weak var PeerID: UILabel!
-        
+
     var ipfs: IPFS? = nil
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let dirurl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let repoPath = dirurl.appendingPathComponent("repo", isDirectory: true)
-        
+
         do {
-            let ipfs = try IPFS(repoPath)
+            let ipfs = try IPFS()
             try ipfs.start()
 
-            let res = try ipfs.shell("id", b64Body: "")
+            let res = try ipfs.shellRequest("id", b64Body: "")
 
             self.PeerID.text = res["ID"] as? String
         } catch let error {
             print(error)
+            self.PeerID.text = "Error: \(error.localizedDescription)"
         }
     }
 
