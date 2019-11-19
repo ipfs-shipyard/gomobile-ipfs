@@ -1,4 +1,4 @@
-package mobile
+package ipfs
 
 import (
 	"path/filepath"

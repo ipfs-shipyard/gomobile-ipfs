@@ -26,8 +26,8 @@ Pod::Spec.new do |s|
   s.author           = { 'gfanton' => 'guilhem@berty.tech' }
   s.source           = { :git => 'https://github.com/gfanton/GomobileIPFS.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '9.0'
-  s.ios.vendored_frameworks = 'Frameworks/Mobile.framework'
+  s.ios.deployment_target = '10.0'
+  s.ios.vendored_frameworks = 'Frameworks/Ipfs.framework'
   s.source_files = 'GomobileIPFS/Classes/**/*'
   # s.xcconfig = { 'OTHER_LDFLAGS' => '-framework Mobile' }
 

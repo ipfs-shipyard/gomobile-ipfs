@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Mobile
+import Ipfs
 
 public enum ConfigError: Error {
   case error(String)
@@ -14,15 +14,15 @@ public enum ConfigError: Error {
 }
 
 public class Config {
-    let goConfig: MobileConfig
+    let goConfig: IpfsConfig
 
-    public init(_ config: MobileConfig) {
+    public init(_ config: IpfsConfig) {
         self.goConfig = config
     }
 
     public class func defaultConfig() throws -> Config {
         var err: NSError?
-        let config: MobileConfig? = MobileNewDefaultConfig(&err)
+        let config: IpfsConfig? = IpfsNewDefaultConfig(&err)
         if let error = err {
             throw ConfigError.runtimeError(error, "failed to create default config")
         }
@@ -32,7 +32,7 @@ public class Config {
 
     public class func emptyConfig() throws -> Config {
         var err: NSError?
-        let config: MobileConfig? = MobileNewConfig("{}".data(using: .utf8), &err)
+        let config: IpfsConfig? = IpfsNewConfig("{}".data(using: .utf8), &err)
         if let error = err {
             throw ConfigError.runtimeError(error, "failed to create empty config")
         }
@@ -44,7 +44,7 @@ public class Config {
         var err: NSError?
 
         let json = try JSONSerialization.data(withJSONObject: dict)
-        let config: MobileConfig? = MobileNewConfig(json, &err)
+        let config: IpfsConfig? = IpfsNewConfig(json, &err)
         if let error = err {
             throw ConfigError.runtimeError(error, "failed to create config from dict")
         }

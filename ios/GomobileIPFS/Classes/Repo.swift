@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Mobile
+import Ipfs
 
 public enum RepoError: Error {
   case error(String)
@@ -14,7 +14,7 @@ public enum RepoError: Error {
 }
 
 public class Repo {
-    let goRepo: MobileRepo
+    let goRepo: IpfsRepo
 
     private let url: URL
 
@@ -22,7 +22,7 @@ public class Repo {
         self.url = url
 
         var err: NSError?
-        if let repo = MobileOpenRepo(url.path, &err) {
+        if let repo = IpfsOpenRepo(url.path, &err) {
             self.goRepo = repo
         } else if let error = err {
             throw RepoError.runtimeError(error, "failed to open repo")
@@ -32,7 +32,7 @@ public class Repo {
     }
 
     public static func isInitialized(url: URL) throws -> Bool{
-        return MobileRepoIsInitialized(url.path)
+        return IpfsRepoIsInitialized(url.path)
     }
 
     public static func initialize(url: URL, config: Config) throws {
@@ -43,7 +43,7 @@ public class Repo {
             try FileManager.default.createDirectory(atPath: url.path, withIntermediateDirectories: true, attributes: nil)
         }
 
-        MobileInitRepo(url.path, config.goConfig, &err)
+        IpfsInitRepo(url.path, config.goConfig, &err)
         if let error = err {
              throw RepoError.runtimeError(error, "failed to init repo")
          }

@@ -1,9 +1,9 @@
 // ready to use gomobile package for ipfs
 
 // This package intend to only be use with gomobile bind directly if you
-// want to use it in your own gomobile project, use host/node package directly
+// want to use it in your own gomobile project, you may want to use host/node package directly
 
-package mobile
+package ipfs
 
 // Main API exposed to the ios/android
 
@@ -11,8 +11,8 @@ import (
 	"context"
 	"log"
 
-	host "github.com/berty/gomobile-ipfs/go/host"
-	node "github.com/berty/gomobile-ipfs/go/node"
+	mobile_host "github.com/berty/gomobile-ipfs/go/pkg/host"
+	mobile_node "github.com/berty/gomobile-ipfs/go/pkg/node"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	// ipfs_log "github.com/ipfs/go-log"
@@ -24,23 +24,21 @@ type Node interface {
 
 	// GetApiAddrs return current api listeners (separate with a comma)
 	GetApiAddrs() string
+
+	// Serve api on the given unix socket path
+	Serve(sockpath string) error
 }
 
 func NewNode(r *Repo) (Node, error) {
-	if _, err := loadPlugins(r.GetRootPath()); err != nil {
-		return nil, err
-	}
-
 	ctx := context.Background()
-	repo := r.getRepo()
-	path := r.path
-	node, err := node.NewNode(ctx, repo, path, &host.MobileConfig{})
-	if err != nil {
+
+	if _, err := loadPlugins(r.path); err != nil {
 		return nil, err
 	}
 
-	if err := node.SetupListeners(r.getRepo(), r.GetRootPath()); err != nil {
-		_ = node.Close()
+	repo := &mobile_node.MobileRepo{r.irepo, r.path}
+	node, err := mobile_node.NewNode(ctx, repo, &mobile_host.MobileConfig{})
+	if err != nil {
 		return nil, err
 	}
 

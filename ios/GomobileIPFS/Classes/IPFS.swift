@@ -6,7 +6,18 @@
 //
 
 import Foundation
-import Mobile
+import Ipfs
+
+extension FileManager {
+    public var compatTemporaryDirectory: URL {
+        if #available(iOS 10.0, *) {
+            return temporaryDirectory
+        } else {
+            return (try? url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: nil, create: true)) ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        }
+    }
+}
+
 
 public enum IpfsError: CustomNSError {
     case nodeAlreadyStarted
@@ -22,34 +33,33 @@ public enum IpfsError: CustomNSError {
 
 public class IPFS: NSObject {
     var node: Node? = nil
-    var shell: MobileShell? = nil
+    var shell: IpfsShell? = nil
     var repo: Repo? = nil
+    var sockManager: SockManager // FIXME: Use sockManager
 
     public static let defaultRepoPath = "ipfs/repo"
-    private static let sockName = "sock" // FIXME: Use sockManager
-
-    let absRepoPath: URL
-
+    let absRepoURL: URL
+    let absTmpURL: URL
+    
     // init ipfs repo with the default or given path
     public init(_ repoPath: String = defaultRepoPath) throws {
-        let absDirUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let absRepoPath = absDirUrl.appendingPathComponent(repoPath, isDirectory: true)
+        let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
+        self.absTmpURL = FileManager.default.compatTemporaryDirectory
 
-        // FIXME: Init sockManager with tmp folder
-
+        self.sockManager = try SockManager(self.absTmpURL)
+        
         // init repo if needed
-        if !(try Repo.isInitialized(url: absRepoPath)) {
+        if !(try Repo.isInitialized(url: absRepoURL)) {
             let config = try Config.defaultConfig()
-            config.setupUnixSocketAPI(IPFS.sockName)
-            try Repo.initialize(url: absRepoPath, config: config)
+            try Repo.initialize(url: absRepoURL, config: config)
         }
 
-        self.absRepoPath = absRepoPath
         super.init()
     }
 
     public func getRepoPath() -> URL {
-		return self.absRepoPath
+		return self.absRepoURL
 	}
 
     public func isStarted() -> Bool {
@@ -60,18 +70,22 @@ public class IPFS: NSObject {
         if self.isStarted() {
             throw IpfsError.nodeAlreadyStarted
         }
-
+        
         var err: NSError?
 
         // open repo
-        let repo = try Repo(self.absRepoPath)
+        let repo = try Repo(self.absRepoURL)
 
         // init node
         let node = try Node(repo)
 
+        // serve api
+        let sockpath = try self.sockManager.newSockPath()
+        print("sockpath", sockpath)
+        try node.serve(sockpath: sockpath)
+        
         // init shell
-        let sock = self.absRepoPath.appendingPathComponent(IPFS.sockName)
-        if let shell = MobileNewUDSShell(sock.path, &err) {
+        if let shell = IpfsNewUDSShell(sockpath, &err) {
             self.shell = shell
         } else {
             throw IpfsError.runtimeError("unable to get shell")
