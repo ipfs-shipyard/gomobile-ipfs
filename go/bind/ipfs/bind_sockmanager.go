@@ -16,10 +16,9 @@ import (
 
 // Filename is base 36 encoded to avoid conflict on case-insensitive filesystems
 var maxSockFilename = strconv.FormatUint(math.MaxUint32, 36)
-var paddingFormatStr = "u%0" + strconv.Itoa(len(maxSockFilename)) + "s"
+var paddingFormatStr = "%0" + strconv.Itoa(len(maxSockFilename)) + "s"
 
-// make it short
-const UDSDir = "u"
+const UDSDir = "sock"
 
 type SockManager struct {
 	sockDirPath string
@@ -38,8 +37,7 @@ func NewSockManager(path string) (*SockManager, error) {
 		return nil, errors.Wrap(err, "sock parent folder doesn't exist")
 	}
 
-	// sockDirPath := filepath.Join(abspath, UDSDir)
-	sockDirPath := path
+	sockDirPath := filepath.Join(abspath, UDSDir)
 
 	// max length for a unix domain socket path is around 103 char (108 - '/unix')
 	maxSockPath := filepath.Join("/unix", sockDirPath, maxSockFilename)
@@ -47,9 +45,18 @@ func NewSockManager(path string) (*SockManager, error) {
 		return nil, errors.New("path length exceeded")
 	}
 
-	// if err := os.MkdirAll(sockDirPath, 6755); err != nil {
-	// 	return nil, errors.Wrap(err, "can't create sock folder")
-	// }
+	// remove sock folder from previous app run if exists
+	_, err = os.Stat(sockDirPath)
+	if !os.IsNotExist(err) {
+		err := os.RemoveAll(sockDirPath)
+		if err != nil {
+			return nil, errors.Wrap(err, "can't cleanup old sock folder")
+		}
+	}
+
+	if err := os.MkdirAll(sockDirPath, 0700); err != nil {
+		return nil, errors.Wrap(err, "can't create sock folder")
+	}
 
 	return &SockManager{
 		sockDirPath: sockDirPath,
