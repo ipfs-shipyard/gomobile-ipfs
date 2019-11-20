@@ -26,7 +26,7 @@ type Node interface {
 	GetApiAddrs() string
 
 	// Serve api on the given unix socket path
-	Serve(sockpath string) error
+	ServeOnUDS(sockpath string) error
 }
 
 func NewNode(r *Repo) (Node, error) {

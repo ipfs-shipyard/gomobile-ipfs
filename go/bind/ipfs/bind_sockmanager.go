@@ -64,21 +64,22 @@ func NewSockManager(path string) (*SockManager, error) {
 }
 
 func (sm *SockManager) NewSockPath() (string, error) {
+	sm.muCounter.Lock()
 	if sm.counter == math.MaxUint32 {
-		// FIXME: do something smarter knowing that a socket may have been
+		// TODO: do something smarter knowing that a socket may have been
 		// removed in the meantime
 		return "", errors.New("max number of socket exceeded")
 	}
-
-	sm.muCounter.Lock()
-	sm.counter++
 	sockFilename := fmt.Sprintf(paddingFormatStr, strconv.FormatUint(uint64(sm.counter), 36))
+	sm.counter++
 	sm.muCounter.Unlock()
 
 	sockPath := filepath.Join(sm.sockDirPath, sockFilename)
 	_, err := os.Stat(sockPath)
 	if os.IsNotExist(err) {
 		return sockPath, nil
+	} else if err == nil {
+		return "", errors.New("sock already exists: " + sockPath)
 	}
 
 	return "", errors.Wrap(err, "can't create new sock")

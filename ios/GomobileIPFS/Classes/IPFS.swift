@@ -34,24 +34,27 @@ public enum IpfsError: CustomNSError {
 public class IPFS: NSObject {
     public static let defaultRepoPath = "ipfs/repo"
 
-    static let sockManager: SockManager = nil // FIXME: Use sockManager
+    static var sockManager: SockManager? = nil
 
     var node: Node? = nil
     var shell: IpfsShell? = nil
     var repo: Repo? = nil
 
     let absRepoURL: URL
+    let absSockPath: String
 
     // init ipfs repo with the default or given path
     public init(_ repoPath: String = defaultRepoPath) throws {
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
 
-        // setup sockmanager if needed
-        if self.sockManager == nil {
+        // init sockmanager singleton if needed
+        if IPFS.sockManager == nil {
             let absTmpURL = FileManager.default.compatTemporaryDirectory
-            self.sockManager = try SockManager(self.absTmpURL)
+            IPFS.sockManager = try SockManager(absTmpURL)
         }
+
+        self.absSockPath = try IPFS.sockManager!.newSockPath()
 
         // init repo if needed
         if !(try Repo.isInitialized(url: absRepoURL)) {
@@ -84,12 +87,10 @@ public class IPFS: NSObject {
         let node = try Node(repo)
 
         // serve api
-        let sockpath = try self.sockManager.newSockPath()
-        print("sockpath", sockpath)
-        try node.serve(sockpath: sockpath)
+        try node.serveOnUDS(sockpath: self.absSockPath)
 
         // init shell
-        if let shell = IpfsNewUDSShell(sockpath, &err) {
+        if let shell = IpfsNewUDSShell(self.absSockPath, &err) {
             self.shell = shell
         } else {
             throw IpfsError.runtimeError("unable to get shell")
@@ -117,21 +118,22 @@ public class IPFS: NSObject {
 		try self.start()
 	}
 
-    public func shellRequest(_ command: String, b64Body: String) throws -> [String: Any] {
+    public func command(_ command: String, body: Data? = nil) throws -> Data {
         if !self.isStarted() {
             throw IpfsError.nodeNotStarted
         }
 
-        var body: Data? = nil
-        if b64Body.count > 0 {
-            body = Data(base64Encoded: b64Body, options: .ignoreUnknownCharacters)
-        }
-
-        guard let rawJson = try self.shell?.request(command, body: body) else {
+        guard let raw = try self.shell?.request(command, body: body) else {
             throw IpfsError.runtimeError("failed to fetch shell, empty response")
         }
 
-        guard let json = try? JSONSerialization.jsonObject(with: rawJson, options: []) else {
+        return raw
+    }
+
+    public func commandToDict(_ command: String, body: Data? = nil) throws -> [String: Any] {
+        let raw = try self.command(command, body: body)
+
+        guard let json = try? JSONSerialization.jsonObject(with: raw, options: []) else {
             throw IpfsError.runtimeError("failed to deserialize response, empty response")
         }
 

@@ -32,7 +32,7 @@ public class Node {
         try self.node.close()
     }
     
-    public func serve(sockpath: String) throws {
-        try self.node.serve(sockpath)
+    public func serveOnUDS(sockpath: String) throws {
+        try self.node.serve(onUDS: sockpath)
     }
 }

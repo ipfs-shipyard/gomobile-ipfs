@@ -14,7 +14,7 @@ import (
 	manet "github.com/multiformats/go-multiaddr-net"
 )
 
-func (im *IpfsMobile) Serve(sockpath string) error {
+func (im *IpfsMobile) ServeOnUDS(sockpath string) error {
 	var cfg *ipfs_config.Config
 	var err error
 

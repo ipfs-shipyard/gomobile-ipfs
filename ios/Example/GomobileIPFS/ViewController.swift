@@ -12,8 +12,6 @@ import GomobileIPFS
 class ViewController: UIViewController {
     @IBOutlet weak var PeerID: UILabel!
 
-    var ipfs: IPFS? = nil
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,7 +19,7 @@ class ViewController: UIViewController {
             let ipfs = try IPFS()
             try ipfs.start()
 
-            let res = try ipfs.shellRequest("id", b64Body: "")
+            let res = try ipfs.commandToDict("id")
 
             self.PeerID.text = res["ID"] as? String
         } catch let error {
