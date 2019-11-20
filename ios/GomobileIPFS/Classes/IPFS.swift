@@ -32,23 +32,27 @@ public enum IpfsError: CustomNSError {
 }
 
 public class IPFS: NSObject {
+    public static let defaultRepoPath = "ipfs/repo"
+
+    static let sockManager: SockManager = nil // FIXME: Use sockManager
+
     var node: Node? = nil
     var shell: IpfsShell? = nil
     var repo: Repo? = nil
-    var sockManager: SockManager // FIXME: Use sockManager
 
-    public static let defaultRepoPath = "ipfs/repo"
     let absRepoURL: URL
-    let absTmpURL: URL
-    
+
     // init ipfs repo with the default or given path
     public init(_ repoPath: String = defaultRepoPath) throws {
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
-        self.absTmpURL = FileManager.default.compatTemporaryDirectory
 
-        self.sockManager = try SockManager(self.absTmpURL)
-        
+        // setup sockmanager if needed
+        if self.sockManager == nil {
+            let absTmpURL = FileManager.default.compatTemporaryDirectory
+            self.sockManager = try SockManager(self.absTmpURL)
+        }
+
         // init repo if needed
         if !(try Repo.isInitialized(url: absRepoURL)) {
             let config = try Config.defaultConfig()
@@ -70,7 +74,7 @@ public class IPFS: NSObject {
         if self.isStarted() {
             throw IpfsError.nodeAlreadyStarted
         }
-        
+
         var err: NSError?
 
         // open repo
@@ -83,7 +87,7 @@ public class IPFS: NSObject {
         let sockpath = try self.sockManager.newSockPath()
         print("sockpath", sockpath)
         try node.serve(sockpath: sockpath)
-        
+
         // init shell
         if let shell = IpfsNewUDSShell(sockpath, &err) {
             self.shell = shell
