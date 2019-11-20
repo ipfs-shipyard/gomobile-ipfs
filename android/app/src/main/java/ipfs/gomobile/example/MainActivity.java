@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 IPFS ipfs = new IPFS(activity.getApplicationContext());
                 ipfs.start();
-                return ipfs.shellRequest("/id", "");
+                return new String(ipfs.command("/id"));
             } catch (Exception err) {
                 backgroundError = true;
                 return exceptionToString(err);
@@ -62,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
             if (backgroundError) {
                 displayError(result);
             } else {
-                byte[] decodedBytes = Base64.decode(result, Base64.DEFAULT);
                 try {
-                    JSONObject reader = new JSONObject(new String(decodedBytes));
+                    JSONObject reader = new JSONObject(result);
                     String peerID = reader.getString("ID");
                     displayMessage(peerID);
                 } catch (Exception err) {

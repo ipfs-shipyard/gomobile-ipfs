@@ -5,40 +5,72 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
-import mobile.Mobile;
-import mobile.Config;
-import mobile.Repo;
-import mobile.Node;
-import mobile.Shell;
+import ipfs.Ipfs;
+import ipfs.Config;
+import ipfs.Repo;
+import ipfs.Node;
+import ipfs.Shell;
+import ipfs.SockManager;
 
 public final class IPFS {
-    // Default paths
+    // Paths
     private static final String defaultRepoPath = "/ipfs/repo";
-    private static final String apiSockFilename = "api.sock";
-
-    // Absolute repo path
     private final String absRepoPath;
+    private final String absSockPath;
 
     // Go IPFS objects
+    private static SockManager sockmanager;
     private Node node;
     private Shell shell;
 
     public IPFS(@NonNull Context context)
-            throws ConfigCreationException, RepoInitException {
-        this(context, defaultRepoPath);
+            throws ConfigCreationException, RepoInitException, SockManagerException {
+        this(context, defaultRepoPath, true);
     }
 
     public IPFS(@NonNull Context context, @NonNull String repoPath)
-            throws ConfigCreationException, RepoInitException {
-        absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
+            throws ConfigCreationException, RepoInitException, SockManagerException {
+        this(context, repoPath, true);
+    }
 
-        if (!Mobile.repoIsInitialized(absRepoPath)) {
+    public IPFS(@NonNull Context context, @NonNull String repoPath, boolean internalStorage)
+            throws ConfigCreationException, RepoInitException, SockManagerException {
+        if (internalStorage) {
+            absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
+        } else {
+            File externalDir = context.getExternalFilesDir(null);
+
+            if (externalDir == null) {
+                throw new RepoInitException("No external storage available");
+            }
+            absRepoPath = externalDir.getAbsolutePath() + repoPath;
+        }
+
+        synchronized (IPFS.class) {
+            if (sockmanager == null) {
+                try {
+                    sockmanager = Ipfs.newSockManager(context.getCacheDir().getAbsolutePath());
+                } catch (Exception e) {
+                    throw new SockManagerException("Socket manager initialization failed", e);
+                }
+            }
+        }
+
+        try {
+            absSockPath = sockmanager.newSockPath();
+        } catch (Exception e) {
+            throw new SockManagerException("API socket creation failed", e);
+        }
+
+        if (!Ipfs.repoIsInitialized(absRepoPath)) {
             Config config;
             try {
-                config = Mobile.newDefaultConfig();
-                config.setupUnixSocketAPI(apiSockFilename);
+                config = Ipfs.newDefaultConfig();
             } catch (Exception e) {
                 throw new ConfigCreationException("Config creation failed", e);
             }
@@ -50,7 +82,7 @@ public final class IPFS {
                 }
             }
             try {
-                Mobile.initRepo(absRepoPath, config);
+                Ipfs.initRepo(absRepoPath, config);
             } catch (Exception e) {
                 throw new RepoInitException("Repo initialization failed", e);
             }
@@ -71,22 +103,22 @@ public final class IPFS {
             throw new NodeStartException("Node already started");
         }
 
-
         Repo repo;
         try {
-            repo = Mobile.openRepo(absRepoPath);
+            repo = Ipfs.openRepo(absRepoPath);
         } catch (Exception e) {
             throw new RepoOpenException("Repo opening failed", e);
         }
 
         try {
-            node = Mobile.newNode(repo);
+            node = Ipfs.newNode(repo);
+            node.serveOnUDS(absSockPath);
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }
 
         try {
-            shell = Mobile.newUDSShell(absRepoPath + "/" + apiSockFilename);
+            shell = Ipfs.newUDSShell(absSockPath);
         } catch (Exception e) {
             throw new ShellInitException("Shell init failed", e);
         }
@@ -111,26 +143,35 @@ public final class IPFS {
         start();
     }
 
-    synchronized public String shellRequest(String command, String b64Body)
+    synchronized public byte[] command(String command) throws ShellRequestException {
+        return this.command(command, null);
+    }
+
+    synchronized public byte[] command(String command, byte[] body)
             throws ShellRequestException {
         if (!isStarted()) {
             throw new ShellRequestException("Shell request failed: node isn't started");
         }
 
         try {
-            byte[] req = new byte[0];
-
-            if (b64Body.length() > 0) {
-                req = Base64.decode(b64Body, Base64.DEFAULT);
-            }
-
-            byte[] res = shell.request(command, req);
-
-            return Base64.encodeToString(res, Base64.DEFAULT);
+            return shell.request(command, body);
         } catch (Exception err) {
             throw new ShellRequestException("Shell request failed", err);
         }
     }
+
+    synchronized public JSONObject commandToJSON(String command)
+            throws ShellRequestException, JSONException {
+        return this.commandToJSON(command, null);
+    }
+
+    synchronized public JSONObject commandToJSON(String command, byte[] body)
+            throws ShellRequestException, JSONException {
+        String raw = new String(this.command(command, body));
+
+        return new JSONObject(raw);
+    }
+
 
     public class ConfigCreationException extends Exception {
         ConfigCreationException(String message, Throwable err) { super(message, err); }
@@ -144,6 +185,10 @@ public final class IPFS {
     public class NodeStopException extends Exception {
         NodeStopException(String message) { super(message); }
         NodeStopException(String message, Throwable err) { super(message, err); }
+    }
+
+    public class SockManagerException extends Exception {
+        SockManagerException(String message, Throwable err) { super(message, err); }
     }
 
     public class ShellInitException extends Exception {
