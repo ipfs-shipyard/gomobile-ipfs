@@ -18,7 +18,6 @@ extension FileManager {
     }
 }
 
-
 public enum IpfsError: LocalizedError {
     case nodeAlreadyStarted
     case nodeNotStarted
@@ -66,12 +65,16 @@ public class IPFS: NSObject {
         self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
 
         // init sockmanager singleton if needed
+        self.absSockPath = ""
+        #if !targetEnvironment(simulator)
         if IPFS.sockManager == nil {
             let absTmpURL = FileManager.default.compatTemporaryDirectory
             IPFS.sockManager = try SockManager(absTmpURL)
         }
 
         self.absSockPath = try IPFS.sockManager!.newSockPath()
+        #endif
+
 
         // init repo if needed
         if !(try Repo.isInitialized(url: absRepoURL)) {
@@ -95,8 +98,6 @@ public class IPFS: NSObject {
             throw IpfsError.nodeAlreadyStarted
         }
 
-        var err: NSError?
-
         // open repo
         let repo = try Repo(self.absRepoURL)
 
@@ -104,14 +105,25 @@ public class IPFS: NSObject {
         let node = try Node(repo)
 
         // serve api
-        try node.serveOnUDS(sockpath: self.absSockPath)
+        var err: NSError?
 
+        #if targetEnvironment(simulator) // fallback on tcp on simulator
+        try node.serve(onTCPPort: "4555")
+        // init shell
+        if let shell = IpfsNewTCPShell("4555", &err) {
+            self.shell = shell
+        } else {
+            throw IpfsError.runtimeError("unable to get shell")
+        }
+        #else
+        try node.serve(onUDS: self.absSockPath)
         // init shell
         if let shell = IpfsNewUDSShell(self.absSockPath, &err) {
             self.shell = shell
         } else {
             throw IpfsError.runtimeError("unable to get shell")
         }
+        #endif
 
         if let err = err {
             throw IpfsError.runtime(err, "unable to start shell")

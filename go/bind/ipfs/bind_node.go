@@ -18,18 +18,23 @@ import (
 	// ipfs_log "github.com/ipfs/go-log"
 )
 
-type Node interface {
-	// Close ipfs node
-	Close() error
-
-	// GetApiAddrs return current api listeners (separate with a comma)
-	GetApiAddrs() string
-
-	// Serve api on the given unix socket path
-	ServeOnUDS(sockpath string) error
+type Node struct {
+	*mobile_node.IpfsMobile
 }
 
-func NewNode(r *Repo) (Node, error) {
+func (n *Node) Close() error {
+	return n.IpfsMobile.Close()
+}
+
+func (n *Node) ServeUnixSocketAPI(sockpath string) error {
+	return n.IpfsMobile.Serve("/unix/" + sockpath)
+}
+
+func (n *Node) ServeTCPAPI(port string) error {
+	return n.IpfsMobile.Serve("/ip4/127.0.0.1/tcp/" + port)
+}
+
+func NewNode(r *Repo) (*Node, error) {
 	ctx := context.Background()
 
 	if _, err := loadPlugins(r.path); err != nil {
@@ -37,16 +42,16 @@ func NewNode(r *Repo) (Node, error) {
 	}
 
 	repo := &mobile_node.MobileRepo{r.irepo, r.path}
-	node, err := mobile_node.NewNode(ctx, repo, &mobile_host.MobileConfig{})
+	mnode, err := mobile_node.NewNode(ctx, repo, &mobile_host.MobileConfig{})
 	if err != nil {
 		return nil, err
 	}
 
-	if err := node.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
+	if err := mnode.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
 		log.Printf("failed to bootstrap node: `%s`", err)
 	}
 
-	return node, nil
+	return &Node{mnode}, nil
 }
 
 func init() {

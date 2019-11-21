@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 	"sync"
 
 	host "github.com/berty/gomobile-ipfs/go/pkg/host"
+	"github.com/pkg/errors"
 
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 
@@ -29,31 +29,14 @@ func (im *IpfsMobile) Close() error {
 		_ = l.Close()
 	}
 
-	// unlockRepo(im.repoPath)
-
 	return err
 }
 
-// GetApiAddrs return current api listeners (separate with a comma)
-func (im *IpfsMobile) GetApiAddrs() string {
-	var addrs []string
-	for _, l := range im.listeners {
-		a, err := manet.FromNetAddr(l.Addr())
-		if err != nil {
-			log.Printf("unable to get multiaddr from `%s`: %s", l.Addr().String(), err)
-			continue
-		}
-
-		addrs = append(addrs, a.String())
-	}
-
-	return strings.Join(addrs, ",")
-}
-
 func NewNode(ctx context.Context, repo *MobileRepo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
-	// if err := lockRepo(repoPath); err != nil {
-	//      return nil, fmt.Errorf("failed to init ipfs node: %s", err)
-	// }
+	cfg, err := repo.Config()
+	if err != nil {
+		return nil, errors.Wrap(err, "cant get config")
+	}
 
 	// build config
 	buildcfg := &ipfs_core.BuildCfg{
@@ -72,9 +55,17 @@ func NewNode(ctx context.Context, repo *MobileRepo, mcfg *host.MobileConfig) (*I
 		return nil, fmt.Errorf("failed to init ipfs node: %s", err)
 	}
 
-	return &IpfsMobile{
+	node := &IpfsMobile{
 		listeners: make([]manet.Listener, 0),
 		IpfsNode:  inode,
 		Repo:      repo,
-	}, nil
+	}
+
+	if len(cfg.Addresses.API) > 0 {
+		if err = node.Serve(cfg.Addresses.API...); err != nil {
+			log.Printf("unable to serve config API")
+		}
+	}
+
+	return node, nil
 }

@@ -14,7 +14,7 @@ public enum NodeError: Error {
 }
 
 public class Node {
-    let node: IpfsNodeProtocol
+    let node: IpfsNode
     
     public init(_ repo: Repo) throws {
         var err: NSError?
@@ -32,7 +32,11 @@ public class Node {
         try self.node.close()
     }
     
-    public func serveOnUDS(sockpath: String) throws {
-        try self.node.serve(onUDS: sockpath)
+    public func serve(onUDS: String) throws {
+        try self.node.serveUnixSocketAPI(onUDS)
+    }
+    
+    public func serve(onTCPPort: String) throws {
+        try self.node.serveTCPAPI(onTCPPort)
     }
 }
