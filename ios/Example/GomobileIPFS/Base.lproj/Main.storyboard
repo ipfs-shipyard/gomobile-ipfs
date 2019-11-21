@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="ipad11_0rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
@@ -12,37 +12,54 @@
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="GomobileIPFS_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
-                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                        <viewControllerLayoutGuide type="top" id="XoM-kK-f94"/>
+                        <viewControllerLayoutGuide type="bottom" id="4nO-1w-Lzz"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1194"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PeerID:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ra7-aw-5WH">
-                                <rect key="frame" x="0.0" y="161" width="375" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your PeerID is:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WSE-hU-rMQ">
+                                <rect key="frame" x="338" y="504" width="158" height="29"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <directionalEdgeInsets key="directionalLayoutMargins" top="8" leading="8" bottom="8" trailing="8"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="&lt;PeerID&gt;" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ff9-wt-1m6" userLabel="PeerIDHolder">
-                                <rect key="frame" x="0.0" y="190" width="375" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <nil key="textColor"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="36J-gm-qAy">
+                                <rect key="frame" x="407" y="549" width="20" height="20"/>
+                                <color key="color" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gDm-bu-yFK">
+                                <rect key="frame" x="32" y="549" width="770" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="gDm-bu-yFK" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="32" id="1Zg-Aj-xM9"/>
+                            <constraint firstItem="36J-gm-qAy" firstAttribute="top" secondItem="WSE-hU-rMQ" secondAttribute="bottom" constant="16" id="33c-3q-WU4"/>
+                            <constraint firstItem="WSE-hU-rMQ" firstAttribute="bottom" secondItem="kh9-bI-dsS" secondAttribute="centerY" constant="-64" id="67p-BM-T7E"/>
+                            <constraint firstItem="WSE-hU-rMQ" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="FLu-nG-rBa"/>
+                            <constraint firstItem="gDm-bu-yFK" firstAttribute="top" secondItem="WSE-hU-rMQ" secondAttribute="bottom" constant="16" id="JYn-BH-krq"/>
+                            <constraint firstAttribute="trailing" secondItem="gDm-bu-yFK" secondAttribute="trailing" constant="32" id="XUC-bV-DZY"/>
+                            <constraint firstItem="36J-gm-qAy" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="iXi-yH-ite"/>
+                        </constraints>
                     </view>
                     <connections>
-                        <outlet property="PeerID" destination="Ff9-wt-1m6" id="gfy-YS-zsz"/>
+                        <outlet property="PIDInfo" destination="gDm-bu-yFK" id="qjl-op-OTV"/>
+                        <outlet property="PIDLoading" destination="36J-gm-qAy" id="CmZ-Dz-g0B"/>
+                        <outlet property="PIDTitle" destination="WSE-hU-rMQ" id="faD-99-olB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
+            <point key="canvasLocation" x="133.59999999999999" y="131.78410794602701"/>
         </scene>
     </scenes>
 </document>

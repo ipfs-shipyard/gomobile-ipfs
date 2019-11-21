@@ -19,16 +19,33 @@ extension FileManager {
 }
 
 
-public enum IpfsError: CustomNSError {
+public enum IpfsError: LocalizedError {
     case nodeAlreadyStarted
     case nodeNotStarted
 
-    case runtimeError(String)
-    case runtime(Error, String)
+    case runtimeError(_ message: String)
+    case runtime(_ error: Error, _ message: String)
 
-    public static var errorDomain: String {
-        return "IPFSDomain"
+    public var errorDescription: String {
+        switch self {
+        case let .runtimeError(message), let .runtime(_, message):
+            return message
+        case .nodeAlreadyStarted:
+            return "node already started"
+        case .nodeNotStarted:
+            return "node already stopped"
+        }
     }
+
+    public var failureReason: String? {
+        switch self {
+        case let .runtime(error, _):
+            return error.localizedDescription
+        default:
+            return nil
+        }
+    }
+
 }
 
 public class IPFS: NSObject {
@@ -110,7 +127,7 @@ public class IPFS: NSObject {
         }
 
         try self.node?.close()
-		self.node = nil
+        self.node = nil
     }
 
 	public func restart() throws {
