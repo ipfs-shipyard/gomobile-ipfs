@@ -9,6 +9,7 @@ package ipfs
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	mobile_host "github.com/berty/gomobile-ipfs/go/pkg/host"
@@ -19,19 +20,29 @@ import (
 )
 
 type Node struct {
-	*mobile_node.IpfsMobile
+	ipfsMobile *mobile_node.IpfsMobile
 }
 
 func (n *Node) Close() error {
-	return n.IpfsMobile.Close()
+	return n.ipfsMobile.Close()
 }
 
 func (n *Node) ServeUnixSocketAPI(sockpath string) error {
-	return n.IpfsMobile.Serve("/unix/" + sockpath)
+	return n.ipfsMobile.Serve("/unix/" + sockpath)
 }
 
-func (n *Node) ServeTCPAPI(port string) error {
-	return n.IpfsMobile.Serve("/ip4/127.0.0.1/tcp/" + port)
+// Serve API on the given port and return the current listening maddr
+func (n *Node) ServeTCPAPI(port string) (string, error) {
+	if err := n.ipfsMobile.Serve("/ip4/127.0.0.1/tcp/" + port); err != nil {
+		return "", err
+	}
+
+	// get the last maddr added
+	if addrs := n.ipfsMobile.GetAPIAddrs(); len(addrs) > 0 {
+		return addrs[len(addrs)-1], nil
+	}
+
+	return "", fmt.Errorf("unable to serve api, no listener registered")
 }
 
 func NewNode(r *Repo) (*Node, error) {

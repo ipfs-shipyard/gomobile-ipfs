@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	mobile_config "github.com/berty/gomobile-ipfs/go/bind/ipfs/config"
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_common "github.com/ipfs/go-ipfs/repo/common"
 )
@@ -21,7 +20,7 @@ func NewConfig(raw_json []byte) (cfg *Config, err error) {
 }
 
 func NewDefaultConfig() (*Config, error) {
-	cfg, err := mobile_config.InitConfig(ioutil.Discard, 2048)
+	cfg, err := initConfig(ioutil.Discard, 2048)
 	if err != nil {
 		return nil, err
 	}

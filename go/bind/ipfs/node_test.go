@@ -8,8 +8,6 @@ import (
 	"testing"
 
 	ipfs_config "github.com/ipfs/go-ipfs-config"
-	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -33,8 +31,11 @@ func TestMobile(t *testing.T) {
 	var (
 		testCfg  *Config
 		testRepo *Repo
-		testNode Node
+		testNode *Node
 		testID   *ipfs_config.Identity
+
+		sockpath string
+		tcpaddr  string
 
 		err error
 	)
@@ -57,6 +58,26 @@ func TestMobile(t *testing.T) {
 	}()
 
 	Convey("test config", t, FailureHalts, func() {
+		Convey("test sockmanager", FailureHalts, func() {
+			var sm *SockManager
+
+			wrongpath := strings.Repeat("a", 110)
+			sm, err = NewSockManager(wrongpath)
+			So(err, ShouldNotBeNil)
+			So(sm, ShouldBeNil)
+
+			sm, err = NewSockManager(tmpdir)
+			So(err, ShouldBeNil)
+			So(sm, ShouldNotBeNil)
+
+			for i := 0; i < 100; i++ {
+				sockpath, err = sm.NewSockPath()
+				So(err, ShouldBeNil)
+				So(sockpath, ShouldNotBeEmpty)
+				So(len(sockpath), ShouldBeLessThan, 104)
+			}
+		})
+
 		Convey("test get/set config", FailureHalts, func() {
 			var cfg *Config
 			var val []byte
@@ -136,11 +157,7 @@ func TestMobile(t *testing.T) {
 			ok = RepoIsInitialized(tmpdir)
 			So(ok, ShouldBeFalse)
 
-			testCfg.SetupTCPAPI("0")
-			testCfg.SetupUnixSocketAPI("api.sock")
-
-			testCfg.SetupTCPGateway("0")
-			testCfg.SetupUnixSocketGateway("gateway.sock")
+			testCfg.SetupUnixSocketAPI(sockpath)
 
 			// init repo
 			err = InitRepo(tmpdir, testCfg)
@@ -164,10 +181,14 @@ func TestMobile(t *testing.T) {
 		Convey("test node", FailureHalts, func() {
 			testNode, err = NewNode(testRepo)
 			So(err, ShouldBeNil)
+
+			tcpaddr, err = testNode.ServeTCPAPI("0")
+			So(err, ShouldBeNil)
+			So(tcpaddr, ShouldNotBeEmpty)
 		})
 
 		Convey("test Unix Soscket shell", FailureHalts, func() {
-			socketaddr := "/unix/" + tmpdir + "/api.sock"
+			socketaddr := "/unix/" + sockpath
 			shell, err := NewShell(socketaddr)
 			So(err, ShouldBeNil)
 
@@ -177,7 +198,7 @@ func TestMobile(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			api := struct {
-				Addrs []string `json:"Value"`
+				Addrs string `json:"Value"`
 			}{}
 
 			err = json.Unmarshal(res, &api)
@@ -186,26 +207,10 @@ func TestMobile(t *testing.T) {
 		})
 
 		Convey("test TCP shell", FailureHalts, func() {
-			addrs := strings.Split(testNode.GetApiAddrs(), ",")
-			So(len(addrs), ShouldBeGreaterThan, 0)
-			apiaddr := ""
-			for _, addr := range addrs {
-				maddr, err := ma.NewMultiaddr(addr)
-				So(err, ShouldBeNil)
-
-				naddr, err := manet.ToNetAddr(maddr)
-				So(err, ShouldBeNil)
-				if naddr.Network() == "tcp" {
-					apiaddr = addr
-				}
-			}
-
-			So(apiaddr, ShouldNotBeEmpty)
-
-			shell, err := NewShell(apiaddr)
+			shell, err := NewShell(tcpaddr)
 			So(err, ShouldBeNil)
-			out, err := shell.Request("id", nil)
 
+			out, err := shell.Request("id", nil)
 			So(err, ShouldBeNil)
 
 			id := struct {

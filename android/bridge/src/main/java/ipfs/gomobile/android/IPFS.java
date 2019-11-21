@@ -112,7 +112,7 @@ public final class IPFS {
 
         try {
             node = Ipfs.newNode(repo);
-            node.serveOnUDS(absSockPath);
+            node.serveUnixSocketAPI(absSockPath);
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }

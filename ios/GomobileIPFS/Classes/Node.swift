@@ -15,10 +15,10 @@ public enum NodeError: Error {
 
 public class Node {
     let node: IpfsNode
-    
+
     public init(_ repo: Repo) throws {
         var err: NSError?
-        
+
         if let node = IpfsNewNode(repo.goRepo, &err) {
             self.node = node
         } else if let error = err {
@@ -31,12 +31,20 @@ public class Node {
     public func close() throws {
         try self.node.close()
     }
-    
+
     public func serve(onUDS: String) throws {
         try self.node.serveUnixSocketAPI(onUDS)
     }
-    
-    public func serve(onTCPPort: String) throws {
-        try self.node.serveTCPAPI(onTCPPort)
+
+    // return the multiaddr from listener
+    public func serve(onTCPPort: String) throws -> String {
+        var err: NSError?
+
+        let maddr = self.node.serveTCPAPI(onTCPPort, error: &err)
+        if let error = err {
+            throw NodeError.runtimeError(error, "unable to serve api")
+        }
+
+        return maddr
     }
 }

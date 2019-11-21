@@ -107,10 +107,11 @@ public class IPFS: NSObject {
         // serve api
         var err: NSError?
 
-        #if targetEnvironment(simulator) // fallback on tcp on simulator
-        try node.serve(onTCPPort: "4555")
         // init shell
-        if let shell = IpfsNewTCPShell("4555", &err) {
+        #if targetEnvironment(simulator) // fallback on tcp on simulator
+        let maddr: String = try node.serve(onTCPPort: "0")
+        // init shell
+        if let shell = IpfsNewShell(maddr, &err) {
             self.shell = shell
         } else {
             throw IpfsError.runtimeError("unable to get shell")

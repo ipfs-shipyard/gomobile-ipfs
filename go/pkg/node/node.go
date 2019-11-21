@@ -32,6 +32,25 @@ func (im *IpfsMobile) Close() error {
 	return err
 }
 
+// GetApiAddrs return current api listeners (separate with a comma)
+func (im *IpfsMobile) GetAPIAddrs() (addrs []string) {
+	im.muListeners.Lock()
+
+	addrs = make([]string, len(im.listeners))
+	for i, l := range im.listeners {
+		a, err := manet.FromNetAddr(l.Addr())
+		if err == nil {
+			addrs[i] = a.String()
+		} else {
+			log.Printf("unable to get multiaddr from `%s`: %s", l.Addr().String(), err)
+		}
+
+	}
+	im.muListeners.Unlock()
+
+	return addrs
+}
+
 func NewNode(ctx context.Context, repo *MobileRepo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
 	cfg, err := repo.Config()
 	if err != nil {

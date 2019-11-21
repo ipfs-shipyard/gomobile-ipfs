@@ -14,6 +14,7 @@ import (
 	manet "github.com/multiformats/go-multiaddr-net"
 )
 
+// @TODO: return multiaddr served
 func (im *IpfsMobile) Serve(maddrs ...string) error {
 	var err error
 
@@ -60,7 +61,8 @@ func (im *IpfsMobile) Serve(maddrs ...string) error {
 		l := manet.NetListener(ml)
 		go func(l net.Listener) {
 			if err := ipfs_corehttp.Serve(im.IpfsNode, l, opts...); err != nil {
-				log.Printf("serve error: %s", err)
+				l.Close()
+				log.Printf("Serve on `%s` failed: %s", maddr.String(), err)
 			}
 		}(l)
 

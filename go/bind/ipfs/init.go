@@ -1,4 +1,4 @@
-package config
+package ipfs
 
 import (
 	"encoding/base64"
@@ -12,7 +12,7 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
-func InitConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
+func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 	identity, err := identityConfig(out, nBitsForKeypair)
 	if err != nil {
 		return nil, err
