@@ -11,12 +11,18 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="Gomobile IPFS Example" >
+            android:label="Gomobile IPFS Example"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".DisplayImageActivity"
+            android:parentActivityName=".MainActivity" >
         </activity>
     </application>
 

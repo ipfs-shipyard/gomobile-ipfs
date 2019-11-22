@@ -1,7 +1,6 @@
 package ipfs.gomobile.android;
 
 import android.content.Context;
-import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
@@ -9,6 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import ipfs.Ipfs;
 import ipfs.Config;
@@ -143,11 +144,11 @@ public final class IPFS {
         start();
     }
 
-    synchronized public byte[] command(String command) throws ShellRequestException {
+    public byte[] command(String command) throws ShellRequestException {
         return this.command(command, null);
     }
 
-    synchronized public byte[] command(String command, byte[] body)
+    public byte[] command(String command, byte[] body)
             throws ShellRequestException {
         if (!isStarted()) {
             throw new ShellRequestException("Shell request failed: node isn't started");
@@ -160,16 +161,22 @@ public final class IPFS {
         }
     }
 
-    synchronized public JSONObject commandToJSON(String command)
+    public ArrayList<JSONObject> commandToJSONList(String command)
             throws ShellRequestException, JSONException {
-        return this.commandToJSON(command, null);
+        return this.commandToJSONList(command, null);
     }
 
-    synchronized public JSONObject commandToJSON(String command, byte[] body)
+    public ArrayList<JSONObject> commandToJSONList(String command, byte[] body)
             throws ShellRequestException, JSONException {
         String raw = new String(this.command(command, body));
+        ArrayList<JSONObject> jsonList = new ArrayList<>();
+        Scanner scanner = new Scanner(raw);
 
-        return new JSONObject(raw);
+        while(scanner.hasNextLine()) {
+            jsonList.add(new JSONObject(scanner.nextLine()));
+        }
+
+        return jsonList;
     }
 
 
