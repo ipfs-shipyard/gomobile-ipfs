@@ -8,9 +8,17 @@
 import Foundation
 import Ipfs
 
-public enum RepoError: Error {
-  case error(String)
-  case runtimeError(Error, String)
+public class RepoError: IPFSError  {
+    private static var code: Int = 4
+    private static var subdomain: String = "Repo"
+
+    required init(_ description: String, _ optCause: NSError? = nil) {
+        super.init(description, optCause, RepoError.subdomain, RepoError.code)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 }
 
 public class Repo {
@@ -19,19 +27,17 @@ public class Repo {
     private let url: URL
 
     public init(_ url: URL) throws {
-        self.url = url
-
         var err: NSError?
+
         if let repo = IpfsOpenRepo(url.path, &err) {
+            self.url = url
             self.goRepo = repo
-        } else if let error = err {
-            throw RepoError.runtimeError(error, "failed to open repo")
         } else {
-            throw RepoError.error("failed to open repo, unknow error")
+            throw RepoError("openning failed", err)
         }
     }
 
-    public static func isInitialized(url: URL) throws -> Bool{
+    public static func isInitialized(url: URL) throws -> Bool {
         return IpfsRepoIsInitialized(url.path)
     }
 
@@ -44,9 +50,9 @@ public class Repo {
         }
 
         IpfsInitRepo(url.path, config.goConfig, &err)
-        if let error = err {
-             throw RepoError.runtimeError(error, "failed to init repo")
-         }
+        if err != nil {
+             throw RepoError("initialisation failed", err)
+        }
     }
 
     public func getConfig() throws -> Config {
@@ -55,7 +61,11 @@ public class Repo {
     }
 
     public func setConfig(_ config: Config) throws {
-        try self.goRepo.setConfig(config.goConfig)
+        do {
+            try self.goRepo.setConfig(config.goConfig)
+        } catch let error as NSError {
+            throw RepoError("setting configuration failed", error)
+        }
     }
 
 }

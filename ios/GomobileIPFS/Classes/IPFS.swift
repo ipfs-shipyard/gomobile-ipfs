@@ -18,35 +18,6 @@ extension FileManager {
     }
 }
 
-public enum IpfsError: LocalizedError {
-    case nodeAlreadyStarted
-    case nodeNotStarted
-
-    case runtimeError(_ message: String)
-    case runtime(_ error: Error, _ message: String)
-
-    public var errorDescription: String {
-        switch self {
-        case let .runtimeError(message), let .runtime(_, message):
-            return message
-        case .nodeAlreadyStarted:
-            return "node already started"
-        case .nodeNotStarted:
-            return "node already stopped"
-        }
-    }
-
-    public var failureReason: String? {
-        switch self {
-        case let .runtime(error, _):
-            return error.localizedDescription
-        default:
-            return nil
-        }
-    }
-
-}
-
 public class IPFS: NSObject {
     public static let defaultRepoPath = "ipfs/repo"
 
@@ -65,7 +36,6 @@ public class IPFS: NSObject {
         self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
 
         // init sockmanager singleton if needed
-        self.absSockPath = ""
         #if !targetEnvironment(simulator)
         if IPFS.sockManager == nil {
             let absTmpURL = FileManager.default.compatTemporaryDirectory
@@ -73,6 +43,8 @@ public class IPFS: NSObject {
         }
 
         self.absSockPath = try IPFS.sockManager!.newSockPath()
+        #else // On simulator we can't create an UDS, see comment below
+            self.absSockPath = ""
         #endif
 
 
@@ -95,7 +67,7 @@ public class IPFS: NSObject {
 
     public func start() throws {
         if self.isStarted() {
-            throw IpfsError.nodeAlreadyStarted
+            throw IPFSError("node already started")
         }
 
         // open repo
@@ -107,28 +79,27 @@ public class IPFS: NSObject {
         // serve api
         var err: NSError?
 
-        // init shell
-        #if targetEnvironment(simulator) // fallback on tcp on simulator
-        let maddr: String = try node.serve(onTCPPort: "0")
-        // init shell
-        if let shell = IpfsNewShell(maddr, &err) {
-            self.shell = shell
-        } else {
-            throw IpfsError.runtimeError("unable to get shell")
-        }
-        #else
+        // Create a shell over UDS on normal devices
+        #if !targetEnvironment(simulator)
         try node.serve(onUDS: self.absSockPath)
-        // init shell
         if let shell = IpfsNewUDSShell(self.absSockPath, &err) {
             self.shell = shell
         } else {
-            throw IpfsError.runtimeError("unable to get shell")
+            throw IPFSError("UDS shell creation failed", err)
+        }
+        /*
+        ** On iOS simulator, temporary directory's absolute path exceeds
+        ** the length limit for Unix Domain Socket, since simulator is
+        ** only used for debug, we can safely fallback on shell over TCP
+        */
+        #else
+        let maddr: String = try node.serve(onTCPPort: "0")
+        if let shell = IpfsNewShell(maddr, &err) {
+            self.shell = shell
+        } else {
+            throw IPFSError("TCP shell creation failed", err)
         }
         #endif
-
-        if let err = err {
-            throw IpfsError.runtime(err, "unable to start shell")
-        }
 
         self.repo = repo
         self.node = node
@@ -136,7 +107,7 @@ public class IPFS: NSObject {
 
     public func stop() throws {
         if !self.isStarted() {
-            throw IpfsError.nodeNotStarted
+            throw IPFSError("node already stopped")
         }
 
         try self.node?.close()
@@ -150,27 +121,28 @@ public class IPFS: NSObject {
 
     public func command(_ command: String, body: Data? = nil) throws -> Data {
         if !self.isStarted() {
-            throw IpfsError.nodeNotStarted
+            throw IPFSError("node is not started")
         }
 
-        guard let raw = try self.shell?.request(command, body: body) else {
-            throw IpfsError.runtimeError("failed to fetch shell, empty response")
+        do {
+            if let raw = try self.shell?.request(command, body: body) {
+                return raw
+            } else {
+                throw IPFSError("request to shell failed: empty response")
+            }
+        } catch let error as NSError {
+            throw IPFSError("request to shell failed", error)
         }
-
-        return raw
     }
 
     public func commandToDict(_ command: String, body: Data? = nil) throws -> [String: Any] {
         let raw = try self.command(command, body: body)
 
-        guard let json = try? JSONSerialization.jsonObject(with: raw, options: []) else {
-            throw IpfsError.runtimeError("failed to deserialize response, empty response")
+        do {
+            let json = try JSONSerialization.jsonObject(with: raw, options: [])
+            return json as! [String: Any]
+        } catch let error as NSError {
+            throw IPFSError("command response deserialization failed", error)
         }
-
-        guard let dict = json as? [String: Any] else {
-            throw IpfsError.runtimeError("failed to convert json to dictionary")
-        }
-
-        return dict
     }
 }

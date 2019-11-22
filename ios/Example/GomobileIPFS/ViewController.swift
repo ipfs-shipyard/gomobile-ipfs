@@ -24,25 +24,20 @@ class ViewController: UIViewController {
             try ipfs.start()
 
             let res = try ipfs.commandToDict("id")
+            try ipfs.stop()
             let peerID = res["ID"] as! String
             print("Your PeerID is: \(peerID)")
 
             self.PIDLoading.stopAnimating()
             self.PIDInfo.text = peerID
-        } catch let error as IpfsError {
-            if error.failureReason != nil {
-                printError("\(error.errorDescription): \(error.failureReason!)")
-            } else {
-                printError(error.errorDescription)
-            }
+        } catch let error as IPFSError {
+            printError(error.localizedFullDescription)
         } catch let error {
             printError(error.localizedDescription)
         }
     }
 
     private func printError(_ error: String) {
-        print(error)
-
         self.PIDLoading.stopAnimating()
 
         PIDTitle.textColor = UIColor.red

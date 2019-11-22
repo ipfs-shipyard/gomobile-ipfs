@@ -8,9 +8,17 @@
 import Foundation
 import Ipfs
 
-public enum NodeError: Error {
-  case error(String)
-  case runtimeError(Error, String)
+public class NodeError: IPFSError  {
+    private static var code: Int = 3
+    private static var subdomain: String = "NodeManager"
+
+    required init(_ description: String, _ optCause: NSError? = nil) {
+        super.init(description, optCause, NodeError.subdomain, NodeError.code)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 }
 
 public class Node {
@@ -21,19 +29,25 @@ public class Node {
 
         if let node = IpfsNewNode(repo.goRepo, &err) {
             self.node = node
-        } else if let error = err {
-            throw NodeError.runtimeError(error, "failed to start node")
         } else {
-            throw RepoError.error("failed start node, unknow error")
+            throw NodeError("creation failed", err)
         }
     }
 
     public func close() throws {
-        try self.node.close()
+        do {
+            try self.node.close()
+        } catch let error as NSError {
+            throw NodeError("closing failed", error)
+        }
     }
 
     public func serve(onUDS: String) throws {
-        try self.node.serveUnixSocketAPI(onUDS)
+        do {
+            try self.node.serveUnixSocketAPI(onUDS)
+        } catch let error as NSError {
+            throw NodeError("unable to serve api on UDS", error)
+        }
     }
 
     // return the multiaddr from listener
@@ -41,8 +55,9 @@ public class Node {
         var err: NSError?
 
         let maddr = self.node.serveTCPAPI(onTCPPort, error: &err)
-        if let error = err {
-            throw NodeError.runtimeError(error, "unable to serve api")
+
+        if err != nil {
+            throw NodeError("unable to serve api on TCP", err)
         }
 
         return maddr
