@@ -12,6 +12,12 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
+func init() {
+	// Temporary workaround that allows gomobile-ipfs to connect to bootstrap nodes
+	// See: https://github.com/ipfs/infra/issues/378
+	libp2p_ci.MinRsaKeyBits = 1024
+}
+
 func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 	identity, err := identityConfig(out, nBitsForKeypair)
 	if err != nil {
