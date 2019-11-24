@@ -1,4 +1,4 @@
-# IPFS Mobile Demo
+# OBSOLETE - IPFS Mobile React-Native Demo
 
 <p align="center">
   <img src="./img/ipfs-mobile-status.jpg?raw=true" width="160" />
@@ -6,6 +6,8 @@
   <img src="./img/ipfs-mobile-explore.jpg?raw=true" width="160" />
   <img src="./img/ipfs-mobile-peers.jpg?raw=true" width="160" />
 </p>
+
+This example is obsolete since the Android and iOS packages have been implemented, it should be rewritten along with a proper React-Native package.
 
 Simple React Native application that launch a gomobile-ipfs node and display its Webui in a webview.
 
