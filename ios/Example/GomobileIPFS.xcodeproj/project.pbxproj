@@ -14,6 +14,9 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		C7B69C1AEE22B38290E678B7 /* Pods_GomobileIPFS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2379A1BCB7AF557873849D /* Pods_GomobileIPFS_Tests.framework */; };
+		CC03C613238A9D4F00F635EE /* PeerCountUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */; };
+		CC18F99F238ACE12007D9E36 /* DisplayImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F99E238ACE12007D9E36 /* DisplayImageController.swift */; };
+		CCBBDE6A238AD9F300B5B43F /* Data in Resources */ = {isa = PBXBuildFile; fileRef = CCBBDE69238AD9F300B5B43F /* Data */; };
 		D8E478254B644C1198E8CC6C /* Pods_GomobileIPFS_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF129C2ACDA6302A353C5DFD /* Pods_GomobileIPFS_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +47,9 @@
 		941DD5716AB7E3B928A9997E /* Pods-GomobileIPFS_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GomobileIPFS_Tests.release.xcconfig"; path = "Target Support Files/Pods-GomobileIPFS_Tests/Pods-GomobileIPFS_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		A205970A6C6F4ADFDCD83DDD /* Pods-GomobileIPFS_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GomobileIPFS_Tests.debug.xcconfig"; path = "Target Support Files/Pods-GomobileIPFS_Tests/Pods-GomobileIPFS_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		AF129C2ACDA6302A353C5DFD /* Pods_GomobileIPFS_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GomobileIPFS_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerCountUpdater.swift; sourceTree = "<group>"; };
+		CC18F99E238ACE12007D9E36 /* DisplayImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayImageController.swift; sourceTree = "<group>"; };
+		CCBBDE69238AD9F300B5B43F /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		ED2379A1BCB7AF557873849D /* Pods_GomobileIPFS_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GomobileIPFS_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F706D762809FD3DFE25FCA56 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		FFA5CBB6CDC475FEF3DDB167 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -106,9 +112,12 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				CC18F99E238ACE12007D9E36 /* DisplayImageController.swift */,
+				CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
+				CCBBDE69238AD9F300B5B43F /* Data */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
 			name = "Example for GomobileIPFS";
@@ -251,6 +260,7 @@
 			files = (
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
+				CCBBDE6A238AD9F300B5B43F /* Data in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,6 +362,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC18F99F238ACE12007D9E36 /* DisplayImageController.swift in Sources */,
+				CC03C613238A9D4F00F635EE /* PeerCountUpdater.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
