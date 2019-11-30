@@ -68,6 +68,7 @@ func (sm *SockManager) NewSockPath() (string, error) {
 	if sm.counter == math.MaxUint32 {
 		// TODO: do something smarter knowing that a socket may have been
 		// removed in the meantime
+		sm.muCounter.Unlock()
 		return "", errors.New("max number of socket exceeded")
 	}
 	sockFilename := fmt.Sprintf(paddingFormatStr, strconv.FormatUint(uint64(sm.counter), 36))

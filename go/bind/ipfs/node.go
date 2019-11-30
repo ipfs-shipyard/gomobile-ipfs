@@ -9,40 +9,84 @@ package ipfs
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net"
+	"sync"
 
 	mobile_host "github.com/berty/gomobile-ipfs/go/pkg/host"
 	mobile_node "github.com/berty/gomobile-ipfs/go/pkg/node"
+
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	// ipfs_log "github.com/ipfs/go-log"
 )
 
 type Node struct {
+	listeners   []manet.Listener
+	muListeners sync.Mutex
+
 	ipfsMobile *mobile_node.IpfsMobile
 }
 
 func (n *Node) Close() error {
+	for _, l := range n.listeners {
+		l.Close()
+	}
+
 	return n.ipfsMobile.Close()
 }
 
-func (n *Node) ServeUnixSocketAPI(sockpath string) error {
-	return n.ipfsMobile.Serve("/unix/" + sockpath)
+func (n *Node) ServeUnixSocketAPI(sockpath string) (err error) {
+	_, err = n.ServeMultiaddr("/unix/" + sockpath)
+	return
 }
 
 // Serve API on the given port and return the current listening maddr
 func (n *Node) ServeTCPAPI(port string) (string, error) {
-	if err := n.ipfsMobile.Serve("/ip4/127.0.0.1/tcp/" + port); err != nil {
+	return n.ServeMultiaddr("/ip4/127.0.0.1/tcp/" + port)
+}
+
+func (n *Node) ServeConfigAPI() error {
+	cfg, err := n.ipfsMobile.Repo.Config()
+	if err != nil {
+		return err
+	}
+
+	if len(cfg.Addresses.API) > 0 {
+		for _, maddr := range cfg.Addresses.API {
+			if _, err := n.ServeMultiaddr(maddr); err != nil {
+				log.Printf("cannot serve `%s`: %s", maddr, err.Error())
+			}
+		}
+	}
+
+	return nil
+}
+
+func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
+	maddr, err := ma.NewMultiaddr(smaddr)
+	if err != nil {
 		return "", err
 	}
 
-	// get the last maddr added
-	if addrs := n.ipfsMobile.GetAPIAddrs(); len(addrs) > 0 {
-		return addrs[len(addrs)-1], nil
+	ml, err := manet.Listen(maddr)
+	if err != nil {
+		return "", err
 	}
 
-	return "", fmt.Errorf("unable to serve api, no listener registered")
+	n.muListeners.Lock()
+	n.listeners = append(n.listeners, ml)
+	n.muListeners.Unlock()
+
+	go func(l net.Listener) {
+		if err := n.ipfsMobile.Serve(l); err != nil {
+			log.Printf("serve error: %s", err.Error())
+		}
+	}(manet.NetListener(ml))
+
+	return ml.Multiaddr().String(), nil
 }
 
 func NewNode(r *Repo) (*Node, error) {
@@ -62,7 +106,9 @@ func NewNode(r *Repo) (*Node, error) {
 		log.Printf("failed to bootstrap node: `%s`", err)
 	}
 
-	return &Node{mnode}, nil
+	return &Node{
+		ipfsMobile: mnode,
+	}, nil
 }
 
 func init() {

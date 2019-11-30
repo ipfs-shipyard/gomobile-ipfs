@@ -1,225 +1,95 @@
 package ipfs
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
-	"strings"
+	"context"
+	"fmt"
+	"net"
+	"net/http"
+	"path/filepath"
 	"testing"
+	"time"
 
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-
-	. "github.com/smartystreets/goconvey/convey"
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 )
 
-const sampleFakeConfig = `
-{
-	"Addresses": {
-		"API": "/ip4/127.0.0.1/tcp/5001",
-		"Swarm": [
-			"/ip4/0.0.0.0/tcp/0",
-			"/ip6/::/tcp/0"
-		]
-	},
-	"Bootstrap": [
-		"/ip4/127.0.0.1/tcp/4001/ipfs/12D3KooWDWJ473M3fXMEcajbaGtqgr6i6SvDdh5Ru9i5ZzoJ9Qy8"
-	]
-}
-`
+func TestNode(t *testing.T) {
+	path, clean := testingTempDir(t, "repo")
+	defer clean()
 
-func TestMobile(t *testing.T) {
-	var (
-		testCfg  *Config
-		testRepo *Repo
-		testNode *Node
-		testID   *ipfs_config.Identity
+	repo, clean := testingRepo(t, path)
+	defer clean()
 
-		sockpath string
-		tcpaddr  string
-
-		err error
-	)
-
-	tmpdir, err := ioutil.TempDir("", "gomobile_ipfs_test")
+	node, err := NewNode(repo)
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
 
-	defer os.RemoveAll(tmpdir)
+	if err := node.Close(); err != nil {
+		t.Error(err)
+	}
+}
+func TestNodeServeAPI(t *testing.T) {
+	t.Run("tpc api", func(t *testing.T) {
+		path, clean := testingTempDir(t, "tpc_repo")
+		defer clean()
 
-	defer func() {
-		if testNode != nil {
-			_ = testNode.Close()
+		node, clean := testingNode(t, path)
+		defer clean()
+
+		smaddr, err := node.ServeTCPAPI("0")
+		if err != nil {
+			t.Fatal(err)
 		}
 
-		if testRepo != nil {
-			_ = testRepo.Close()
+		maddr, err := ma.NewMultiaddr(smaddr)
+		if err != nil {
+			t.Fatal(err)
 		}
-	}()
 
-	Convey("test config", t, FailureHalts, func() {
-		Convey("test sockmanager", FailureHalts, func() {
-			var sm *SockManager
+		addr, err := manet.ToNetAddr(maddr)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-			wrongpath := strings.Repeat("a", 110)
-			sm, err = NewSockManager(wrongpath)
-			So(err, ShouldNotBeNil)
-			So(sm, ShouldBeNil)
+		url := fmt.Sprintf("http://%s/api/v0/id", addr.String())
+		client := http.Client{Timeout: 5 * time.Second}
 
-			sm, err = NewSockManager(tmpdir)
-			So(err, ShouldBeNil)
-			So(sm, ShouldNotBeNil)
+		_, err = client.Get(url)
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 
-			for i := 0; i < 100; i++ {
-				sockpath, err = sm.NewSockPath()
-				So(err, ShouldBeNil)
-				So(sockpath, ShouldNotBeEmpty)
-				So(len(sockpath), ShouldBeLessThan, 104)
-			}
-		})
+	t.Run("uds api", func(t *testing.T) {
+		path, clean := testingTempDir(t, "uds_repo")
+		defer clean()
 
-		Convey("test get/set config", FailureHalts, func() {
-			var cfg *Config
-			var val []byte
-			var apiAddr string
-			var bootstrapAddrs []string
+		sockdir, clean := testingTempDir(t, "uds_api")
+		defer clean()
 
-			// create a new config
-			cfg, err = NewConfig([]byte(sampleFakeConfig))
-			So(err, ShouldBeNil)
-			So(cfg, ShouldNotBeNil)
+		node, clean := testingNode(t, path)
+		defer clean()
 
-			// get the whole config
-			raw_cfg, err := cfg.Get()
-			So(err, ShouldBeNil)
-			So(raw_cfg, ShouldNotBeEmpty)
+		sock := filepath.Join(sockdir, "sock")
 
-			// get a fake key
-			val, err = cfg.GetKey("FAKEKEY")
-			So(err, ShouldNotBeNil)
+		err := node.ServeUnixSocketAPI(sock)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-			// get Api value
-			val, err = cfg.GetKey("Addresses.API")
-			So(err, ShouldBeNil)
+		client := http.Client{
+			Timeout: 5 * time.Second,
+			Transport: &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", sock)
+				},
+			},
+		}
 
-			// check if api value is correct
-			err = json.Unmarshal(val, &apiAddr)
-			So(err, ShouldBeNil)
-			So(apiAddr, ShouldEqual, "/ip4/127.0.0.1/tcp/5001")
-
-			// get bootstrap value
-			val, err = cfg.GetKey("Bootstrap")
-			So(err, ShouldBeNil)
-
-			// check bootstrap value
-			err = json.Unmarshal(val, &bootstrapAddrs)
-			So(err, ShouldBeNil)
-			So(len(bootstrapAddrs), ShouldBeGreaterThan, 0)
-
-			// update bootstrap value
-			err = cfg.SetKey("Bootstrap", []byte("[]"))
-			So(err, ShouldBeNil)
-
-			// get bootstrap value again
-			val, err = cfg.GetKey("Bootstrap")
-			So(err, ShouldBeNil)
-
-			// check bootstrap value again
-			err = json.Unmarshal(val, &bootstrapAddrs)
-			So(err, ShouldBeNil)
-			So(len(bootstrapAddrs), ShouldEqual, 0)
-
-		})
-
-		Convey("test default config", FailureHalts, func() {
-			var val []byte
-
-			testCfg, err = NewDefaultConfig()
-			So(err, ShouldBeNil)
-			So(testCfg, ShouldNotBeNil)
-
-			val, err = testCfg.GetKey("Identity")
-			So(err, ShouldBeNil)
-
-			err = json.Unmarshal(val, &testID)
-			So(testID.PeerID, ShouldStartWith, "Qm")
-
-			// do not bootstrap
-			err = testCfg.SetKey("Bootstrap", []byte("[]"))
-			So(err, ShouldBeNil)
-		})
-
-		Convey("test repo", FailureHalts, func() {
-			var cfg *Config
-			var ok bool
-
-			// check if repo is initialized
-			ok = RepoIsInitialized(tmpdir)
-			So(ok, ShouldBeFalse)
-
-			testCfg.SetupUnixSocketAPI(sockpath)
-
-			// init repo
-			err = InitRepo(tmpdir, testCfg)
-			So(err, ShouldBeNil)
-
-			// open repo
-			testRepo, err = OpenRepo(tmpdir)
-			So(err, ShouldBeNil)
-			So(testRepo, ShouldNotBeNil)
-
-			// get repo config
-			cfg, err = testRepo.GetConfig()
-			So(err, ShouldBeNil)
-			So(testCfg.getConfig(), ShouldResemble, cfg.getConfig())
-
-			// re check if repo is initialized
-			ok = RepoIsInitialized(tmpdir)
-			So(ok, ShouldBeTrue)
-		})
-
-		Convey("test node", FailureHalts, func() {
-			testNode, err = NewNode(testRepo)
-			So(err, ShouldBeNil)
-
-			tcpaddr, err = testNode.ServeTCPAPI("0")
-			So(err, ShouldBeNil)
-			So(tcpaddr, ShouldNotBeEmpty)
-		})
-
-		Convey("test Unix Soscket shell", FailureHalts, func() {
-			socketaddr := "/unix/" + sockpath
-			shell, err := NewShell(socketaddr)
-			So(err, ShouldBeNil)
-
-			req := shell.NewRequest("config")
-			req.Argument("Addresses.API")
-			res, err := req.Exec()
-			So(err, ShouldBeNil)
-
-			api := struct {
-				Addrs string `json:"Value"`
-			}{}
-
-			err = json.Unmarshal(res, &api)
-			So(err, ShouldBeNil)
-			So(len(api.Addrs), ShouldBeGreaterThan, 0)
-		})
-
-		Convey("test TCP shell", FailureHalts, func() {
-			shell, err := NewShell(tcpaddr)
-			So(err, ShouldBeNil)
-
-			out, err := shell.Request("id", nil)
-			So(err, ShouldBeNil)
-
-			id := struct {
-				PeerID string `json:"id"`
-			}{}
-
-			err = json.Unmarshal(out, &id)
-			So(err, ShouldBeNil)
-			So(id.PeerID, ShouldStartWith, "Qm")
-		})
+		_, err = client.Get("http://unix/api/v0/id")
+		if err != nil {
+			t.Fatal(err)
+		}
 	})
 }

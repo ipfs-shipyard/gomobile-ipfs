@@ -28,7 +28,6 @@ require (
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/pkg/errors v0.8.1
 	github.com/smartystreets/assertions v0.0.0-20190401211740-f487f9de1cd3 // indirect
-	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
 	github.com/spf13/cobra v0.0.5 // indirect
 	go.opencensus.io v0.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
