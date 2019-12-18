@@ -26,7 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import IPFS from 'react-native-ipfs';
+import IPFS from 'react-native-goipfs';
 
 const test = () => {
   console.log('NativeModules', NativeModules);

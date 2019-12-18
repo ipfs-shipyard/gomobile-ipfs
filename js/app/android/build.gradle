@@ -21,7 +21,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "${rootDir.getPath()}/../node_modules/react-native-ipfs/android/local_repo" }
+        maven { url "${rootDir.getPath()}/../node_modules/react-native-goipfs/android/local_repo" }
         mavenLocal()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm

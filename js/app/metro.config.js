@@ -17,5 +17,5 @@ module.exports = {
       },
     }),
   },
-  watchFolders: [path.join(__dirname, 'node_modules/react-native-ipfs')],
+  watchFolders: [path.join(__dirname, 'node_modules/react-native-goipfs')],
 };

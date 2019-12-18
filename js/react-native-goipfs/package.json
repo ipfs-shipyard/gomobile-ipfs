@@ -1,5 +1,5 @@
 {
-  "name": "react-native-ipfs",
+  "name": "react-native-goipfs",
   "title": "React Native Ipfs",
   "version": "1.0.0",
   "description": "TODO",
@@ -9,8 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-ipfs.git",
-    "baseUrl": "https://github.com/github_account/react-native-ipfs"
+    "url": "git+https://github.com/github_account/react-native-goipfs.git",
+    "baseUrl": "https://github.com/github_account/react-native-goipfs"
   },
   "keywords": [
     "react-native"
