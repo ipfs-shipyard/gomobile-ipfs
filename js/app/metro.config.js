@@ -5,6 +5,9 @@
  * @format
  */
 
+const path = require('path');
+const fs = require('fs');
+
 module.exports = {
   transformer: {
     getTransformOptions: async () => ({
@@ -14,4 +17,5 @@ module.exports = {
       },
     }),
   },
+  watchFolders: [path.join(__dirname, 'node_modules/react-native-ipfs')],
 };

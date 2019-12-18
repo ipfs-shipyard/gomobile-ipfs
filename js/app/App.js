@@ -14,6 +14,8 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
+  NativeModules,
 } from 'react-native';
 
 import {
@@ -24,9 +26,41 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import IPFS from 'react-native-ipfs';
+
+const test = () => {
+  console.log('NativeModules', NativeModules);
+  console.log('calling thing', Ipfs);
+  Ipfs.sampleMethod('a', 2, r => console.warn(`got: ${r}`));
+};
+
+const lessDumbTest = () => {
+  console.log('Starting lessDumbTest');
+
+  const ipfs = new IPFS();
+  console.log('Constructed IPFS object:', ipfs);
+
+  ipfs.start();
+  console.log('Started ipfs instance', ipfs.instance.id);
+
+  const cmdStr = '/id';
+  cmdRes = ipfs.command(cmdStr);
+  console.log('Executed command', cmdStr, 'on instance', ipfs.instance.id);
+  console.log('Got:');
+  console.log(JSON.stringify(cmdRes, null, 2));
+
+  ipfs.stop();
+  console.log('Stopped ipfs instance', ipfs.instance.id);
+
+  ipfs.clean();
+  console.log('Removed ipfs instance', ipfs.instance.id);
+};
+
 const App: () => React$Node = () => {
   return (
     <>
+      <Button onPress={test} title="test" />
+      <Button onPress={lessDumbTest} title="btrtest" />
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView
