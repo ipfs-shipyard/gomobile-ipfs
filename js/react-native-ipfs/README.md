@@ -9,9 +9,19 @@
 `$ react-native link react-native-ipfs`
 
 ## Usage
-```javascript
-import Ipfs from 'react-native-ipfs';
 
-// TODO: What to do with the module?
-Ipfs;
+```javascript
+import IPFS from "react-native-ipfs";
+
+const ipfs = new IPFS();
+
+ipfs.start();
+
+const response = ipfs.command("/id");
+console.log(response.ID);
+
+ipfs.stop();
+
+// Delete the native instance
+ipfs.clean();
 ```
