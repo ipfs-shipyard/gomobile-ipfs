@@ -1,5 +1,5 @@
 ALL_NODE_MODULES=node_modules $(wildcard */node_modules)
-MODULE_NAME=react-native-ipfs
+MODULE_NAME=react-native-goipfs
 LOCAL_REPO=$(MODULE_NAME)/android/local_repo
 LOCAL_BRIDGE_DIR=$(LOCAL_REPO)/ipfs/gomobile/android
 
