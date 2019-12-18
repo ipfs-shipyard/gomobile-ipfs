@@ -3,6 +3,7 @@
   "title": "React Native Ipfs",
   "version": "1.0.0",
   "description": "TODO",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
