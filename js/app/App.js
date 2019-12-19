@@ -29,38 +29,31 @@ import {
 import IPFS from 'react-native-goipfs';
 
 const test = () => {
-  console.log('NativeModules', NativeModules);
-  console.log('calling thing', Ipfs);
-  Ipfs.sampleMethod('a', 2, r => console.warn(`got: ${r}`));
-};
-
-const lessDumbTest = () => {
-  console.log('Starting lessDumbTest');
+  console.log('Starting IPFS test');
 
   const ipfs = new IPFS();
   console.log('Constructed IPFS object:', ipfs);
 
   ipfs.start();
-  console.log('Started ipfs instance', ipfs.instance.id);
+  console.log('Started ipfs instance', ipfs.id);
 
   const cmdStr = '/id';
   cmdRes = ipfs.command(cmdStr);
-  console.log('Executed command', cmdStr, 'on instance', ipfs.instance.id);
+  console.log('Executed command', cmdStr, 'on instance', ipfs.id);
   console.log('Got:');
   console.log(JSON.stringify(cmdRes, null, 2));
 
   ipfs.stop();
-  console.log('Stopped ipfs instance', ipfs.instance.id);
+  console.log('Stopped ipfs instance', ipfs.id);
 
   ipfs.clean();
-  console.log('Removed ipfs instance', ipfs.instance.id);
+  console.log('Removed ipfs instance', ipfs.id);
 };
 
 const App: () => React$Node = () => {
   return (
     <>
-      <Button onPress={test} title="test" />
-      <Button onPress={lessDumbTest} title="btrtest" />
+      <Button onPress={test} title="IPFS Test" />
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView
