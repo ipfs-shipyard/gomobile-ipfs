@@ -28,26 +28,46 @@ import {
 
 import IPFS from 'react-native-goipfs';
 
-const test = () => {
-  console.log('Starting IPFS test');
+function uuidv4() {
+  // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+const test = async () => {
+  const testId = uuidv4();
+
+  console.log('Starting IPFS test:', testId);
 
   const ipfs = new IPFS();
-  console.log('Constructed IPFS object:', ipfs);
+  console.log('Constructed IPFS object:', ipfs, ` (testId: ${testId})`);
 
-  ipfs.start();
-  console.log('Started ipfs instance', ipfs.id);
+  console.log('Starting ipfs instance:', ipfs, ` (testId: ${testId})`);
+  await ipfs.start();
+  console.log(
+    'Started ipfs instance',
+    ipfs.nativeHandle,
+    ` (testId: ${testId})`,
+  );
 
   const cmdStr = '/id';
-  cmdRes = ipfs.command(cmdStr);
-  console.log('Executed command', cmdStr, 'on instance', ipfs.id);
-  console.log('Got:');
-  console.log(JSON.stringify(cmdRes, null, 2));
+  cmdRes = await ipfs.command(cmdStr);
+  console.log(
+    'Executed command',
+    cmdStr,
+    'on instance',
+    ipfs.nativeHandle,
+    ` (testId: ${testId})`,
+  );
+  console.log('Got:', ` (testId: ${testId})`);
+  console.log(cmdRes, ` (testId: ${testId})`);
 
-  ipfs.stop();
-  console.log('Stopped ipfs instance', ipfs.id);
-
-  ipfs.clean();
-  console.log('Removed ipfs instance', ipfs.id);
+  const id = ipfs.nativeHandle;
+  await ipfs.stop();
+  console.log('Stopped ipfs instance', id, ` (testId: ${testId})`);
 };
 
 const App: () => React$Node = () => {
