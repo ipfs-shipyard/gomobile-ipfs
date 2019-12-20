@@ -30,5 +30,8 @@
   "devDependencies": {
     "react": "^16.8.3",
     "react-native": "^0.59.10"
+  },
+  "dependencies": {
+    "base-64": "^0.1.0"
   }
 }
