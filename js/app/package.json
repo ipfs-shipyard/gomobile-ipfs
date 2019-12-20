@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "react-native-goipfs": "../react-native-goipfs.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -21,7 +22,6 @@
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
-    "react-native-goipfs": "1.0.0",
     "react-test-renderer": "16.9.0",
     "wml": "^0.0.83"
   },

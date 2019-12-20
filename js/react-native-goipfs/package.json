@@ -1,9 +1,8 @@
 {
   "name": "react-native-goipfs",
-  "title": "React Native Ipfs",
-  "version": "1.0.0",
-  "description": "TODO",
-  "private": true,
+  "title": "React Native gomobile-ipfs module",
+  "version": "0.0.1",
+  "description": "Embeded go-ipfs instance exposed through a js class with asynchronous methods",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,11 +13,14 @@
     "baseUrl": "https://github.com/github_account/react-native-goipfs"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "gomobile",
+    "ipfs",
+    "gomobile-ipfs"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
+    "name": "berty team",
+    "email": "staff@berty.tech"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
