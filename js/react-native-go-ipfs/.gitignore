@@ -31,7 +31,6 @@ project.xcworkspace
 # Android/IntelliJ
 #
 build/
-local_repo/
 .idea
 .gradle
 local.properties
@@ -41,6 +40,3 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
-
-# npm
-react-native-goipfs-*.tgz 

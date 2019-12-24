@@ -10,10 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-public class IpfsPackage implements ReactPackage {
+public class GoIpfsPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new IpfsModule(reactContext));
+        return Arrays.<NativeModule>asList(new GoIpfsModule(reactContext));
     }
 
     @Override
