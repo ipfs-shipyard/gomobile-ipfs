@@ -1,11 +1,13 @@
 ALL_NODE_MODULES=node_modules $(wildcard */node_modules)
+POD_NAME=GomobileIPFS
 MODULE_NAME=react-native-go-ipfs
 LOCAL_REPO=$(MODULE_NAME)/android/local_repo
 BRIDGE_VERSION=0.0.1
 GOMOBILE_IPFS_VERSION=0.0.1
 LOCAL_BRIDGE_DIR=$(LOCAL_REPO)/ipfs/gomobile/android/$(BRIDGE_VERSION)
 LOCAL_GOMOBILE_IPFS_DIR=$(LOCAL_REPO)/ipfs/gomobile/gomobile-ipfs/$(GOMOBILE_IPFS_VERSION)
-ARCHIVE=react-native-go-ipfs.tgz
+ARCHIVE=$(MODULE_NAME).tgz
+LOCAL_POD=$(MODULE_NAME)/ios/$(POD_NAME)
 
 .PHONY: run.%
 run.%:
@@ -23,22 +25,24 @@ deps.android:
 	cp $(LOCAL_GOMOBILE_IPFS_DIR)/gomobile-ipfs-0.0.1.pom $(LOCAL_BRIDGE_DIR)/android-0.0.1.pom
 	sed -i.bak 's/<artifactId>gomobile-ipfs<\/artifactId>/<artifactId>android<\/artifactId>/' $(LOCAL_BRIDGE_DIR)/android-0.0.1.pom
 
-	cd react-native-go-ipfs && yarn pack --filename ../$(ARCHIVE)
-	cd app && yarn add ../$(ARCHIVE)
+	cd $(MODULE_NAME) && yarn pack --filename ../$(ARCHIVE)
+	cd app && yarn remove react-native-go-ipfs || true
+	cd app && yarn add file:../$(ARCHIVE)
 
 
 .PHONY: deps.ios
 deps.ios:
 	$(MAKE) -C .. build.ios
 
-	cd react-native-go-ipfs && yarn pack --filename ../$(ARCHIVE)
-	cd app && yarn add ../$(ARCHIVE)
-	cd app/ios && pod install
+	rm -fr $(LOCAL_POD)
+	mkdir -p $(LOCAL_POD)
+	cp -R ../ios/$(POD_NAME) ../ios/Frameworks ../ios/$(POD_NAME).podspec ../ios/LICENSE $(LOCAL_POD)
 
-.PHONY: re
-re: clean
-	$(MAKE) run
+	cd $(MODULE_NAME) && yarn pack --filename ../$(ARCHIVE)
+	cd app && yarn remove react-native-go-ipfs || true
+	cd app && yarn add file:../$(ARCHIVE)
+	cd app/ios && pod install
 
 .PHONY: clean
 clean:
-	rm -fr $(LOCAL_REPO) $(ALL_NODE_MODULES) $(ARCHIVE)
+	rm -fr $(LOCAL_REPO) $(LOCAL_POD) $(ALL_NODE_MODULES) $(ARCHIVE)

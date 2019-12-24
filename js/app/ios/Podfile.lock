@@ -183,7 +183,7 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
-  - react-native-go-ipfs (1.0.0):
+  - react-native-go-ipfs (1.1.0):
     - GomobileIPFS
     - React
   - React-RCTActionSheet (0.61.5):
@@ -229,7 +229,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - GomobileIPFS (from `../../../ios`)
+  - GomobileIPFS (from `../node_modules/react-native-go-ipfs/ios/GomobileIPFS`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -271,7 +271,7 @@ EXTERNAL SOURCES:
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   GomobileIPFS:
-    :path: "../../../ios"
+    :path: "../node_modules/react-native-go-ipfs/ios/GomobileIPFS"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -332,7 +332,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-go-ipfs: 6782e7d50eaf2ffac8af86b1eca797716e08a5f8
+  react-native-go-ipfs: 4b536de5600ebc7a9dad4badbea8c342858bf026
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -345,6 +345,6 @@ SPEC CHECKSUMS:
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 9ad9580494a6bc84d8139718a9e447945f50486f
+PODFILE CHECKSUM: a7e2afac9bbfd2d53c0c770bd8ce406820b46f6f
 
 COCOAPODS: 1.8.4
