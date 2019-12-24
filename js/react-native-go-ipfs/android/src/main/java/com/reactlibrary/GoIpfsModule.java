@@ -22,19 +22,19 @@ import com.facebook.react.bridge.Promise;
 
 import ipfs.gomobile.android.IPFS;
 
-public class IpfsModule extends ReactContextBaseJavaModule {
+public class GoIpfsModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private final Map<String, IPFS> instances = new HashMap<String, IPFS>();
 
-    public IpfsModule(ReactApplicationContext reactContext) {
+    public GoIpfsModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "Ipfs";
+        return "GoIpfs";
     }
 
     @ReactMethod()

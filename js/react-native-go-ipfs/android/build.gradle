@@ -55,9 +55,7 @@ android {
     }
 }
 
-
 repositories {
-    maven { url "${rootDir.getPath()}/local_repo" }
     // ref: https://www.baeldung.com/maven-local-repository
     mavenLocal()
     maven {
@@ -75,8 +73,6 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    implementation "ipfs.gomobile:gomobile-ipfs:0.0.1"
-    implementation 'ipfs.gomobile:android:0.0.1'
 }
 
 def configureReactNativePom(def pom) {

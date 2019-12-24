@@ -26,7 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import IPFS from 'react-native-goipfs';
+import IPFS from 'react-native-go-ipfs';
 
 function uuidv4() {
   // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -53,29 +53,24 @@ const test = async () => {
     ` (testId: ${testId})`,
   );
 
-  const cmdStr = '/id';
-  cmdRes = await ipfs.command(cmdStr);
+  const {ID} = await ipfs.id();
   console.log(
-    'Executed command',
-    cmdStr,
-    'on instance',
-    ipfs.nativeHandle,
-    ` (testId: ${testId})`,
+    `Executed command /id on instance ${
+      ipfs.nativeHandle
+    }, got ID=${ID} (testId: ${testId})`,
   );
-  console.log('Got:', ` (testId: ${testId})`);
-  console.log(cmdRes, ` (testId: ${testId})`);
 
-  const id = ipfs.nativeHandle;
+  const handle = ipfs.nativeHandle;
   await ipfs.stop();
-  console.log('Stopped ipfs instance', id, ` (testId: ${testId})`);
+  console.log('Stopped ipfs instance', handle, ` (testId: ${testId})`);
 };
 
 const App: () => React$Node = () => {
   return (
     <>
-      <Button onPress={test} title="IPFS Test" />
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
+        <Button onPress={test} title="IPFS Test" />
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
