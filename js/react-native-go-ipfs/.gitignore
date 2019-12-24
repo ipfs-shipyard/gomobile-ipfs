@@ -40,3 +40,8 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
+
+# local
+
+local_repo
+GomobileIPFS
