@@ -34,17 +34,17 @@ allprojects {
 }
 ```
 
-This won't be needed as soon as we publish the maven packages.
+This shouldn't be needed as soon as we publish the maven packages.
 
 ### iOS specific
 
 You need to add
-```
+```Podfile
 pod 'GomobileIPFS', :path => '../node_modules/react-native-go-ipfs/ios/GomobileIPFS'
 ```
 to your app's `ios/Podfile` like shown below
 
-```
+```Podfile
 target 'app' do
   # Pods for app
   pod 'GomobileIPFS', :path => '../node_modules/react-native-go-ipfs/ios/GomobileIPFS'
