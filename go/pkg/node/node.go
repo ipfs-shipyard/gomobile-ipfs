@@ -13,27 +13,15 @@ import (
 
 type IpfsMobile struct {
 	commandCtx ipfs_oldcmds.Context
-	// listeners   []manet.Listener
-	// muListeners sync.Mutex
-
-	IpfsNode *ipfs_core.IpfsNode
-	Repo     *MobileRepo
+	IpfsNode   *ipfs_core.IpfsNode
+	Repo       *MobileRepo
 }
 
 func (im *IpfsMobile) Close() error {
-	// for _, l := range im.listeners {
-	// 	_ = l.Close()
-	// }
-
 	return im.IpfsNode.Close()
 }
 
 func NewNode(ctx context.Context, repo *MobileRepo, mcfg *host.MobileConfig) (*IpfsMobile, error) {
-	// cfg, err := repo.Config()
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "cant get config")
-	// }
-
 	// build config
 	buildcfg := &ipfs_core.BuildCfg{
 		Online:                      true,
