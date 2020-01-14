@@ -55,8 +55,8 @@ public class RequestBuilder {
         return self
     }
 
-    public func withHeader(key: String, val: String) -> RequestBuilder {
-        self.reqb.header(key, value: val)
+    public func with(header: String, val: String) -> RequestBuilder {
+        self.reqb.header(header, value: val)
         return self
     }
 

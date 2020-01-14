@@ -30,17 +30,17 @@ public final class IPFS {
     private Shell shell;
 
     public IPFS(@NonNull Context context)
-            throws ConfigCreationException, RepoInitException, SockManagerException {
+        throws ConfigCreationException, RepoInitException, SockManagerException {
         this(context, defaultRepoPath, true);
     }
 
     public IPFS(@NonNull Context context, @NonNull String repoPath)
-            throws ConfigCreationException, RepoInitException, SockManagerException {
+        throws ConfigCreationException, RepoInitException, SockManagerException {
         this(context, repoPath, true);
     }
 
     public IPFS(@NonNull Context context, @NonNull String repoPath, boolean internalStorage)
-            throws ConfigCreationException, RepoInitException, SockManagerException {
+        throws ConfigCreationException, RepoInitException, SockManagerException {
         if (internalStorage) {
             absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
         } else {
@@ -94,12 +94,12 @@ public final class IPFS {
         return absRepoPath;
     }
 
-	synchronized public boolean isStarted() {
-		return node != null;
-	}
+    synchronized public boolean isStarted() {
+        return node != null;
+    }
 
     synchronized public void start()
-            throws NodeStartException, RepoOpenException, ShellInitException {
+        throws NodeStartException, RepoOpenException, ShellInitException {
         if (isStarted()) {
             throw new NodeStartException("Node already started");
         }
@@ -139,46 +139,19 @@ public final class IPFS {
     }
 
     synchronized public void restart()
-            throws NodeStartException, RepoOpenException, ShellInitException, NodeStopException {
+        throws NodeStartException, RepoOpenException, ShellInitException, NodeStopException {
         stop();
         start();
     }
 
-    public byte[] command(String command) throws ShellRequestException {
-        return this.command(command, null);
-    }
-
-    public byte[] command(String command, byte[] body)
-            throws ShellRequestException {
-        if (!isStarted()) {
+    public RequestBuilder newRequest(String command) throws ShellRequestException {
+        if (!this.isStarted()) {
             throw new ShellRequestException("Shell request failed: node isn't started");
         }
 
-        try {
-            return shell.request(command, body);
-        } catch (Exception err) {
-            throw new ShellRequestException("Shell request failed", err);
-        }
+        ipfs.RequestBuilder reqb = this.shell.newRequest(command);
+        return new RequestBuilder(reqb);
     }
-
-    public ArrayList<JSONObject> commandToJSONList(String command)
-            throws ShellRequestException, JSONException {
-        return this.commandToJSONList(command, null);
-    }
-
-    public ArrayList<JSONObject> commandToJSONList(String command, byte[] body)
-            throws ShellRequestException, JSONException {
-        String raw = new String(this.command(command, body));
-        ArrayList<JSONObject> jsonList = new ArrayList<>();
-        Scanner scanner = new Scanner(raw);
-
-        while(scanner.hasNextLine()) {
-            jsonList.add(new JSONObject(scanner.nextLine()));
-        }
-
-        return jsonList;
-    }
-
 
     public class ConfigCreationException extends Exception {
         ConfigCreationException(String message, Throwable err) { super(message, err); }

@@ -68,7 +68,9 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
             String cid = randomEntry.getString("cid");
             String title = randomEntry.getInt("ep") + ". " + randomEntry.getString("name");
 
-            fetchedData = ipfs.command("/cat?arg=" + cid);
+            fetchedData = ipfs.newRequest("cat")
+                .withArgument(cid)
+                .send();
 
             return title;
         } catch (Exception err) {

@@ -46,13 +46,12 @@ final class PeerCounter {
         try {
             IPFS ipfs = activity.getIpfs();
 
-            ArrayList<JSONObject> jsonList = ipfs.commandToJSONList(
-                "/swarm/peers"
-                + "?verbose=false"
-                + "&streams=false"
-                + "&latency=false"
-                + "&direction=false"
-            );
+            ArrayList<JSONObject> jsonList = ipfs.newRequest("swarm/peers")
+                .withOption("verbose", false)
+                .withOption("streams", false)
+                .withOption("latency", false)
+                .withOption("direction", false)
+                .sendToJSONList();
 
             JSONArray peerList = jsonList.get(0).getJSONArray("Peers");
             final int count = peerList.length();

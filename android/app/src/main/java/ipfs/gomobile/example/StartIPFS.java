@@ -35,7 +35,7 @@ final class StartIPFS extends AsyncTask<Void, Void, String> {
             IPFS ipfs = new IPFS(activity.getApplicationContext());
             ipfs.start();
 
-            ArrayList<JSONObject> jsonList = ipfs.commandToJSONList("/id");
+            ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
 
             activity.setIpfs(ipfs);
             return jsonList.get(0).getString("ID");
