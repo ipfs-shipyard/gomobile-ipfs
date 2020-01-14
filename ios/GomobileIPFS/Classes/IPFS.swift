@@ -44,7 +44,7 @@ public class IPFS: NSObject {
 
         self.absSockPath = try IPFS.sockManager!.newSockPath()
         #else // On simulator we can't create an UDS, see comment below
-            self.absSockPath = ""
+        self.absSockPath = ""
         #endif
 
 
@@ -58,8 +58,8 @@ public class IPFS: NSObject {
     }
 
     public func getRepoPath() -> URL {
-		return self.absRepoURL
-	}
+		    return self.absRepoURL
+	  }
 
     public func isStarted() -> Bool {
         return self.node != nil
@@ -88,10 +88,10 @@ public class IPFS: NSObject {
             throw IPFSError("UDS shell creation failed", err)
         }
         /*
-        ** On iOS simulator, temporary directory's absolute path exceeds
-        ** the length limit for Unix Domain Socket, since simulator is
-        ** only used for debug, we can safely fallback on shell over TCP
-        */
+         ** On iOS simulator, temporary directory's absolute path exceeds
+         ** the length limit for Unix Domain Socket, since simulator is
+         ** only used for debug, we can safely fallback on shell over TCP
+         */
         #else
         let maddr: String = try node.serve(onTCPPort: "0")
         if let shell = IpfsNewShell(maddr, &err) {
@@ -114,35 +114,16 @@ public class IPFS: NSObject {
         self.node = nil
     }
 
-	public func restart() throws {
-		try self.stop()
-		try self.start()
-	}
+	  public func restart() throws {
+		    try self.stop()
+		    try self.start()
+	  }
 
-    public func command(_ command: String, body: Data? = nil) throws -> Data {
-        if !self.isStarted() {
-            throw IPFSError("node is not started")
+    public func newRequest(_ command: String) throws -> RequestBuilder {
+        guard let request = self.shell?.newRequest(command) else {
+            throw IPFSError("unable to get shell, is the node started?")
         }
 
-        do {
-            if let raw = try self.shell?.request(command, body: body) {
-                return raw
-            } else {
-                throw IPFSError("request to shell failed: empty response")
-            }
-        } catch let error as NSError {
-            throw IPFSError("request to shell failed", error)
-        }
-    }
-
-    public func commandToDict(_ command: String, body: Data? = nil) throws -> [String: Any] {
-        let raw = try self.command(command, body: body)
-
-        do {
-            let json = try JSONSerialization.jsonObject(with: raw, options: [])
-            return json as! [String: Any]
-        } catch let error as NSError {
-            throw IPFSError("command response deserialization failed", error)
-        }
+        return RequestBuilder(reqb: request)
     }
 }

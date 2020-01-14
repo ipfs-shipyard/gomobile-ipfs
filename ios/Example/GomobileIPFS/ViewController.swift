@@ -47,7 +47,7 @@ class ViewController: UIViewController {
                 ViewController.ipfs = try IPFS()
                 try ViewController.ipfs!.start()
 
-                let res = try ViewController.ipfs!.commandToDict("id")
+                let res = try ViewController.ipfs!.newRequest("id").sendToDict()
                 self.peerID = (res["ID"] as! String)
             } catch let err as IPFSError {
                 error = err.localizedFullDescription
@@ -172,7 +172,7 @@ class ViewController: UIViewController {
                 let randomIndex = Int(arc4random_uniform(UInt32(self.xkcdList!.count)))
                 let randomEntry = self.xkcdList![randomIndex] as! [String: Any]
                 let cid = randomEntry["cid"] as! String
-                let fetchedData = try ViewController.ipfs!.command("/cat?arg=\(cid)");
+                let fetchedData = try ViewController.ipfs!.newRequest("cat").with(arg: cid).send()
 
                 title = "\(randomEntry["ep"] as! Int). \(randomEntry["name"] as! String)"
                 image = UIImage(data: fetchedData)!
