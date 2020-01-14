@@ -109,7 +109,7 @@ type RequestBuilder struct {
 	rb *ipfs_api.RequestBuilder
 }
 
-func (req *RequestBuilder) Exec() ([]byte, error) {
+func (req *RequestBuilder) Send() ([]byte, error) {
 	res, err := req.rb.Send(context.Background())
 	if err != nil {
 		return nil, err
@@ -121,6 +121,10 @@ func (req *RequestBuilder) Exec() ([]byte, error) {
 	}
 
 	return ioutil.ReadAll(res.Output)
+}
+
+func (req *RequestBuilder) Exec() error {
+	return req.Exec()
 }
 
 func (req *RequestBuilder) Argument(arg string) {

@@ -67,7 +67,7 @@ func TestShell(t *testing.T) {
 			for cmdk, cmdtc := range casesCommand {
 				t.Run(cmdk, func(t *testing.T) {
 					req := shell.NewRequest("id")
-					res, err := req.Exec()
+					res, err := req.Send()
 					if err != nil {
 						t.Error(err)
 					}
