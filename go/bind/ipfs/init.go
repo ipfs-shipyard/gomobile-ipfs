@@ -57,14 +57,6 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 			ResolveCacheSize: 128,
 		},
 
-		Gateway: ipfs_config.Gateway{
-			RootRedirect: "",
-			Writable:     false,
-			NoFetch:      false,
-			PathPrefixes: []string{},
-			HTTPHeaders:  map[string][]string{},
-			APICommands:  []string{},
-		},
 		Reprovider: ipfs_config.Reprovider{
 			Interval: "12h",
 			Strategy: "all",
@@ -78,12 +70,7 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 			},
 		},
 		Experimental: ipfs_config.Experiments{
-			FilestoreEnabled:     false,
-			Libp2pStreamMounting: false,
-			P2pHttpProxy:         false,
 			QUIC:                 true,
-			ShardingEnabled:      false,
-			UrlstoreEnabled:      false,
 			PreferTLS:            true,
 		},
 	}
@@ -112,15 +99,10 @@ func addressesConfig() ipfs_config.Addresses {
 			"/ip4/0.0.0.0/udp/0/quic",
 			"/ip6/::/udp/0/quic",
 		},
-		Announce:   []string{},
-		NoAnnounce: []string{},
 
 		// @FIXME: use random port here to avoid collision
 		// API:     ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43453"},
 		// Gateway: ipfs_config.Strings{"/ip4/127.0.0.1/tcp/43454"},
-
-		API:     ipfs_config.Strings{},
-		Gateway: ipfs_config.Strings{},
 	}
 }
 
