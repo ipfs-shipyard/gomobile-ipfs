@@ -12,12 +12,6 @@ import (
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 )
 
-func init() {
-	// Temporary workaround that allows gomobile-ipfs to connect to bootstrap nodes
-	// See: https://github.com/ipfs/infra/issues/378
-	libp2p_ci.MinRsaKeyBits = 1024
-}
-
 func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
 	identity, err := identityConfig(out, nBitsForKeypair)
 	if err != nil {
@@ -170,8 +164,8 @@ func defaultDatastoreConfig() ipfs_config.Datastore {
 func identityConfig(out io.Writer, nbits int) (ipfs_config.Identity, error) {
 	// TODO guard higher up
 	ident := ipfs_config.Identity{}
-	if nbits < 1024 {
-		return ident, errors.New("bitsize less than 1024 is considered unsafe")
+	if nbits < 2048 {
+		return ident, errors.New("bitsize less than 2048 is considered unsafe")
 	}
 
 	fmt.Fprintf(out, "generating %v-bit RSA keypair...", nbits)
