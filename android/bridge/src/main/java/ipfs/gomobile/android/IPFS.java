@@ -4,12 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 import ipfs.Ipfs;
 import ipfs.Config;
@@ -153,6 +148,10 @@ public final class IPFS {
         return new RequestBuilder(reqb);
     }
 
+    public static void setDNSPair(String primary, String secondary, Boolean loadFromSystem) {
+        Ipfs.setDNSPair(primary, secondary, loadFromSystem);
+    }
+
     public class ConfigCreationException extends Exception {
         ConfigCreationException(String message, Throwable err) { super(message, err); }
     }
@@ -177,7 +176,6 @@ public final class IPFS {
 
     public class ShellRequestException extends Exception {
         ShellRequestException(String message) { super(message); }
-        ShellRequestException(String message, Throwable err) { super(message, err); }
     }
 
     public class RepoInitException extends Exception {

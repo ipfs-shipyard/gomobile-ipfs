@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Random;
 
@@ -16,8 +14,11 @@ import ipfs.gomobile.android.IPFS;
 final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
     private static final String TAG = "FetchRandomXKCD";
 
+    private static final String XKCDIPNS = "/ipns/xkcd.hacdias.com";
+
     private static Random random = new Random();
-    private static JSONArray XKCDList;
+
+    private static int XKCDLatest = -1;
 
     private final WeakReference<MainActivity> activityRef;
     private boolean backgroundError;
@@ -43,36 +44,37 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
             return null;
         }
 
-        if (XKCDList == null) {
-            InputStream raw = activity.getResources().openRawResource(R.raw.xkcd);
-            try {
-                byte[] b = new byte[raw.available()];
-                if (raw.available() != raw.read(b)) {
-                    backgroundError = true;
-                    return "Error: reading XKCD list raw file failed";
-                }
-
-                JSONObject json = new JSONObject(new String(b));
-                XKCDList = json.getJSONArray("xkcd-list");
-            } catch (Exception err) {
-                backgroundError = true;
-                return MainActivity.exceptionToString(err);
-            }
-        }
+        IPFS ipfs = activity.getIpfs();
 
         try {
-            IPFS ipfs = activity.getIpfs();
-            int randomIndex = random.nextInt(XKCDList.length());
-            JSONObject randomEntry = XKCDList.getJSONObject(randomIndex);
+            if (XKCDLatest == -1) {
+                String address = String.format("%s/latest/info.json", XKCDIPNS);
+                byte[] latestRaw = ipfs.newRequest("cat")
+                    .withArgument(address)
+                    .send();
 
-            String cid = randomEntry.getString("cid");
-            String title = randomEntry.getInt("ep") + ". " + randomEntry.getString("name");
+                XKCDLatest = new JSONObject(new String(latestRaw)).getInt("num");
+            }
+
+            int randomIndex = random.nextInt(XKCDLatest) + 1;
+            String formattedIndex = String.format("%04d", randomIndex);
+
+            byte[] infoRaw = ipfs.newRequest("cat")
+                .withArgument(String.format("%s/%s/info.json", XKCDIPNS, formattedIndex))
+                .send();
+            JSONObject infoJSON = new JSONObject(new String(infoRaw));
+
+            String title = infoJSON.getString("title");
+
+            String imgURL = infoJSON.getString("img");
+            String[] imgURLSplit = imgURL.split("\\.");
+            String imgExt = imgURLSplit[imgURLSplit.length - 1].contains("png") ? "png" : "jpg";
 
             fetchedData = ipfs.newRequest("cat")
-                .withArgument(cid)
+                .withArgument(String.format("%s/%s/image.%s", XKCDIPNS, formattedIndex, imgExt))
                 .send();
 
-            return title;
+            return String.format("%d. %s", randomIndex, title);
         } catch (Exception err) {
             backgroundError = true;
             return MainActivity.exceptionToString(err);

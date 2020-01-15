@@ -81,7 +81,6 @@ public class RequestBuilder {
     }
 
     public class RequestBuilderException extends Exception {
-        RequestBuilderException(String message) { super(message); }
         RequestBuilderException(String message, Throwable err) { super(message, err); }
     }
 }
