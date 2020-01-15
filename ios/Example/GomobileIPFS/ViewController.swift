@@ -23,7 +23,9 @@ class ViewController: UIViewController {
 
     var peerID : String?
     var peerCountUpdater: PeerCountUpdater?
-    var xkcdList: NSArray?
+
+    static let XKCDIPNS = "/ipns/xkcd.hacdias.com"
+    var XKCDLatest: Int!
 
     static func getIpfs() -> IPFS? {
         return ipfs
@@ -61,14 +63,15 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async { self.displayPeerID() }
 
                 do {
-                    let xkcdJson = Bundle.main.path(forResource: "xkcd", ofType: "json", inDirectory: "Data")
-                    let raw = try Data(contentsOf: URL(fileURLWithPath: xkcdJson!), options: .mappedIfSafe)
-                    let parsedJson = try JSONSerialization.jsonObject(with: raw, options: .mutableLeaves) as! [String: Any]
-                    let xkcdList = parsedJson["xkcd-list"] as! NSArray
-                    self.xkcdList = xkcdList
+                    let list = try ViewController.ipfs!.newRequest("cat")
+                      .with(arg: "\(ViewController.XKCDIPNS)/latest/info.json")
+                      .sendToDict()
+
+                    self.XKCDLatest = (list["num"] as! Int)
+
                     DispatchQueue.main.async { self.XKCDButton.isEnabled = true }
                 } catch let error {
-                    print("Error: can't parse xkcd-list json: \(error)")
+                    print("Error: can't fetch xkcd info: \(error)")
                 }
             }
         }
@@ -169,12 +172,21 @@ class ViewController: UIViewController {
             var image: UIImage = UIImage()
 
             do {
-                let randomIndex = Int(arc4random_uniform(UInt32(self.xkcdList!.count)))
-                let randomEntry = self.xkcdList![randomIndex] as! [String: Any]
-                let cid = randomEntry["cid"] as! String
-                let fetchedData = try ViewController.ipfs!.newRequest("cat").with(arg: cid).send()
+                let randomIndex = Int(arc4random_uniform(UInt32(self.XKCDLatest))) + 1
+                let formattedIndex = String(format: "%04d", randomIndex)
 
-                title = "\(randomEntry["ep"] as! Int). \(randomEntry["name"] as! String)"
+                let fetchedInfo = try ViewController.ipfs!.newRequest("cat")
+                    .with(arg: "\(ViewController.XKCDIPNS)/\(formattedIndex)/info.json")
+                    .sendToDict()
+
+                let imgURL = fetchedInfo["img"] as! String
+                let imgExt = imgURL.components(separatedBy: ".").last!.contains("png") ? "png" : "jpg"
+
+                let fetchedData = try ViewController.ipfs!.newRequest("cat")
+                    .with(arg: "\(ViewController.XKCDIPNS)/\(formattedIndex)/image.\(imgExt)")
+                    .send()
+
+                title = "\(randomIndex). \(fetchedInfo["title"] as! String)"
                 image = UIImage(data: fetchedData)!
             } catch let err as IPFSError {
                 error = err.localizedFullDescription
