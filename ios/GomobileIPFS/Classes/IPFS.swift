@@ -126,4 +126,8 @@ public class IPFS: NSObject {
 
         return RequestBuilder(reqb: request)
     }
+
+    public func setDNSPair(_ dnsaddr1: String, _ dnsaddr2: String, loadFromSystem: Bool = false) {
+        IpfsSetDNSPair(dnsaddr1, dnsaddr2, loadFromSystem)
+    }
 }

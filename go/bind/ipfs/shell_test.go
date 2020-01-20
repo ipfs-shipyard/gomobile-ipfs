@@ -19,8 +19,24 @@ func testIDRequest(t *testing.T, raw_json []byte) {
 	if !strings.HasPrefix(id.PeerID, "Qm") {
 		t.Fatalf("PeerID isn't prefixed by `Qm` got `%.2s` has prefix instead", id.PeerID)
 	}
-
 }
+
+// const xkcbURI = "/ipns/xkcd.hacdias.com/latest/info.json"
+
+// func testCatRequest(t *testing.T, raw_json []byte) {
+// 	latest := struct {
+// 		Num int `json:"num"`
+// 	}{}
+
+// 	err := json.Unmarshal(raw_json, &latest)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+
+// 	if latest.Num == 0 {
+// 		t.Fatalf("latest.Num should be > 0, got `%d`", latest.Num)
+// 	}
+// }
 
 func TestShell(t *testing.T) {
 	sm, clean := testingSockmanager(t)
@@ -47,9 +63,11 @@ func TestShell(t *testing.T) {
 	// commands
 	casesCommand := map[string]struct {
 		Command      string
+		Args         []string
 		AssertMethod func(t *testing.T, raw_json []byte)
 	}{
-		"id": {"id", testIDRequest},
+		"id": {"id", []string{}, testIDRequest},
+		// "cat xkcb": {"cat", []string{xkcbURI}, testCatRequest},
 	}
 
 	for clientk, clienttc := range casesClient {
@@ -66,7 +84,11 @@ func TestShell(t *testing.T) {
 
 			for cmdk, cmdtc := range casesCommand {
 				t.Run(cmdk, func(t *testing.T) {
-					req := shell.NewRequest("id")
+					req := shell.NewRequest(cmdtc.Command)
+					for _, arg := range cmdtc.Args {
+						req.Argument(arg)
+					}
+
 					res, err := req.Send()
 					if err != nil {
 						t.Error(err)

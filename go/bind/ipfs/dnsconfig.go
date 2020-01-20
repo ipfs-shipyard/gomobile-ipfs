@@ -9,7 +9,7 @@ import (
 	_ "unsafe"
 )
 
-// DNS resolve workaround for android in pure go
+// DNS resolve workaround for Android & iOS in pure go
 
 //go:linkname defaultNS net.defaultNS
 var defaultNS []string
@@ -48,6 +48,7 @@ type resolverConfig struct {
 
 //go:linkname (*resolverConfig).tryUpdate net.(*resolverConfig).tryUpdate
 func (conf *resolverConfig) tryUpdate(name string)
+
 // Need an empty .s file (dnsconfig_empty.s)
 
 func setDefaultNS(addrs []string, loadFromSystem bool) {
@@ -70,5 +71,5 @@ func SetDNSPair(primary, secondary string, loadFromSystem bool) {
 
 func init() {
 	// Set DNSWatch as DNS provider by default (privacy-focused provider)
-	setDefaultNS([]string{"84.200.69.80:53", "84.200.70.40:53"}, false)
+	SetDNSPair("84.200.69.80:53", "84.200.70.40:53", false)
 }
