@@ -36,14 +36,6 @@ public class RequestBuilder {
         return jsonList;
     }
 
-    public void exec() throws RequestBuilderException {
-        try {
-            this.reqb.exec();
-        } catch (Exception err) {
-            throw new RequestBuilderException("failed to send request", err);
-        }
-    }
-
     // Arguments
     public RequestBuilder withArgument(String arg) {
         this.reqb.argument(arg);

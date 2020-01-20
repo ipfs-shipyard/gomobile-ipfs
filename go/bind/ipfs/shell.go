@@ -123,10 +123,6 @@ func (req *RequestBuilder) Send() ([]byte, error) {
 	return ioutil.ReadAll(res.Output)
 }
 
-func (req *RequestBuilder) Exec() error {
-	return req.Exec()
-}
-
 func (req *RequestBuilder) Argument(arg string) {
 	req.rb.Arguments(arg)
 }

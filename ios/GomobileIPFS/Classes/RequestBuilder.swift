@@ -69,8 +69,4 @@ public class RequestBuilder {
         let json = try JSONSerialization.jsonObject(with: res, options: [])
         return json as! [String: Any]
     }
-
-    public func exec() throws {
-        try self.reqb.exec()
-    }
 }
