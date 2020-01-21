@@ -113,11 +113,7 @@ public final class IPFS {
             throw new NodeStartException("Node start failed", e);
         }
 
-        try {
-            shell = Ipfs.newUDSShell(absSockPath);
-        } catch (Exception e) {
-            throw new ShellInitException("Shell init failed", e);
-        }
+        shell = Ipfs.newUDSShell(absSockPath);
     }
 
     synchronized public void stop() throws NodeStopException {
@@ -168,10 +164,6 @@ public final class IPFS {
 
     public class SockManagerException extends Exception {
         SockManagerException(String message, Throwable err) { super(message, err); }
-    }
-
-    public class ShellInitException extends Exception {
-        ShellInitException(String message, Throwable err) { super(message, err); }
     }
 
     public class ShellRequestException extends Exception {

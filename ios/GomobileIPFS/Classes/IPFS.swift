@@ -47,7 +47,6 @@ public class IPFS: NSObject {
         self.absSockPath = ""
         #endif
 
-
         // init repo if needed
         if !(try Repo.isInitialized(url: absRepoURL)) {
             let config = try Config.defaultConfig()
@@ -76,17 +75,10 @@ public class IPFS: NSObject {
         // init node
         let node = try Node(repo)
 
-        // serve api
-        var err: NSError?
-
         // Create a shell over UDS on normal devices
         #if !targetEnvironment(simulator)
         try node.serve(onUDS: self.absSockPath)
-        if let shell = IpfsNewUDSShell(self.absSockPath, &err) {
-            self.shell = shell
-        } else {
-            throw IPFSError("UDS shell creation failed", err)
-        }
+        self.shell = IpfsNewUDSShell(self.absSockPath)
         /*
          ** On iOS simulator, temporary directory's absolute path exceeds
          ** the length limit for Unix Domain Socket, since simulator is
@@ -94,11 +86,7 @@ public class IPFS: NSObject {
          */
         #else
         let maddr: String = try node.serve(onTCPPort: "0")
-        if let shell = IpfsNewShell(maddr, &err) {
-            self.shell = shell
-        } else {
-            throw IPFSError("TCP shell creation failed", err)
-        }
+        self.shell = IpfsNewShell(maddr)
         #endif
 
         self.repo = repo

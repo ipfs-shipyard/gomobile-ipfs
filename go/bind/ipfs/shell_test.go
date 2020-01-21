@@ -2,11 +2,10 @@ package ipfs
 
 import (
 	"encoding/json"
-	"strings"
 	"testing"
 )
 
-func testIDRequest(t *testing.T, raw_json []byte) {
+func testIDRequest(t *testing.T, node *Node, raw_json []byte) {
 	id := struct {
 		PeerID string `json:"id"`
 	}{}
@@ -16,27 +15,31 @@ func testIDRequest(t *testing.T, raw_json []byte) {
 		t.Fatal(err)
 	}
 
-	if !strings.HasPrefix(id.PeerID, "Qm") {
-		t.Fatalf("PeerID isn't prefixed by `Qm` got `%.2s` has prefix instead", id.PeerID)
+	nodeID := node.ipfsMobile.IpfsNode.Identity.String()
+	if nodeID != id.PeerID {
+		t.Fatalf("PeerID should be equal to `%s` got `%s`", nodeID, id.PeerID)
 	}
 }
 
-// const xkcbURI = "/ipns/xkcd.hacdias.com/latest/info.json"
+func testConfigRequest(t *testing.T, node *Node, raw_json []byte) {
+	nodeConfig, err := node.ipfsMobile.IpfsNode.Repo.Config()
+	if err != nil {
+		t.Fatalf("unable to get node config: %s", err)
+	}
 
-// func testCatRequest(t *testing.T, raw_json []byte) {
-// 	latest := struct {
-// 		Num int `json:"num"`
-// 	}{}
+	config := struct {
+		Value string `json:"Value"`
+	}{}
 
-// 	err := json.Unmarshal(raw_json, &latest)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+	err = json.Unmarshal(raw_json, &config)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	if latest.Num == 0 {
-// 		t.Fatalf("latest.Num should be > 0, got `%d`", latest.Num)
-// 	}
-// }
+	if nodeConfig.Identity.PeerID != config.Value {
+		t.Fatalf("config.Identity should be equal to `%s` got `%s`", nodeConfig.Identity.PeerID, config.Value)
+	}
+}
 
 func TestShell(t *testing.T) {
 	sm, clean := testingSockmanager(t)
@@ -61,13 +64,13 @@ func TestShell(t *testing.T) {
 	}
 
 	// commands
-	casesCommand := map[string]struct {
+	casesCommand := []struct {
 		Command      string
 		Args         []string
-		AssertMethod func(t *testing.T, raw_json []byte)
+		AssertMethod func(t *testing.T, node *Node, raw_json []byte)
 	}{
-		"id": {"id", []string{}, testIDRequest},
-		// "cat xkcb": {"cat", []string{xkcbURI}, testCatRequest},
+		{"id", []string{}, testIDRequest},
+		{"config", []string{"Identity.PeerID"}, testConfigRequest},
 	}
 
 	for clientk, clienttc := range casesClient {
@@ -77,13 +80,9 @@ func TestShell(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			shell, err := NewShell(maddr)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			for cmdk, cmdtc := range casesCommand {
-				t.Run(cmdk, func(t *testing.T) {
+			shell := NewShell(maddr)
+			for _, cmdtc := range casesCommand {
+				t.Run(cmdtc.Command, func(t *testing.T) {
 					req := shell.NewRequest(cmdtc.Command)
 					for _, arg := range cmdtc.Args {
 						req.Argument(arg)
@@ -94,7 +93,7 @@ func TestShell(t *testing.T) {
 						t.Error(err)
 					}
 
-					cmdtc.AssertMethod(t, res)
+					cmdtc.AssertMethod(t, node, res)
 				})
 			}
 

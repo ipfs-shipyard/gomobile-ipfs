@@ -5,11 +5,10 @@ go 1.13
 require (
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
 	github.com/ipfs/go-ipfs v0.4.22-0.20200103222221-2b9a2d5eda90
-	github.com/ipfs/go-ipfs-api v0.0.2
+	github.com/ipfs/go-ipfs-api v0.0.3
 	github.com/ipfs/go-ipfs-config v0.2.0
 	github.com/libp2p/go-libp2p v0.5.0
 	github.com/libp2p/go-libp2p-core v0.3.0
-	github.com/libp2p/go-libp2p-metrics v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.2.0
 	github.com/multiformats/go-multiaddr-net v0.1.1
 	github.com/pkg/errors v0.8.1
