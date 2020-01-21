@@ -96,7 +96,10 @@ func NewNode(r *Repo) (*Node, error) {
 		return nil, err
 	}
 
-	repo := &mobile_node.MobileRepo{r.irepo, r.path}
+	repo := &mobile_node.MobileRepo{
+		Repo: r.irepo,
+		Path: r.path,
+	}
 	mnode, err := mobile_node.NewNode(ctx, repo, &mobile_host.MobileConfig{})
 	if err != nil {
 		return nil, err

@@ -94,7 +94,7 @@ public final class IPFS {
     }
 
     synchronized public void start()
-        throws NodeStartException, RepoOpenException, ShellInitException {
+        throws NodeStartException, RepoOpenException {
         if (isStarted()) {
             throw new NodeStartException("Node already started");
         }
@@ -130,7 +130,7 @@ public final class IPFS {
     }
 
     synchronized public void restart()
-        throws NodeStartException, RepoOpenException, ShellInitException, NodeStopException {
+        throws NodeStartException, RepoOpenException, NodeStopException {
         stop();
         start();
     }

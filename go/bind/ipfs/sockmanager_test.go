@@ -75,7 +75,7 @@ func TestSockmanagerNewPath(t *testing.T) {
 
 	// try to create a sock on an already created one
 	sm.counter = 0 // reset
-	sock, err = sm.NewSockPath()
+	_, err = sm.NewSockPath()
 	if err == nil {
 		t.Fatal("new sock path should fail on an already created file")
 	}
