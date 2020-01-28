@@ -8,7 +8,7 @@
   <packaging>aar</packaging>
   <name>gomobile-ipfs</name>
   <description>Gomobile IPFS core (go-ipfs + bridge)</description>
-  <url>https://github.com/berty/gomobile-ipfs</url>
+  <url>https://github.com/ipfs-shipyard/gomobile-ipfs</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>

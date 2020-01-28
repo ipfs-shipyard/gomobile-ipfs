@@ -13,8 +13,8 @@ import (
 	"net"
 	"sync"
 
-	mobile_host "github.com/berty/gomobile-ipfs/go/pkg/host"
-	mobile_node "github.com/berty/gomobile-ipfs/go/pkg/node"
+	mobile_host "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/host"
+	mobile_node "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
 
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr-net"

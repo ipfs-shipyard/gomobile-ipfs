@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	host "github.com/berty/gomobile-ipfs/go/pkg/host"
+	host "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/host"
 
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_oldcmds "github.com/ipfs/go-ipfs/commands"
