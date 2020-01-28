@@ -4,7 +4,7 @@ ANDROID_DIR = $(MAKEFILE_DIR)/android
 IOS_DIR = $(MAKEFILE_DIR)/ios
 GO_SRC = $(shell find $(GO_DIR) -not \( -path $(GO_DIR)/vendor -prune \) -name \*.go)
 
-BIND_PACKAGE = github.com/berty/gomobile-ipfs/go/bind/ipfs
+BIND_PACKAGE = github.com/ipfs-shipyard/gomobile-ipfs/go/bind/ipfs
 GOMOBILE = $(GOPATH)/bin/gomobile
 GOMOBILE_OPT ?=
 ADDITIONAL_GO_PKG ?=
