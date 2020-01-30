@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.Promise;
 
 import ipfs.gomobile.android.IPFS;
+import ipfs.gomobile.android.RequestBuilder;
 
 public class GoIpfsModule extends ReactContextBaseJavaModule {
 
@@ -63,8 +64,10 @@ public class GoIpfsModule extends ReactContextBaseJavaModule {
         // same overloading problem that for construct()
         try {
             // sadly we can't directly pass byte arrays through the bridge so we have to use base64 strings
-            byte[] cmdBody = b64Body == null ? null : Base64.decode(b64Body, Base64.DEFAULT);
-            byte[] response = this.instances.get(handle).command(cmdStr, cmdBody);
+            RequestBuilder rb = this.instances.get(handle).newRequest(cmdStr);
+            if (b64Body != null)
+              rb = rb.withBody(Base64.decode(b64Body, Base64.DEFAULT));
+            byte[] response = rb.send();
             String b64Res = response == null ? null : Base64.encodeToString(response, Base64.DEFAULT);
             promise.resolve(b64Res);
         } catch(Exception e) {
