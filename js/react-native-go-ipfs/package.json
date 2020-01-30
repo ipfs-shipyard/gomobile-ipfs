@@ -1,7 +1,7 @@
 {
   "name": "react-native-go-ipfs",
   "title": "React Native gomobile-ipfs module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Embeded go-ipfs instance exposed through a js class with asynchronous methods. Alpha software, use at your own risk!",
   "main": "index.js",
   "scripts": {

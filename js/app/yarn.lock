@@ -5230,8 +5230,8 @@ react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
 "react-native-go-ipfs@file:../react-native-go-ipfs.tgz":
-  version "1.1.0"
-  resolved "file:../react-native-go-ipfs.tgz#f4f4d0e1fa0158f6db4efcbf08c14a56d9f37978"
+  version "0.4.0"
+  resolved "file:../react-native-go-ipfs.tgz#b3ed6884ec3c210b54838c6c2967e2d1b6540506"
   dependencies:
     base-64 "^0.1.0"
 
