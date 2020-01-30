@@ -72,6 +72,8 @@ repositories {
 
 dependencies {
     //noinspection GradleDynamicVersion
+    implementation 'ipfs.gomobile:android:0.0.1'
+    implementation 'ipfs.gomobile:gomobile-ipfs:0.0.1'
     implementation 'com.facebook.react:react-native:+'  // From node_modules
 }
 
