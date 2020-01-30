@@ -9,8 +9,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-go-ipfs.git",
-    "baseUrl": "https://github.com/github_account/react-native-go-ipfs"
+    "url": "https://github.com/ipfs-shipyard/gomobile-ipfs.git",
+    "directory": "js/react-native-go-ipfs"
   },
   "keywords": [
     "react-native",
