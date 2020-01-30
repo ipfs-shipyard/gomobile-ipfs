@@ -96,7 +96,7 @@ public class GoIpfsModule extends ReactContextBaseJavaModule {
     }
 
     private String register(@NonNull IPFS instance) {
-        String handle = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+        String handle = UUID.randomUUID().toString();
         this.instances.put(handle, instance);
         return handle;
     }
