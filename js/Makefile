@@ -27,6 +27,7 @@ deps.android:
 
 	cd $(MODULE_NAME) && yarn pack --filename ../$(ARCHIVE)
 	cd app && yarn remove react-native-go-ipfs || true
+	yarn cache clean
 	cd app && yarn add file:../$(ARCHIVE)
 
 
@@ -40,6 +41,7 @@ deps.ios:
 
 	cd $(MODULE_NAME) && yarn pack --filename ../$(ARCHIVE)
 	cd app && yarn remove react-native-go-ipfs || true
+	yarn cache clean
 	cd app && yarn add file:../$(ARCHIVE)
 	cd app/ios && pod install
 
