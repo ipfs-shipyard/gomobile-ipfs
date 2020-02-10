@@ -23,6 +23,13 @@ _:warning: this repo is still experimental, contributions are very welcome_
 
 **TODO**
 
+## Lead Maintainers
+
+* [Antoine Eddi](https://github.com/aeddi)
+* [Guilhem Fanton](https://github.com/gfanton)
+* [Guillaume Louvigny](https://github.com/glouvigny)
+* [Manfred Touron](https://github.com/moul)
+
 ## License
 
 Dual [MIT](./LICENSE-MIT)/[Apache-2.0](./LICENSE-APACHE) license
