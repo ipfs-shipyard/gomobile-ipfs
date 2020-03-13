@@ -1,4 +1,4 @@
-package ipfs
+package core
 
 import (
 	"path/filepath"

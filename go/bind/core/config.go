@@ -1,8 +1,7 @@
-package ipfs
+package core
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 
 	ipfs_config "github.com/ipfs/go-ipfs-config"
@@ -87,39 +86,4 @@ func (c *Config) GetKey(key string) ([]byte, error) {
 	}
 
 	return json.Marshal(&val)
-}
-
-// Helpers
-
-// Setup unix domain socket api
-func (c *Config) SetupUnixSocketAPI(sockpath string) {
-	// add it to our api config
-	c.cfg.Addresses.API = append(c.cfg.Addresses.API, "/unix/"+sockpath)
-}
-
-// Setup unix domain socket gateway
-func (c *Config) SetupUnixSocketGateway(sockpath string) {
-	c.cfg.Addresses.Gateway = append(c.cfg.Addresses.Gateway, "/unix/"+sockpath)
-}
-
-// Setup tcp api
-func (c *Config) SetupTCPAPI(port string) {
-	c.cfg.API.HTTPHeaders = map[string][]string{
-		"Access-Control-Allow-Credentials": []string{"true"},
-		"Access-Control-Allow-Origin":      []string{"http://127.0.0.1:" + port},
-		"Access-Control-Allow-Methods":     []string{"GET", "PUT", "POST"},
-	}
-
-	c.cfg.Addresses.API = append(c.cfg.Addresses.API, fmt.Sprintf("/ip4/127.0.0.1/tcp/"+port))
-}
-
-// Setup tcp gateway
-func (c *Config) SetupTCPGateway(port string) {
-	c.cfg.Gateway.HTTPHeaders = map[string][]string{
-		"Access-Control-Allow-Origin":  []string{"http://127.0.0.1:" + port},
-		"Access-Control-Allow-Methods": []string{"GET"},
-		"Access-Control-Allow-Headers": []string{"X-Requested-With", "Range", "User-Agent"},
-	}
-
-	c.cfg.Addresses.Gateway = append(c.cfg.Addresses.Gateway, fmt.Sprintf("/ip4/127.0.0.1/tcp/"+port))
 }

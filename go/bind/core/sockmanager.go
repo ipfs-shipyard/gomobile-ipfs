@@ -1,6 +1,6 @@
 // sockmanager manage sock path to keep it short
 
-package ipfs
+package core
 
 import (
 	"fmt"
