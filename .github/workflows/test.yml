@@ -1,0 +1,164 @@
+---
+name: Test
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  go_core:
+    name: Test and build Go Core
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+
+      - name: Set GOPATH in env
+        run: |
+          echo "##[set-env name=GOPATH;]$(go env GOPATH)"
+          echo "##[add-path]$(go env GOPATH)/bin"
+          mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
+          ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
+        shell: bash
+
+      - name: Restore Go mod cache
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go/go.sum') }}
+
+      - name: Install Go mod
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: go
+        run: GO111MODULE=on go mod vendor
+
+      - name: Run Go Core tests
+        working-directory: go
+        run: go test ./...
+
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Set TARGET_SDK in env
+        run: |
+          pip3 install -r packages/utils/yaml_get/requirements.txt
+          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          export GET_KEY=global.android.target_sdk_version
+          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
+
+      - name: Install Android SDK
+        run:
+          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+          BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
+          BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+          PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
+          PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+
+          $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
+          > /dev/null
+
+      - name: Build Go Core
+        working-directory: packages
+        run: |
+          make build_core.android GOMOBILE_TARGET=/amd64
+          make build_core.ios
+
+      - name: Save build outputs
+        uses: actions/upload-artifact@v1
+        with:
+          name: build-${{ github.run_id }}
+          path: packages/build
+
+  android_bridge:
+    name: Test Android Bridge
+    needs: go_core
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Restore build outputs
+        uses: actions/download-artifact@v1
+        with:
+          name: build-${{ github.run_id }}
+          path: packages/build
+
+      - name: Set TARGET_SDK
+        run: |
+          pip3 install -r packages/utils/yaml_get/requirements.txt
+          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          export GET_KEY=global.android.target_sdk_version
+          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
+
+      - name: Install Android SDK and Emulator
+        run:
+          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+          BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
+          BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+          PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
+          PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+
+          $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" emulator
+          "system-images;android-$TARGET_SDK;default;x86_64" > /dev/null
+
+          echo no | $HOME/Library/Android/sdk/tools/bin/avdmanager
+          create avd --force -n test --abi 'default/x86_64'
+          --package "system-images;android-$TARGET_SDK;default;x86_64"
+
+      - name: Run Android Bridge tests
+        working-directory: android
+        run:
+          $HOME/Library/Android/sdk/emulator/emulator -avd test -no-boot-anim
+          -no-window -no-snapshot-save -gpu swiftshader_indirect -noaudio
+          & EMULATOR_PID=$!;
+
+          $HOME/Library/Android/sdk/platform-tools/adb wait-for-device shell
+          'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done;';
+
+          ./gradlew bridge:test bridge:connectedAndroidTest; kill $EMULATOR_PID
+
+      - name: Build Android Bridge
+        working-directory: android
+        run: ./gradlew bridge:javadocJar bridge:sourcesJar bridge:assemble
+
+  ios_bridge:
+    name: Test iOS Bridge
+    needs: go_core
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Restore build outputs
+        uses: actions/download-artifact@v1
+        with:
+          name: build-${{ github.run_id }}
+          path: packages/build
+
+      - name: Run iOS Bridge tests
+        working-directory: ios/Bridge
+        run:
+          xcodebuild test -project GomobileIPFS.xcodeproj
+          -scheme GomobileIPFSTests -sdk iphonesimulator
+          -destination "platform=iOS Simulator,name=iPhone 11,OS=13.3"
+
+      - name: Build iOS Bridge
+        working-directory: ios/Bridge
+        run: |
+          xcodebuild -project GomobileIPFS.xcodeproj -scheme GomobileIPFS
+          pip3 install -r ../../packages/utils/cocoapod_format/requirements.txt
+          ../../packages/utils/cocoapod_format/cocoapod_format_bridge.py
