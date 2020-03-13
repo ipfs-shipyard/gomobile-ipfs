@@ -23,6 +23,7 @@ extension FileManager {
     }
 }
 
+/// IPFS is a class that wraps a go-ipfs node and its shell over UDS
 public class IPFS {
     public static let defaultRepoPath = "ipfs/repo"
 
@@ -35,6 +36,12 @@ public class IPFS {
     private let absRepoURL: URL
     private let absSockPath: String
 
+    /// Class constructor using repoPath passed as parameter on internal storage
+    /// - Parameter repoPath: The path of the go-ipfs repo (default: `ipfs/repo`)
+    /// - Throws:
+    ///     - `SockManagerError`: If the initialization of SockManager failed
+    ///     - `ConfigError`: If the creation of the config failed
+    ///     - `RepoError`: If the initialization of the repo failed
     public init(_ repoPath: String = defaultRepoPath) throws {
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         self.absRepoURL = absUserUrl.appendingPathComponent(repoPath, isDirectory: true)
@@ -58,14 +65,22 @@ public class IPFS {
         }
     }
 
+    /// Returns the repo path as an URL
+    /// - Returns: The repo path
     public func getRepoPath() -> URL {
 		    return self.absRepoURL
 	  }
 
+    /// Returns True if this IPFS instance is "started" by checking if the underlying go-ipfs node is instantiated
+    /// - Returns: True, if this IPFS instance is started
     public func isStarted() -> Bool {
         return self.node != nil
     }
 
+    /// Starts this IPFS instance
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo failed
+    ///     - `NodeError`: If the node is already started or if its startup fails
     public func start() throws {
         if self.isStarted() {
             throw IPFSError("node already started")
@@ -95,6 +110,8 @@ public class IPFS {
         self.node = node
     }
 
+    /// Stops this IPFS instance
+    /// - Throws: `IPFSError`: If the node is already stopped or if its stop fails
     public func stop() throws {
         if !self.isStarted() {
             throw IPFSError("node already stopped")
@@ -104,11 +121,19 @@ public class IPFS {
         self.node = nil
     }
 
+    /// Restarts this IPFS instance
+    /// - Throws:
+    ///     - `IPFSError`: If the node is already stopped or if its stop fails
+    ///     - `RepoError`: If the opening of the repo failed
     public func restart() throws {
         try self.stop()
         try self.start()
     }
 
+    /// Creates and returns a RequestBuilder associated to this IPFS instance shell
+    /// - Parameter command: The command of the request
+    /// - Throws: `IPFSError`: If the request creaton failed
+    /// - Returns: A RequestBuilder based on the command passed as parameter
     public func newRequest(_ command: String) throws -> RequestBuilder {
         guard let request = self.shell?.newRequest(command) else {
             throw IPFSError("unable to get shell, is the node started?")
@@ -117,6 +142,10 @@ public class IPFS {
         return RequestBuilder(reqb: request)
     }
 
+    /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
+    /// - Parameters:
+    ///   - dnsaddr1: The primary DNS address in the form `<ip4>:<port>`
+    ///   - dnsaddr2: The secondary DNS address in the form `<ip4>:<port>`
     public func setDNSPair(_ dnsaddr1: String, _ dnsaddr2: String) {
         CoreSetDNSPair(dnsaddr1, dnsaddr2, false)
     }

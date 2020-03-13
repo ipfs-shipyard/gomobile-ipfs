@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// IPFSError is a base error for IPFS Bridge module (subclass of NSError)
 public class IPFSError: NSError {
     private static let code: Int = 1
     private static let domain: String = "IPFS"

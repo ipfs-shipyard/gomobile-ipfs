@@ -8,6 +8,7 @@
 import Foundation
 import Core
 
+/// ConfigError is a Config specific error (subclass of IPFSError)
 public class ConfigError: IPFSError {
     private static var code: Int = 2
     private static var subdomain: String = "Config"
@@ -21,13 +22,21 @@ public class ConfigError: IPFSError {
     }
 }
 
+/// Config is a class that wraps a golang `config` object
+///
+/// **Should not be used on its own**
 public class Config {
     let goConfig: CoreConfig
 
+    /// Class constructor using a golang `config` object passed as parameter as config instance
+    /// - Parameter config: A golang `config` object
     public init(_ config: CoreConfig) {
         self.goConfig = config
     }
 
+    /// Returns a default golang `config` object
+    /// - Throws: `ConfigError`: If the creation of the config failed
+    /// - Returns: A golang `config` object
     public class func defaultConfig() throws -> Config {
         var err: NSError?
 
@@ -38,6 +47,9 @@ public class Config {
         }
     }
 
+    /// Returns an empty golang `config` object
+    /// - Throws: `ConfigError`: If the creation of the config failed
+    /// - Returns: A golang `config` object
     public class func emptyConfig() throws -> Config {
         var err: NSError?
 
@@ -48,6 +60,10 @@ public class Config {
         }
     }
 
+    /// Returns a golang `config` object based on the dict passed as parameter
+    /// - Parameter dict: The dict containing the config to create
+    /// - Throws: `ConfigError`: If the creation of the config failed
+    /// - Returns: A golang `config` object
     public class func configFromDict(dict: [String: Any]) throws -> Config {
         var err: NSError?
 
@@ -60,6 +76,11 @@ public class Config {
         }
     }
 
+    /// Sets a key and its value in the config
+    /// - Parameters:
+    ///   - key: The key to set
+    ///   - dict: A dict containing the value to set
+    /// - Throws: `ConfigError`: If the setting of the key failed
     public func setKey(key: String, dict: [String: Any]) throws {
         do {
             let json = try JSONSerialization.data(withJSONObject: dict)
@@ -69,6 +90,10 @@ public class Config {
         }
     }
 
+    /// Gets the value associated to the key passed as parameter in the config
+    /// - Parameter key: The key to get
+    /// - Throws: `ConfigError`: If the getting of the key failed
+    /// - Returns: A dict containing the value associated to the key passed as parameter
     public func getKey(key: String) throws -> [String: Any] {
         do {
             let rawJson = try self.goConfig.getKey(key)

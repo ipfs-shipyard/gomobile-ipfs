@@ -8,6 +8,7 @@
 import Foundation
 import Core
 
+/// SockManagerError is a SockManger specific error (subclass of IPFSError)
 public class SockManagerError: IPFSError {
     private static var code: Int = 5
     private static var subdomain: String = "SockManager"
@@ -21,9 +22,15 @@ public class SockManagerError: IPFSError {
     }
 }
 
+/// SockManager is a class that wraps a golang `sockManager` object
+///
+/// **Should not be used on its own**
 public class SockManager {
     let sockManager: CoreSockManager
 
+    /// Class constructor using sockBasePath passed as parameter as UDS base path
+    /// - Parameter sockBasePath: The path where the UDS will be created
+    /// - Throws: `SockManagerError`: If the initialization of the socket manager failed
     public init(_ sockBasePath: URL) throws {
         var err: NSError?
 
@@ -34,6 +41,9 @@ public class SockManager {
         }
     }
 
+    /// Creates an UDS and returns its path
+    /// - Throws: `SockManagerError`: If the socket creation failed
+    /// - Returns: The path of the created socket
     public func newSockPath() throws -> String {
         var err: NSError?
 
