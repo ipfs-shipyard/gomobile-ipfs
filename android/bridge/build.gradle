@@ -1,16 +1,21 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.4'
+}
+
+def manifest = rootProject.ext.manifest
 
 android {
-    compileSdkVersion 29
-
+    compileSdkVersion manifest.global.android.compile_sdk_version
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 29
+        minSdkVersion manifest.global.android.min_sdk_version
+        targetSdkVersion manifest.global.android.target_sdk_version
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -21,14 +26,19 @@ android {
         }
     }
 
+   lintOptions {
+       htmlReport false
+       warningsAsErrors true
+       abortOnError true
+   }
 }
-
-String libVersion = new File("${rootDir.getPath()}/../version").readLines()[0]
 
 dependencies {
-    implementation "ipfs.gomobile:gomobile-ipfs:$libVersion"
+    implementation "$manifest.global.android.group_id:$manifest.go_core.android.artifact_id:$rootProject.ext.version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+apply from: 'publish.gradle'
