@@ -1,6 +1,6 @@
 module github.com/ipfs-shipyard/gomobile-ipfs/go
 
-go 1.13
+go 1.14
 
 require (
 	github.com/ipfs/go-ipfs v0.4.22-0.20200131155003-6e6cb2e53590

@@ -1,0 +1,164 @@
+---
+name: Lint
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint_editorconfig:
+    name: Lint EditorConfig
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Lint EditorConfig
+        uses: snow-actions/eclint@v1.0.1
+        with:
+          args: 'check'
+
+  lint_markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Lint Markdown
+        uses: nosborn/github-action-markdown-cli@v1.1.1
+        with:
+          files: .
+          ignore_files: CHANGELOG.md
+
+  lint_yaml:
+    name: Lint Yaml
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Lint Yaml
+        uses: ibiqlik/action-yamllint@master
+        with:
+          strict: true
+          config_data: |
+            extends: default
+            rules:
+              truthy:
+                allowed-values: ['true', 'false', 'on']
+
+  lint_python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Lint Python
+        uses: andymckay/pycodestyle-action@0.1.3
+
+  lint_java:
+    name: Lint Java/Android
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+
+      - name: Set GOPATH in env
+        run: |
+          echo "##[set-env name=GOPATH;]$(go env GOPATH)"
+          echo "##[add-path]$(go env GOPATH)/bin"
+          mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
+          ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
+        shell: bash
+
+      - name: Restore Go mod cache
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go/go.sum') }}
+
+      - name: Install Go mod
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: go
+        run: GO111MODULE=on go mod vendor
+
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Set TARGET_SDK in env
+        run: |
+          pip3 install -r packages/utils/yaml_get/requirements.txt
+          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          export GET_KEY=global.android.target_sdk_version
+          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
+
+      - name: Install Android SDK
+        run:
+          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+          BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
+          BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+          PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
+          PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+
+          $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
+          > /dev/null
+
+      - name: Build Go Core
+        working-directory: packages
+        run: make build_core.android GOMOBILE_TARGET=/amd64
+
+      - name: Lint Java/Android
+        working-directory: android
+        run: ./gradlew lint
+
+  lint_swift:
+    name: Lint Swift
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Lint Swift
+        uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+          args: --strict ios/Bridge
+
+  lint_go:
+    name: Lint Golang
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout changes
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+
+      - name: Install GolangCI-Lint
+        working-directory: go
+        run:
+          curl -sSfL
+          https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
+          | sh -s v1.23.7
+
+      - name: Lint Golang
+        working-directory: go
+        run: ./bin/golangci-lint run -D unused

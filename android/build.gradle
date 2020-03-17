@@ -1,31 +1,36 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
         google()
         jcenter()
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
-        
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.25'
     }
 }
 
-allprojects {
-    repositories {
-        // If gomobile-ipfs is available locally, use it first
-        maven { url "${rootDir.getPath()}/local_repo" }
-        // If not available locally, download it from IPFS maven repo
-        // maven { url "TODO: setup IPFS maven repo" }
-        google()
-        jcenter()
-        
+task importManifest {
+    def ManifestFile = new File("${rootDir.getPath()}/../packages/Manifest.yml")
+	def EnvVersion = System.env['GOMOBILE_IPFS_VERSION']
+
+    rootProject.ext {
+        manifest = new org.yaml.snakeyaml.Yaml().load(ManifestFile.newInputStream())
+		version = (EnvVersion != null) ? EnvVersion : '0.0.42-dev'
     }
 }
 
+task setupAllProjectsRepos(dependsOn: 'importManifest') {
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            // If gomobile-ipfs core is available locally, use it
+            maven { url "${rootDir.getPath()}/../packages/build/android/maven" }
+            // If not available locally, download it from Bintray repo
+            maven { url rootProject.ext.manifest.global.android.bintray_url }
+        }
+    }
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
