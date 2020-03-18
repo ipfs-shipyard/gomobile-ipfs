@@ -9,15 +9,15 @@ solutions and exchange tips.
 
 ## Roadmap
 
-- [x] Basic Java/Swift <-> go-ipfs bindings
-- [x] Packages built and published using CI
-- [ ] Unit tests using Android/iOS testing frameworks (in progress)
-- [ ] InputStream as request body and request response (in progress)
-- [ ] React-Native module (in progress)
-- [ ] `SetStreamHandler(protocolID, handler)` and
+* [x] Basic Java/Swift <-> go-ipfs bindings
+* [x] Packages built and published using CI
+* [ ] Unit tests using Android/iOS testing frameworks (in progress)
+* [ ] InputStream as request body and request response (in progress)
+* [ ] React-Native module (in progress)
+* [ ] `SetStreamHandler(protocolID, handler)` and
 `NewStream(peerID, protocolID)` bindings
-- [ ] Android/iOS lifecycle management
-- [ ] Improve this README
+* [ ] Android/iOS lifecycle management
+* [ ] Improve this README
 
 ## Build
 
