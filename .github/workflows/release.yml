@@ -20,7 +20,7 @@ jobs:
           android/bridge/build.gradle
           && gem install jazzy
           && rm -rf docs
-          && cd packages && make docgen
+          && (cd packages && make docgen)
           && mv android/bridge/build.gradle{_,}
 
       - name: Create semantic-release config file
