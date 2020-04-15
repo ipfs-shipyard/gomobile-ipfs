@@ -4,6 +4,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.util.Objects;
+import org.apache.commons.io.FilenameUtils;
 
 // Import gomobile-ipfs core
 import core.Core;
@@ -29,7 +31,7 @@ public class IPFS {
     private Shell shell;
 
     /**
-     * Class constructor using defaultRepoPath on internal storage.
+     * Class constructor using defaultRepoPath "/ipfs/repo" on internal storage.
      *
      * @param context The application context
      * @throws ConfigCreationException If the creation of the config failed
@@ -45,7 +47,7 @@ public class IPFS {
      * Class constructor using repoPath passed as parameter on internal storage.
      *
      * @param context The application context
-     * @param repoPath The path of the go-ipfs repo
+     * @param repoPath The path of the go-ipfs repo (relative to internal root)
      * @throws ConfigCreationException If the creation of the config failed
      * @throws RepoInitException If the initialization of the repo failed
      * @throws SockManagerException If the initialization of SockManager failed
@@ -59,7 +61,7 @@ public class IPFS {
      * Class constructor using repoPath and storage location passed as parameters.
      *
      * @param context The application context
-     * @param repoPath The path of the go-ipfs repo
+     * @param repoPath The path of the go-ipfs repo (relative to internal/external root)
      * @param internalStorage true, if the desired storage location for the repo path is internal
      *                        false, if the desired storage location for the repo path is external
      * @throws ConfigCreationException If the creation of the config failed
@@ -68,16 +70,22 @@ public class IPFS {
      */
     public IPFS(@NonNull Context context, @NonNull String repoPath, boolean internalStorage)
         throws ConfigCreationException, RepoInitException, SockManagerException {
+        Objects.requireNonNull(context, "context should not be null");
+        Objects.requireNonNull(repoPath, "repoPath should not be null");
+
+        String absPath;
+
         if (internalStorage) {
-            absRepoPath = context.getFilesDir().getAbsolutePath() + repoPath;
+            absPath = context.getFilesDir().getAbsolutePath();
         } else {
             File externalDir = context.getExternalFilesDir(null);
 
             if (externalDir == null) {
                 throw new RepoInitException("No external storage available");
             }
-            absRepoPath = externalDir.getAbsolutePath() + repoPath;
+            absPath = externalDir.getAbsolutePath();
         }
+        absRepoPath = FilenameUtils.normalizeNoEndSeparator(absPath + "/" + repoPath);
 
         synchronized (IPFS.class) {
             if (sockmanager == null) {
@@ -106,7 +114,7 @@ public class IPFS {
             final File repoDir = new File(absRepoPath);
             if (!repoDir.exists()) {
                 if (!repoDir.mkdirs()) {
-                    throw new RepoInitException("Repo directory creation failed");
+                    throw new RepoInitException("Repo directory creation failed: " + absRepoPath);
                 }
             }
             try {
@@ -202,13 +210,15 @@ public class IPFS {
      * @return A RequestBuilder based on the command passed as parameter
      * @throws ShellRequestException If this IPFS instance is not started
      */
-    public RequestBuilder newRequest(String command) throws ShellRequestException {
+    public RequestBuilder newRequest(@NonNull String command) throws ShellRequestException {
+        Objects.requireNonNull(command, "command should not be null");
+
         if (!this.isStarted()) {
             throw new ShellRequestException("Shell request failed: node isn't started");
         }
 
-        core.RequestBuilder reqb = this.shell.newRequest(command);
-        return new RequestBuilder(reqb);
+        core.RequestBuilder requestBuilder = this.shell.newRequest(command);
+        return new RequestBuilder(requestBuilder);
     }
 
     /**
@@ -217,10 +227,15 @@ public class IPFS {
      * @param primary The primary DNS address in the form {@code <ip4>:<port>}
      * @param secondary The secondary DNS address in the form {@code <ip4>:<port>}
      */
-    public static void setDNSPair(String primary, String secondary) {
+    public static void setDNSPair(@NonNull String primary, @NonNull String secondary) {
+        Objects.requireNonNull(primary, "primary should not be null");
+        Objects.requireNonNull(secondary, "secondary should not be null");
+
         Core.setDNSPair(primary, secondary, false);
     }
 
+
+    // Exceptions
     public class ConfigCreationException extends Exception {
         ConfigCreationException(String message, Throwable err) { super(message, err); }
     }

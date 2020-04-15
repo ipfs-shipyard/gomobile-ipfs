@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -14,14 +15,16 @@ import java.util.Scanner;
  */
 public class RequestBuilder {
 
-    private core.RequestBuilder reqb;
+    private core.RequestBuilder requestBuilder;
 
     /**
      * Package-Private class constructor using RequestBuilder passed by IPFS.newRequest method.
-     * @param reqb
+     * @param requestBuilder A go-ipfs requestBuilder object
      */
-    RequestBuilder(@NonNull core.RequestBuilder reqb) {
-        this.reqb = reqb;
+    RequestBuilder(@NonNull core.RequestBuilder requestBuilder) {
+        Objects.requireNonNull(requestBuilder, "requestBuilder should not be null");
+
+        this.requestBuilder = requestBuilder;
     }
 
     // Send methods
@@ -33,7 +36,7 @@ public class RequestBuilder {
      */
     public byte[] send() throws RequestBuilderException {
         try {
-            return this.reqb.send();
+            return requestBuilder.send();
         } catch (Exception err) {
             throw new RequestBuilderException("Failed to send request", err);
         }
@@ -61,11 +64,13 @@ public class RequestBuilder {
     /**
      * Adds an argument to the request.
      *
-     * @param arg The argument to add
+     * @param argument The argument to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withArgument(String arg) {
-        this.reqb.argument(arg);
+    public RequestBuilder withArgument(@NonNull String argument) {
+        Objects.requireNonNull(argument, "argument should not be null");
+
+        requestBuilder.argument(argument);
         return this;
     }
 
@@ -74,33 +79,41 @@ public class RequestBuilder {
      * Adds a boolean option to the request.
      *
      * @param option The name of the option to add
-     * @param val The boolean value of the option to add
+     * @param value The boolean value of the option to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withOption(String option, boolean val) {
-        this.reqb.boolOptions(option, val);
+    public RequestBuilder withOption(@NonNull String option, boolean value) {
+        Objects.requireNonNull(option, "option should not be null");
+
+        requestBuilder.boolOptions(option, value);
         return this;
     }
     /**
      * Adds a string option to the request.
      *
      * @param option The name of the option to add
-     * @param val The string value of the option to add
+     * @param value The string value of the option to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withOption(String option, String val) {
-        this.reqb.stringOptions(option, val);
+    public RequestBuilder withOption(@NonNull String option, @NonNull String value) {
+        Objects.requireNonNull(option, "option should not be null");
+        Objects.requireNonNull(value, "value should not be null");
+
+        requestBuilder.stringOptions(option, value);
         return this;
     }
     /**
      * Adds a byte array option to the request.
      *
      * @param option The name of the option to add
-     * @param val The byte array value of the option to add
+     * @param value The byte array value of the option to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withOption(String option, byte[] val) {
-        this.reqb.byteOptions(option, val);
+    public RequestBuilder withOption(@NonNull String option, @NonNull byte[] value) {
+        Objects.requireNonNull(option, "option should not be null");
+        Objects.requireNonNull(value, "value should not be null");
+
+        requestBuilder.byteOptions(option, value);
         return this;
     }
 
@@ -111,8 +124,10 @@ public class RequestBuilder {
      * @param body The string value of the body to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withBody(String body) {
-        this.reqb.bodyString(body);
+    public RequestBuilder withBody(@NonNull String body) {
+        Objects.requireNonNull(body, "body should not be null");
+
+        requestBuilder.bodyString(body);
         return this;
     }
     /**
@@ -121,8 +136,10 @@ public class RequestBuilder {
      * @param body The byte array value of the body to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withBody(byte[] body) {
-        this.reqb.bodyBytes(body);
+    public RequestBuilder withBody(@NonNull byte[] body) {
+        Objects.requireNonNull(body, "body should not be null");
+
+        requestBuilder.bodyBytes(body);
         return this;
     }
 
@@ -131,11 +148,14 @@ public class RequestBuilder {
      * Adds a header to the request.
      *
      * @param key The key of the header to add
-     * @param val The value of the header to add
+     * @param value The value of the header to add
      * @return This instance of RequestBuilder
      */
-    public RequestBuilder withHeader(String key, String val) {
-        this.reqb.header(key, val);
+    public RequestBuilder withHeader(@NonNull String key, @NonNull String value) {
+        Objects.requireNonNull(key, "key should not be null");
+        Objects.requireNonNull(value, "value should not be null");
+
+        requestBuilder.header(key, value);
         return this;
     }
 
