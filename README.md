@@ -11,7 +11,8 @@ solutions and exchange tips.
 
 * [x] Basic Java/Swift <-> go-ipfs bindings
 * [x] Packages built and published using CI
-* [ ] Unit tests using Android/iOS testing frameworks (in progress)
+* [x] Unit tests using Android/iOS testing frameworks
+* [ ] Bind node config setters and getters (in progress)
 * [ ] InputStream as request body and request response (in progress)
 * [ ] React-Native module (in progress)
 * [ ] `SetStreamHandler(protocolID, handler)` and
