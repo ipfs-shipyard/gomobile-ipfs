@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D2C38A424470D470005C2DD /* RequestIPFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */; };
 		8DE4ECD72402BF6600B70884 /* GomobileIPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */; };
-		8DE4ECDC2402BF6600B70884 /* GomobileIPFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECDB2402BF6600B70884 /* GomobileIPFSTests.swift */; };
+		8DE4ECDC2402BF6600B70884 /* BasicIPFSClassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECDB2402BF6600B70884 /* BasicIPFSClassTests.swift */; };
 		8DE4ECDE2402BF6600B70884 /* GomobileIPFS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DE4ECD02402BF6500B70884 /* GomobileIPFS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8DE4ECFD2402C0ED00B70884 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECF62402C0ED00B70884 /* RequestBuilder.swift */; };
 		8DE4ECFE2402C0ED00B70884 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECF72402C0ED00B70884 /* Node.swift */; };
@@ -46,11 +47,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestIPFSTests.swift; sourceTree = "<group>"; };
 		8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GomobileIPFS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DE4ECD02402BF6500B70884 /* GomobileIPFS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GomobileIPFS.h; sourceTree = "<group>"; };
 		8DE4ECD12402BF6500B70884 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DE4ECD62402BF6600B70884 /* GomobileIPFSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GomobileIPFSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8DE4ECDB2402BF6600B70884 /* GomobileIPFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GomobileIPFSTests.swift; sourceTree = "<group>"; };
+		8DE4ECDB2402BF6600B70884 /* BasicIPFSClassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicIPFSClassTests.swift; sourceTree = "<group>"; };
 		8DE4ECDD2402BF6600B70884 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DE4ECF62402C0ED00B70884 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		8DE4ECF72402C0ED00B70884 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
@@ -114,7 +116,8 @@
 		8DE4ECDA2402BF6600B70884 /* GomobileIPFSTests */ = {
 			isa = PBXGroup;
 			children = (
-				8DE4ECDB2402BF6600B70884 /* GomobileIPFSTests.swift */,
+				8DE4ECDB2402BF6600B70884 /* BasicIPFSClassTests.swift */,
+				8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */,
 				8DE4ECDD2402BF6600B70884 /* Info.plist */,
 			);
 			path = GomobileIPFSTests;
@@ -267,7 +270,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DE4ECDC2402BF6600B70884 /* GomobileIPFSTests.swift in Sources */,
+				8DE4ECDC2402BF6600B70884 /* BasicIPFSClassTests.swift in Sources */,
+				8D2C38A424470D470005C2DD /* RequestIPFSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

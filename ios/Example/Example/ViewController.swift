@@ -64,7 +64,7 @@ class ViewController: UIViewController {
 
                 do {
                     let list = try ViewController.ipfs!.newRequest("cat")
-                      .with(arg: "\(ViewController.XKCDIPNS)/latest/info.json")
+                      .with(argument: "\(ViewController.XKCDIPNS)/latest/info.json")
                       .sendToDict()
 
                     self.XKCDLatest = (list["num"] as! Int)
@@ -176,14 +176,14 @@ class ViewController: UIViewController {
                 let formattedIndex = String(format: "%04d", randomIndex)
 
                 let fetchedInfo = try ViewController.ipfs!.newRequest("cat")
-                    .with(arg: "\(ViewController.XKCDIPNS)/\(formattedIndex)/info.json")
+                    .with(argument: "\(ViewController.XKCDIPNS)/\(formattedIndex)/info.json")
                     .sendToDict()
 
                 let imgURL = fetchedInfo["img"] as! String
                 let imgExt = imgURL.components(separatedBy: ".").last!.contains("png") ? "png" : "jpg"
 
                 let fetchedData = try ViewController.ipfs!.newRequest("cat")
-                    .with(arg: "\(ViewController.XKCDIPNS)/\(formattedIndex)/image.\(imgExt)")
+                    .with(argument: "\(ViewController.XKCDIPNS)/\(formattedIndex)/image.\(imgExt)")
                     .send()
 
                 title = "\(randomIndex). \(fetchedInfo["title"] as! String)"

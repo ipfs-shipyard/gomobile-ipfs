@@ -37,33 +37,33 @@ public class RequestBuilderError: IPFSError {
 
 /// RequestBuilder is an IPFS command request builder
 public class RequestBuilder {
-    private let reqb: CoreRequestBuilder
+    private let requestBuilder: CoreRequestBuilder
 
-    internal init(reqb: CoreRequestBuilder) {
-        self.reqb = reqb
+    internal init(requestBuilder: CoreRequestBuilder) {
+        self.requestBuilder = requestBuilder
     }
 
     /// Adds an argument to the request
-    /// - Parameter arg: The argument to add
+    /// - Parameter argument: The argument to add
     /// - Returns: This instance of RequestBuilder
-    public func with(arg: String) -> RequestBuilder {
-        self.reqb.argument(arg)
+    public func with(argument: String) -> RequestBuilder {
+        self.requestBuilder.argument(argument)
         return self
     }
 
     /// Adds an option to the request
     /// - Parameters:
     ///   - option: The name of the option to add
-    ///   - val: The value of the option to add
+    ///   - value: The value of the option to add
     /// - Returns: This instance of RequestBuilder
-    public func with(option: String, val: RequestOption) -> RequestBuilder {
-        switch val {
+    public func with(option: String, value: RequestOption) -> RequestBuilder {
+        switch value {
         case .bool(let bool):
-            self.reqb.boolOptions(option, value: bool)
+            self.requestBuilder.boolOptions(option, value: bool)
         case .string(let string):
-            self.reqb.stringOptions(option, value: string)
+            self.requestBuilder.stringOptions(option, value: string)
         case .bytes(let data):
-            self.reqb.byteOptions(option, value: data)
+            self.requestBuilder.byteOptions(option, value: data)
         }
 
         return self
@@ -75,9 +75,9 @@ public class RequestBuilder {
     public func with(body: RequestBody) -> RequestBuilder {
         switch body {
         case .bytes(let data):
-            self.reqb.bodyBytes(data)
+            self.requestBuilder.bodyBytes(data)
         case .string(let string):
-            self.reqb.bodyString(string)
+            self.requestBuilder.bodyString(string)
         }
 
         return self
@@ -86,10 +86,10 @@ public class RequestBuilder {
     /// Adds a header to the request
     /// - Parameters:
     ///   - header: The key of the header to add
-    ///   - val: The value of the header to add
+    ///   - value: The value of the header to add
     /// - Returns: This instance of RequestBuilder
-    public func with(header: String, val: String) -> RequestBuilder {
-        self.reqb.header(header, value: val)
+    public func with(header: String, value: String) -> RequestBuilder {
+        self.requestBuilder.header(header, value: value)
         return self
     }
 
@@ -98,7 +98,7 @@ public class RequestBuilder {
     /// - Returns: A Data object containing the response
     public func send() throws -> Data {
         do {
-            return try self.reqb.send()
+            return try self.requestBuilder.send()
         } catch let error as NSError {
             throw RequestBuilderError("sending request failed", error)
         }
@@ -108,7 +108,7 @@ public class RequestBuilder {
     /// - Throws: `RequestBuilderError`: If sending the request or converting the response failed
     /// - Returns: A dict containing the response
     public func sendToDict() throws -> [String: Any] {
-        let res = try self.reqb.send()
+        let res = try self.requestBuilder.send()
 
         do {
             let json = try JSONSerialization.jsonObject(with: res, options: [])
