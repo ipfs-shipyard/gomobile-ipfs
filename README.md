@@ -14,7 +14,7 @@ You can check the packages documentation [here](https://ipfs-shipyard.github.io/
 * [x] Basic Java/Swift <-> go-ipfs bindings
 * [x] Packages built and published using CI
 * [x] Unit tests using Android/iOS testing frameworks
-* [ ] Bind node config setters and getters (in progress)
+* [x] Bind node config setters and getters
 * [ ] InputStream as request body and request response (in progress)
 * [ ] React-Native module (in progress)
 * [ ] `SetStreamHandler(protocolID, handler)` and
