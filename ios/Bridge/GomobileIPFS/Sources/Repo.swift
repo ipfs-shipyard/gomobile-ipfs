@@ -48,7 +48,7 @@ public class Repo {
     /// - Parameter url: The path of the repo
     /// - Throws: `RepoError`: If the checking failed
     /// - Returns: True, if the repo is initialized
-    public static func isInitialized(url: URL) -> Bool {
+    public static func isInitialized(_ url: URL) -> Bool {
         return CoreRepoIsInitialized(url.path)
     }
 
@@ -57,7 +57,7 @@ public class Repo {
     ///     - url: The path of the repo
     ///     - config: The config of the repo
     /// - Throws: `RepoError`: If the initialization of the repo failed
-    public static func initialize(url: URL, config: Config) throws {
+    public static func initialize(_ url: URL, _ config: Config) throws {
         var err: NSError?
         var isDirectory: ObjCBool = true
         let exist = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
