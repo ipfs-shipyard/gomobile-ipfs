@@ -198,9 +198,9 @@ public class IPFS {
     }
 
     /**
-     * Gets the IPFS node config as a JSON.
+     * Gets the IPFS instance config as a JSON.
      *
-     * @return The IPFS node config as a JSON
+     * @return The IPFS instance config as a JSON
      * @throws ConfigGettingException If the getting of the config failed
      * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
      */
@@ -216,10 +216,10 @@ public class IPFS {
 
     /**
      * Sets JSON config passed as parameter as IPFS config or reset to default config (with a new
-     * identity) if the config parameter is null.
-     * A running node must be restarted for its config to be applied.
+     * identity) if the config parameter is null.<br>
+     * <b>A started instance must be restarted for its config to be applied.</b>
      *
-     * @param config The IPFS node JSON config to set (if null, default config will be used)
+     * @param config The IPFS instance JSON config to set (if null, default config will be used)
      * @throws ConfigSettingException If the setting of the config failed
      * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
      */
@@ -241,10 +241,10 @@ public class IPFS {
     }
 
     /**
-     * Gets the JSON value associated to the key passed as parameter in the IPFS node config.
+     * Gets the JSON value associated to the key passed as parameter in the IPFS instance config.
      *
      * @param key The key associated to the value to get in the IPFS config
-     * @return The JSON value associated to the key passed as parameter in the IPFS node config
+     * @return The JSON value associated to the key passed as parameter in the IPFS instance config
      * @throws ConfigGettingException If the getting of the config value failed
      * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
      */
@@ -261,12 +261,12 @@ public class IPFS {
     }
 
     /**
-     * Sets JSON config value to the key passed as parameters in the IPFS node config.
-     * A running node must be restarted for its config to be applied.
+     * Sets JSON config value to the key passed as parameters in the IPFS instance config.<br>
+     * <b>A started instance must be restarted for its config to be applied.</b>
      *
-     * @param key The key associated to the value to set in the IPFS node config
-     * @param value The JSON value associated to the key to set in the IPFS node config
-     * @throws ConfigSettingException If the setting of the config failed
+     * @param key The key associated to the value to set in the IPFS instance config
+     * @param value The JSON value associated to the key to set in the IPFS instance config
+     * @throws ConfigSettingException If the setting of the config value failed
      * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
      */
     synchronized public void setConfigKey(@NonNull String key, @NonNull JSONObject value)
