@@ -166,7 +166,13 @@ docgen.ios: $(IOS_DOC_DIR) build_core.ios
 	@echo '------------------------------------'
 	@echo '     iOS Bridge: Doc generation     '
 	@echo '------------------------------------'
-	@cd $(IOS_DIR)/Bridge && jazzy -o $(IOS_DOC_DIR)
+	@cd $(IOS_DIR)/Bridge && \
+		jazzy -o $(IOS_DOC_DIR) \
+		--readme $(IOS_DIR)/../README.md \
+		--module 'GomobileIPFS' \
+		--title 'Gomobile-IPFS - iOS Bridge' \
+		--github_url 'https://github.com/ipfs-shipyard/gomobile-ipfs' \
+		--github-file-prefix 'https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge'
 	@echo 'Done!'
 
 $(IOS_DOC_DIR):
