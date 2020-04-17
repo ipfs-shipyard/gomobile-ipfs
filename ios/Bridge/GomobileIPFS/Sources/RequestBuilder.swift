@@ -65,7 +65,7 @@ public class RequestBuilder {
         case .string(let string):
             self.requestBuilder.stringOptions(option, value: string)
         case .bytes(let data):
-            self.requestBuilder.byteOptions(option, value: data)
+            self.requestBuilder.bytesOptions(option, value: data)
         }
 
         return self
@@ -99,11 +99,23 @@ public class RequestBuilder {
 
     /// Sends the request to the underlying go-ipfs node
     /// - Throws: `RequestBuilderError`: If sending the request failed
+    /// - Returns: An InputStream from which to read the response
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
+    public func send() throws -> InputStream {
+        do {
+            return try InputStreamFromGo(self.requestBuilder.send())
+        } catch let error as NSError {
+            throw RequestBuilderError("sending request failed", error)
+        }
+    }
+
+    /// Sends the request to the underlying go-ipfs node
+    /// - Throws: `RequestBuilderError`: If sending the request failed
     /// - Returns: A Data object containing the response
     /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
-    public func send() throws -> Data {
+    public func sendToByes() throws -> Data {
         do {
-            return try self.requestBuilder.send()
+            return try self.requestBuilder.sendToBytes()
         } catch let error as NSError {
             throw RequestBuilderError("sending request failed", error)
         }
