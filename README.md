@@ -7,6 +7,8 @@ solutions and exchange tips.
 
 :warning: _this repo is still experimental, contributions are very welcome_
 
+You can check the packages documentation [here](https://ipfs-shipyard.github.io/gomobile-ipfs/).
+
 ## Roadmap
 
 * [x] Basic Java/Swift <-> go-ipfs bindings
