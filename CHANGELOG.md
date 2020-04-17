@@ -65,7 +65,6 @@
 * **react:** Add react native example for android ([df8188b](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/df8188b8251061a6c38f46f8c9ab4851a05303a3))
 * **test:** Add mobile test ([1daa641](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1daa6419d289ef23d98701f9d837b4f36cf02e23))
 
-# Gomobile-IPFS Global Changelog
 
 # Initial version
 

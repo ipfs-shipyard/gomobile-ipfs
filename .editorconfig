@@ -6,7 +6,7 @@ end_of_line = lf
 insert_final_newline = true
 charset = utf-8
 
-[*.{js,json,yml,yaml}]
+[*.{js,json,yml,yaml,html}]
 indent_style = space
 indent_size = 2
 
