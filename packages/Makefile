@@ -151,7 +151,7 @@ publish_bridge.ios:
 # Doc generation rules
 docgen: docgen.android docgen.ios
 
-docgen.android: $(ANDROID_DOC_DIR)
+docgen.android: $(ANDROID_DOC_DIR) build_core.android
 	@echo '------------------------------------'
 	@echo '   Android Bridge: Doc generation   '
 	@echo '------------------------------------'
@@ -162,7 +162,7 @@ docgen.android: $(ANDROID_DOC_DIR)
 $(ANDROID_DOC_DIR):
 	@mkdir -p $(ANDROID_DOC_DIR)
 
-docgen.ios: $(IOS_DOC_DIR)
+docgen.ios: $(IOS_DOC_DIR) build_core.ios
 	@echo '------------------------------------'
 	@echo '     iOS Bridge: Doc generation     '
 	@echo '------------------------------------'
