@@ -188,20 +188,20 @@ test_bridge.android: build_core.android
 	fi;	\
 	emulator -avd $$EMULATOR -no-boot-anim -no-window -no-snapshot-save -gpu swiftshader_indirect -noaudio & EMULATOR_PID=$$!; \
 	adb wait-for-device shell 'while [[ -z $$(getprop sys.boot_completed) ]]; do sleep 1; done;'; \
-	(cd $(ANDROID_DIR) && ./gradlew bridge:connectedAndroidTest); \
-	kill $$EMULATOR_PID
-	@echo 'Done!'
+	(cd $(ANDROID_DIR) && ./gradlew bridge:connectedAndroidTest) || \
+	(kill $$EMULATOR_PID; exit 1) && \
+	(kill $$EMULATOR_PID; echo 'Done!')
 
 test_bridge.ios: build_core.ios
 	@echo '------------------------------------'
 	@echo '     iOS Bridge: running test       '
 	@echo '------------------------------------'
-	@DESTINATION=$$(xcodebuild -showdestinations -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFSTests | awk '/Ineligible destinations for/ {exit} {print}' | grep 'platform:iOS Simulator' | awk -F 'id:' '{print $$2}' | cut -d',' -f1 | tail -n1); \
+	@DESTINATION=$$(xcodebuild -showdestinations -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFS | awk '/Ineligible destinations for/ {exit} {print}' | grep 'platform:iOS Simulator' | awk -F 'id:' '{print $$2}' | cut -d',' -f1 | tail -n1); \
 	if [ -z "$$DESTINATION" ]; then \
 		>&2 echo "No compatible simulator found to run the test";	\
 		exit 1;	\
 	fi;	\
-	xcodebuild test -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFSTests -sdk iphonesimulator -destination "platform=iOS Simulator,id=$$DESTINATION"
+	xcodebuild test -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFS -sdk iphonesimulator -destination "platform=iOS Simulator,id=$$DESTINATION"
 	@echo 'Done!'
 
 test_core: $(GO_VENDOR)

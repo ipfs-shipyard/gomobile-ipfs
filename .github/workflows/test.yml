@@ -153,12 +153,14 @@ jobs:
         working-directory: ios/Bridge
         run:
           xcodebuild test -project GomobileIPFS.xcodeproj
-          -scheme GomobileIPFSTests -sdk iphonesimulator
+          -scheme GomobileIPFS -sdk iphonesimulator
           -destination "platform=iOS Simulator,name=iPhone 11,OS=13.3"
 
       - name: Build iOS Bridge
         working-directory: ios/Bridge
-        run: |
-          xcodebuild -project GomobileIPFS.xcodeproj -scheme GomobileIPFS
+        run:
+          xcodebuild -project GomobileIPFS.xcodeproj
+          -scheme GomobileIPFS -sdk iphonesimulator
+          -destination "platform=iOS Simulator,name=iPhone 11,OS=13.3" &&
           pip3 install -r ../../packages/utils/cocoapod_format/requirements.txt
-          ../../packages/utils/cocoapod_format/cocoapod_format_bridge.py
+          && ../../packages/utils/cocoapod_format/cocoapod_format_bridge.py

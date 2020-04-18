@@ -137,7 +137,7 @@ jobs:
       - name: Lint Swift
         uses: norio-nomura/action-swiftlint@3.1.0
         with:
-          args: --strict ios/Bridge
+          args: --strict ios/Bridge/GomobileIPFS
 
   lint_go:
     name: Lint Golang

@@ -135,18 +135,18 @@ public class IPFS {
     /// - Throws: `IPFSError`: If the request creaton failed
     /// - Returns: A RequestBuilder based on the command passed as parameter
     public func newRequest(_ command: String) throws -> RequestBuilder {
-        guard let request = self.shell?.newRequest(command) else {
+        guard let requestBuilder = self.shell?.newRequest(command) else {
             throw IPFSError("unable to get shell, is the node started?")
         }
 
-        return RequestBuilder(reqb: request)
+        return RequestBuilder(requestBuilder: requestBuilder)
     }
 
     /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
     /// - Parameters:
-    ///   - dnsaddr1: The primary DNS address in the form `<ip4>:<port>`
-    ///   - dnsaddr2: The secondary DNS address in the form `<ip4>:<port>`
-    public func setDNSPair(_ dnsaddr1: String, _ dnsaddr2: String) {
-        CoreSetDNSPair(dnsaddr1, dnsaddr2, false)
+    ///   - primary: The primary DNS address in the form `<ip4>:<port>`
+    ///   - secondary: The secondary DNS address in the form `<ip4>:<port>`
+    public func setDNSPair(_ primary: String, _ secondary: String) {
+        CoreSetDNSPair(primary, secondary, false)
     }
 }
