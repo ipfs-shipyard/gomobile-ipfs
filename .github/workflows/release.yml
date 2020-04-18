@@ -70,7 +70,7 @@ jobs:
       - name: Generate Android/iOS Bridge docs
         run: |
           gem install jazzy
-          rm -rf docs
+          rm -rf docs/android docs/ios
           cd packages && make docgen
 
       - name: Create semantic-release config file
