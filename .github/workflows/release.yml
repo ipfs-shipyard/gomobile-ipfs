@@ -14,14 +14,64 @@ jobs:
       - name: Checkout changes
         uses: actions/checkout@v2
 
-      - name: Generate Android/iOS Bridge docs
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+
+      - name: Set GOPATH in env
+        run: |
+          echo "##[set-env name=GOPATH;]$(go env GOPATH)"
+          echo "##[add-path]$(go env GOPATH)/bin"
+          mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
+          ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
+        shell: bash
+
+      - name: Restore Go mod cache
+        id: cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go/go.sum') }}
+
+      - name: Install Go mod
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: go
+        run: GO111MODULE=on go mod vendor
+
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Set TARGET_SDK in env
+        run: |
+          pip3 install -r packages/utils/yaml_get/requirements.txt
+          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          export GET_KEY=global.android.target_sdk_version
+          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
+
+      - name: Install Android SDK
         run:
-          sed -i_ 's/implementation.*go_core\.android.*//g'
-          android/bridge/build.gradle
-          && gem install jazzy
-          && rm -rf docs
-          && (cd packages && make docgen)
-          && mv android/bridge/build.gradle{_,}
+          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+          BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
+          BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+          PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
+          PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+
+          $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
+          > /dev/null
+
+      - name: Update Cocoapods
+        run: |
+          gem install cocoapods
+          pod setup
+
+      - name: Generate Android/iOS Bridge docs
+        run: |
+          gem install jazzy
+          rm -rf docs
+          cd packages && make docgen
 
       - name: Create semantic-release config file
         run: |
@@ -42,8 +92,8 @@ jobs:
             };" > .releaserc.js
 
       - name: Create github release and push docs
-        uses: cycjimmy/semantic-release-action@v2
         id: semantic
+        uses: cycjimmy/semantic-release-action@v2
         with:
           extra_plugins: |
             @semantic-release/changelog
@@ -54,68 +104,6 @@ jobs:
           GIT_AUTHOR_EMAIL: action@github.com
           GIT_COMMITTER_NAME: GitHub Action
           GIT_COMMITTER_EMAIL: action@github.com
-
-      - name: Install Go
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.14
-
-      - name: Set GOPATH in env
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          echo "##[set-env name=GOPATH;]$(go env GOPATH)"
-          echo "##[add-path]$(go env GOPATH)/bin"
-          mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
-          ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
-        shell: bash
-
-      - name: Restore Go mod cache
-        if: steps.semantic.outputs.new_release_published == 'true'
-        id: cache
-        uses: actions/cache@v1
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go/go.sum') }}
-
-      - name: Install Go mod
-        if: |
-            steps.semantic.outputs.new_release_published == 'true'
-            && steps.cache.outputs.cache-hit != 'true'
-        working-directory: go
-        run: GO111MODULE=on go mod vendor
-
-      - name: Install Java
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: Set TARGET_SDK in env
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
-          export GET_KEY=global.android.target_sdk_version
-          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
-
-      - name: Install Android SDK
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run:
-          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
-          BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
-          BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
-          PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
-          PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
-
-          $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
-          > /dev/null
-
-      - name: Update Cocoapods
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          gem install cocoapods
-          pod setup
 
       - name: Publish Android/iOS Bridge and Core packages
         if: steps.semantic.outputs.new_release_published == 'true'
