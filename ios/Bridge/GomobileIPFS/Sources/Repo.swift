@@ -63,15 +63,15 @@ public class Repo {
         let exist = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
         if !exist {
             try FileManager.default.createDirectory(
-              atPath: url.path,
-              withIntermediateDirectories: true,
-              attributes: nil
+                atPath: url.path,
+                withIntermediateDirectories: true,
+                attributes: nil
             )
         }
 
         CoreInitRepo(url.path, config.goConfig, &err)
         if err != nil {
-             throw RepoError("initialization failed", err)
+            throw RepoError("initialization failed", err)
         }
     }
 

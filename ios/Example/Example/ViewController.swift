@@ -37,9 +37,9 @@ class ViewController: UIViewController {
         self.PIDLoading.startAnimating()
 
         XKCDButton.addTarget(
-          self,
-          action: #selector(xkcdButtonClicked),
-          for: .touchUpInside
+            self,
+            action: #selector(xkcdButtonClicked),
+            for: .touchUpInside
         )
 
         DispatchQueue.global(qos: .background).async {
@@ -64,8 +64,8 @@ class ViewController: UIViewController {
 
                 do {
                     let list = try ViewController.ipfs!.newRequest("cat")
-                      .with(argument: "\(ViewController.XKCDIPNS)/latest/info.json")
-                      .sendToDict()
+                        .with(argument: "\(ViewController.XKCDIPNS)/latest/info.json")
+                        .sendToDict()
 
                     self.XKCDLatest = (list["num"] as! Int)
 
@@ -146,10 +146,10 @@ class ViewController: UIViewController {
         PeerCounter.isHidden = false
 
         NotificationCenter.default.addObserver(
-          self,
-          selector: #selector(updatePeerCount(_:)),
-          name: Notification.Name("updatePeerCount"),
-          object: nil
+            self,
+            selector: #selector(updatePeerCount(_:)),
+            name: Notification.Name("updatePeerCount"),
+            object: nil
         )
     }
 

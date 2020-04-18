@@ -10,16 +10,16 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * RequestBuilder is an IPFS command request builder.
- */
+* RequestBuilder is an IPFS command request builder.
+*/
 public class RequestBuilder {
 
     private core.RequestBuilder requestBuilder;
 
     /**
-     * Package-Private class constructor using RequestBuilder passed by IPFS.newRequest method.
-     * @param requestBuilder A go-ipfs requestBuilder object
-     */
+    * Package-Private class constructor using RequestBuilder passed by IPFS.newRequest method.
+    * @param requestBuilder A go-ipfs requestBuilder object
+    */
     RequestBuilder(@NonNull core.RequestBuilder requestBuilder) {
         Objects.requireNonNull(requestBuilder, "requestBuilder should not be null");
 
@@ -28,12 +28,12 @@ public class RequestBuilder {
 
     // Send methods
     /**
-     * Sends the request to the underlying go-ipfs node.
-     *
-     * @return A byte array containing the response
-     * @throws RequestBuilderException If sending the request failed
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Sends the request to the underlying go-ipfs node.
+    *
+    * @return A byte array containing the response
+    * @throws RequestBuilderException If sending the request failed
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public byte[] send() throws RequestBuilderException {
         try {
             return requestBuilder.send();
@@ -42,13 +42,13 @@ public class RequestBuilder {
         }
     }
     /**
-     * Sends the request to the underlying go-ipfs node and returns an array of JSONObject.
-     *
-     * @return An ArrayList of JSONObject generated from the response
-     * @throws RequestBuilderException If sending the request failed
-     * @throws JSONException If converting the response to JSONObject failed
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Sends the request to the underlying go-ipfs node and returns an array of JSONObject.
+    *
+    * @return An ArrayList of JSONObject generated from the response
+    * @throws RequestBuilderException If sending the request failed
+    * @throws JSONException If converting the response to JSONObject failed
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public ArrayList<JSONObject> sendToJSONList() throws RequestBuilderException, JSONException {
         String raw = new String(this.send());
 
@@ -63,12 +63,12 @@ public class RequestBuilder {
 
     // Argument method
     /**
-     * Adds an argument to the request.
-     *
-     * @param argument The argument to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds an argument to the request.
+    *
+    * @param argument The argument to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withArgument(@NonNull String argument) {
         Objects.requireNonNull(argument, "argument should not be null");
 
@@ -78,13 +78,13 @@ public class RequestBuilder {
 
     // Option methods
     /**
-     * Adds a boolean option to the request.
-     *
-     * @param option The name of the option to add
-     * @param value The boolean value of the option to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a boolean option to the request.
+    *
+    * @param option The name of the option to add
+    * @param value The boolean value of the option to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withOption(@NonNull String option, boolean value) {
         Objects.requireNonNull(option, "option should not be null");
 
@@ -92,13 +92,13 @@ public class RequestBuilder {
         return this;
     }
     /**
-     * Adds a string option to the request.
-     *
-     * @param option The name of the option to add
-     * @param value The string value of the option to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a string option to the request.
+    *
+    * @param option The name of the option to add
+    * @param value The string value of the option to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withOption(@NonNull String option, @NonNull String value) {
         Objects.requireNonNull(option, "option should not be null");
         Objects.requireNonNull(value, "value should not be null");
@@ -107,13 +107,13 @@ public class RequestBuilder {
         return this;
     }
     /**
-     * Adds a byte array option to the request.
-     *
-     * @param option The name of the option to add
-     * @param value The byte array value of the option to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a byte array option to the request.
+    *
+    * @param option The name of the option to add
+    * @param value The byte array value of the option to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withOption(@NonNull String option, @NonNull byte[] value) {
         Objects.requireNonNull(option, "option should not be null");
         Objects.requireNonNull(value, "value should not be null");
@@ -124,12 +124,12 @@ public class RequestBuilder {
 
     // Body methods
     /**
-     * Adds a string body to the request.
-     *
-     * @param body The string value of the body to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a string body to the request.
+    *
+    * @param body The string value of the body to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withBody(@NonNull String body) {
         Objects.requireNonNull(body, "body should not be null");
 
@@ -137,12 +137,12 @@ public class RequestBuilder {
         return this;
     }
     /**
-     * Adds a byte array body to the request.
-     *
-     * @param body The byte array value of the body to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a byte array body to the request.
+    *
+    * @param body The byte array value of the body to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withBody(@NonNull byte[] body) {
         Objects.requireNonNull(body, "body should not be null");
 
@@ -152,13 +152,13 @@ public class RequestBuilder {
 
     // Header method
     /**
-     * Adds a header to the request.
-     *
-     * @param key The key of the header to add
-     * @param value The value of the header to add
-     * @return This instance of RequestBuilder
-     * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
-     */
+    * Adds a header to the request.
+    *
+    * @param key The key of the header to add
+    * @param value The value of the header to add
+    * @return This instance of RequestBuilder
+    * @see <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+    */
     public RequestBuilder withHeader(@NonNull String key, @NonNull String value) {
         Objects.requireNonNull(key, "key should not be null");
         Objects.requireNonNull(value, "value should not be null");

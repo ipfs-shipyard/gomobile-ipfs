@@ -18,7 +18,7 @@ extension FileManager {
                 in: .userDomainMask,
                 appropriateFor: nil,
                 create: true)
-			) ?? URL(fileURLWithPath: NSTemporaryDirectory())
+            ) ?? URL(fileURLWithPath: NSTemporaryDirectory())
         }
     }
 }
@@ -68,8 +68,8 @@ public class IPFS {
     /// Returns the absolute repo path as an URL
     /// - Returns: The absolute repo path
     public func getAbsoluteRepoPath() -> URL {
-		return self.absRepoURL
-	}
+        return self.absRepoURL
+    }
 
     /// Returns True if this IPFS instance is started by checking if the underlying go-ipfs node is instantiated
     /// - Returns: True, if this IPFS instance is started
@@ -97,10 +97,10 @@ public class IPFS {
         try self.node!.serve(onUDS: self.absSockPath)
         self.shell = CoreNewUDSShell(self.absSockPath)
         /*
-         ** On iOS simulator, temporary directory's absolute path exceeds
-         ** the length limit for Unix Domain Socket, since simulator is
-         ** only used for debug, we can safely fallback on shell over TCP
-         */
+        ** On iOS simulator, temporary directory's absolute path exceeds
+        ** the length limit for Unix Domain Socket, since simulator is
+        ** only used for debug, we can safely fallback on shell over TCP
+        */
         #else
         let maddr: String = try self.node!.serve(onTCPPort: "0")
         self.shell = CoreNewShell(maddr)
