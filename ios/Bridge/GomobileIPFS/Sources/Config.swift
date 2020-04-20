@@ -64,7 +64,7 @@ public class Config {
     /// - Parameter dict: The dict containing the config to create
     /// - Throws: `ConfigError`: If the creation of the config failed
     /// - Returns: A golang `config` object
-    public class func configFromDict(dict: [String: Any]) throws -> Config {
+    public class func configFromDict(_ dict: [String: Any]) throws -> Config {
         var err: NSError?
 
         let json = try JSONSerialization.data(withJSONObject: dict)
@@ -76,17 +76,30 @@ public class Config {
         }
     }
 
+    /// Gets the config as a dict
+    /// - Throws: `ConfigError`: If the getting of the config failed
+    /// - Returns: A dict containing the config
+    public func get() throws -> [String: Any] {
+        do {
+            let rawJson = try self.goConfig.get()
+            let json = try JSONSerialization.jsonObject(with: rawJson, options: [])
+            return (json as? [String: Any])!
+        } catch let error as NSError {
+            throw ConfigError("getting failed", error)
+        }
+    }
+
     /// Sets a key and its value in the config
     /// - Parameters:
     ///   - key: The key to set
-    ///   - dict: A dict containing the value to set
+    ///   - value: A dict containing the value to set
     /// - Throws: `ConfigError`: If the setting of the key failed
-    public func setKey(key: String, dict: [String: Any]) throws {
+    public func setKey(_ key: String, _ value: [String: Any]) throws {
         do {
-            let json = try JSONSerialization.data(withJSONObject: dict)
+            let json = try JSONSerialization.data(withJSONObject: value)
             try self.goConfig.setKey(key, raw_value: json)
         } catch let error as NSError {
-            throw ConfigError("key setting failed", error)
+            throw ConfigError("setting key failed", error)
         }
     }
 
@@ -94,13 +107,13 @@ public class Config {
     /// - Parameter key: The key to get
     /// - Throws: `ConfigError`: If the getting of the key failed
     /// - Returns: A dict containing the value associated to the key passed as parameter
-    public func getKey(key: String) throws -> [String: Any] {
+    public func getKey(_ key: String) throws -> [String: Any] {
         do {
             let rawJson = try self.goConfig.getKey(key)
             let json = try JSONSerialization.jsonObject(with: rawJson, options: [])
             return (json as? [String: Any])!
         } catch let error as NSError {
-            throw ConfigError("config key deserialization error", error)
+            throw ConfigError("getting key failed", error)
         }
     }
 }

@@ -16,10 +16,10 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+* Instrumented test, which will execute on an Android device.
+*
+* @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+*/
 @RunWith(AndroidJUnit4.class)
 public class basicIPFSClassTests {
     private final String internalDir = "/data/user/0/ipfs.gomobile.android.test/files";
@@ -147,6 +147,23 @@ public class basicIPFSClassTests {
             ipfs.newRequest("foo").withHeader("foo", null);
             fail("RequestBuilder.withHeader() should fail with a null value");
         } catch (Exception e) { /* ignore */ }
+
+
+        // Config tests
+        try {
+            ipfs.getConfigKey(null);
+            fail("getConfigKey() should fail with a null key");
+        } catch (Exception e) { /* ignore */ }
+
+        try {
+            ipfs.setConfigKey(null, new JSONObject("{\"foo\":\"bar\"}"));
+            fail("setConfigKey() should fail with a null key");
+        } catch (Exception e) { /* ignore */ }
+
+        try {
+            ipfs.setConfigKey("foo", null);
+            fail("setConfigKey() should fail with a null value");
+        } catch (Exception e) { /* ignore */ }
     }
 
     public void testIPFSInstance(IPFS ipfs, String expectedPath) throws Exception {
@@ -160,21 +177,21 @@ public class basicIPFSClassTests {
         );
         assertEquals(
             "Repo path mismatch",
-            ipfs.getRepoPath(),
+            ipfs.getRepoAbsolutePath(),
             expectedPath
         );
 
         assertTrue(
             "config file doesn't exist in repo",
-            new File(ipfs.getRepoPath() + "/config").exists()
+            new File(ipfs.getRepoAbsolutePath() + "/config").exists()
         );
         assertTrue(
             "version file doesn't exist in repo",
-            new File(ipfs.getRepoPath() + "/version").exists()
+            new File(ipfs.getRepoAbsolutePath() + "/version").exists()
         );
         assertTrue(
             "repo.lock file doesn't exist in repo",
-            new File(ipfs.getRepoPath() + "/repo.lock").exists()
+            new File(ipfs.getRepoAbsolutePath() + "/repo.lock").exists()
         );
 
         try {

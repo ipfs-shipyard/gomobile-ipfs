@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D1B639D24487FC900CE188F /* ConfigIPFSTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */; };
 		8D2C38A424470D470005C2DD /* RequestIPFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */; };
 		8DE4ECD72402BF6600B70884 /* GomobileIPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */; };
 		8DE4ECDC2402BF6600B70884 /* BasicIPFSClassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECDB2402BF6600B70884 /* BasicIPFSClassTests.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigIPFSTest.swift; sourceTree = "<group>"; };
 		8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestIPFSTests.swift; sourceTree = "<group>"; };
 		8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GomobileIPFS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DE4ECD02402BF6500B70884 /* GomobileIPFS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GomobileIPFS.h; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				8DE4ECDB2402BF6600B70884 /* BasicIPFSClassTests.swift */,
+				8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */,
 				8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */,
 				8DE4ECDD2402BF6600B70884 /* Info.plist */,
 			);
@@ -270,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D1B639D24487FC900CE188F /* ConfigIPFSTest.swift in Sources */,
 				8DE4ECDC2402BF6600B70884 /* BasicIPFSClassTests.swift in Sources */,
 				8D2C38A424470D470005C2DD /* RequestIPFSTests.swift in Sources */,
 			);

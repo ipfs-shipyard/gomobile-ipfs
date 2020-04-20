@@ -33,19 +33,19 @@ class BasicIPFSClassTests: XCTestCase {
 
         XCTAssertTrue(
             FileManager.default.fileExists(
-                atPath: ipfs.getRepoPath().appendingPathComponent("/config").path
+                atPath: ipfs.getAbsoluteRepoPath().appendingPathComponent("/config").path
             ),
             "config file doesn't exist in repo"
         )
         XCTAssertTrue(
             FileManager.default.fileExists(
-                atPath: ipfs.getRepoPath().appendingPathComponent("/version").path
+                atPath: ipfs.getAbsoluteRepoPath().appendingPathComponent("/version").path
             ),
             "version file doesn't exist in repo"
         )
         XCTAssertTrue(
             FileManager.default.fileExists(
-                atPath: ipfs.getRepoPath().appendingPathComponent("/repo.lock").path
+                atPath: ipfs.getAbsoluteRepoPath().appendingPathComponent("/repo.lock").path
             ),
             "repo.lock file doesn't exist in repo"
         )

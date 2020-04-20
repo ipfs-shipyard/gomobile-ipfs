@@ -39,13 +39,14 @@ public class RequestBuilderError: IPFSError {
 public class RequestBuilder {
     private let requestBuilder: CoreRequestBuilder
 
-    internal init(requestBuilder: CoreRequestBuilder) {
+    internal init(_ requestBuilder: CoreRequestBuilder) {
         self.requestBuilder = requestBuilder
     }
 
     /// Adds an argument to the request
     /// - Parameter argument: The argument to add
     /// - Returns: This instance of RequestBuilder
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func with(argument: String) -> RequestBuilder {
         self.requestBuilder.argument(argument)
         return self
@@ -56,6 +57,7 @@ public class RequestBuilder {
     ///   - option: The name of the option to add
     ///   - value: The value of the option to add
     /// - Returns: This instance of RequestBuilder
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func with(option: String, value: RequestOption) -> RequestBuilder {
         switch value {
         case .bool(let bool):
@@ -72,6 +74,7 @@ public class RequestBuilder {
     /// Adds a body to the request
     /// - Parameter body: The value of body to add
     /// - Returns: This instance of RequestBuilder
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func with(body: RequestBody) -> RequestBuilder {
         switch body {
         case .bytes(let data):
@@ -88,6 +91,7 @@ public class RequestBuilder {
     ///   - header: The key of the header to add
     ///   - value: The value of the header to add
     /// - Returns: This instance of RequestBuilder
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func with(header: String, value: String) -> RequestBuilder {
         self.requestBuilder.header(header, value: value)
         return self
@@ -96,6 +100,7 @@ public class RequestBuilder {
     /// Sends the request to the underlying go-ipfs node
     /// - Throws: `RequestBuilderError`: If sending the request failed
     /// - Returns: A Data object containing the response
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func send() throws -> Data {
         do {
             return try self.requestBuilder.send()
@@ -107,6 +112,7 @@ public class RequestBuilder {
     /// Sends the request to the underlying go-ipfs node and returns a dict
     /// - Throws: `RequestBuilderError`: If sending the request or converting the response failed
     /// - Returns: A dict containing the response
+    /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func sendToDict() throws -> [String: Any] {
         let res = try self.requestBuilder.send()
 

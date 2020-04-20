@@ -18,7 +18,7 @@ extension FileManager {
                 in: .userDomainMask,
                 appropriateFor: nil,
                 create: true)
-              ) ?? URL(fileURLWithPath: NSTemporaryDirectory())
+            ) ?? URL(fileURLWithPath: NSTemporaryDirectory())
         }
     }
 }
@@ -59,19 +59,19 @@ public class IPFS {
         #endif
 
         // Init IPFS Repo if not already initialized
-        if !Repo.isInitialized(url: absRepoURL) {
+        if !Repo.isInitialized(absRepoURL) {
             let config = try Config.defaultConfig()
-            try Repo.initialize(url: absRepoURL, config: config)
+            try Repo.initialize(absRepoURL, config)
         }
     }
 
-    /// Returns the repo path as an URL
-    /// - Returns: The repo path
-    public func getRepoPath() -> URL {
-		    return self.absRepoURL
-	  }
+    /// Returns the absolute repo path as an URL
+    /// - Returns: The absolute repo path
+    public func getAbsoluteRepoPath() -> URL {
+        return self.absRepoURL
+    }
 
-    /// Returns True if this IPFS instance is "started" by checking if the underlying go-ipfs node is instantiated
+    /// Returns True if this IPFS instance is started by checking if the underlying go-ipfs node is instantiated
     /// - Returns: True, if this IPFS instance is started
     public func isStarted() -> Bool {
         return self.node != nil
@@ -87,27 +87,24 @@ public class IPFS {
         }
 
         // Open go-ipfs repo
-        let repo = try Repo(self.absRepoURL)
+        try openRepoIfClosed()
 
         // Instanciate the node
-        let node = try Node(repo)
+        self.node = try Node(self.repo!)
 
         // Create a shell over UDS on physical device
         #if !targetEnvironment(simulator)
-        try node.serve(onUDS: self.absSockPath)
+        try self.node!.serve(onUDS: self.absSockPath)
         self.shell = CoreNewUDSShell(self.absSockPath)
         /*
-         ** On iOS simulator, temporary directory's absolute path exceeds
-         ** the length limit for Unix Domain Socket, since simulator is
-         ** only used for debug, we can safely fallback on shell over TCP
-         */
+        ** On iOS simulator, temporary directory's absolute path exceeds
+        ** the length limit for Unix Domain Socket, since simulator is
+        ** only used for debug, we can safely fallback on shell over TCP
+        */
         #else
-        let maddr: String = try node.serve(onTCPPort: "0")
+        let maddr: String = try self.node!.serve(onTCPPort: "0")
         self.shell = CoreNewShell(maddr)
         #endif
-
-        self.repo = repo
-        self.node = node
     }
 
     /// Stops this IPFS instance
@@ -119,6 +116,7 @@ public class IPFS {
 
         try self.node?.close()
         self.node = nil
+        self.repo = nil
     }
 
     /// Restarts this IPFS instance
@@ -130,6 +128,66 @@ public class IPFS {
         try self.start()
     }
 
+    /// Gets the IPFS instance config as a dict
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo or the getting of its config failed
+    ///     - `ConfigError`: If the getting of the config as a dict failed
+    /// - Returns: The IPFS instance config as a dict
+    /// - seealso: [IPFS Config Doc](https://github.com/ipfs/go-ipfs/blob/master/docs/config.md)
+    public func getConfig() throws -> [String: Any] {
+        try openRepoIfClosed()
+
+        return try repo!.getConfig().get()
+    }
+
+    /// Sets dict config passed as parameter as IPFS config or reset to default config (with a new identity)
+    /// if the config parameter is nil
+    /// - Attention: A started IPFS instance must be restarted for its config to be applied
+    /// - Parameter config: The IPFS instance dict config to set (if nil, default config will be used)
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo or the setting of its config failed
+    ///     - `ConfigError`: If the setting of the config as a dict failed
+    /// - seealso: [IPFS Config Doc](https://github.com/ipfs/go-ipfs/blob/master/docs/config.md)
+    public func setConfig(_ config: [String: Any]? = nil) throws {
+        try openRepoIfClosed()
+
+        if let config = config {
+            try repo!.setConfig(Config.configFromDict(config))
+        } else {
+            try repo!.setConfig(Config.defaultConfig())
+        }
+    }
+
+    /// Gets the dict value associated to the key passed as parameter in the IPFS instance config
+    /// - Parameter key: The key associated to the value to get in the IPFS config
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo or the getting of its config failed
+    ///     - `ConfigError`: If the getting of the config value as a dict failed
+    /// - Returns: The dict value associated to the key passed as parameter in the IPFS instance config
+    /// - seealso: [IPFS Config Doc](https://github.com/ipfs/go-ipfs/blob/master/docs/config.md)
+    public func getConfigKey(_ key: String) throws -> [String: Any] {
+        try openRepoIfClosed()
+
+        return try repo!.getConfig().getKey(key)
+    }
+
+    /// Sets dict config value to the key passed as parameters in the IPFS instance config
+    /// - Attention: A started IPFS instance must be restarted for its config to be applied
+    /// - Parameters:
+    ///     - key: The key associated to the value to set in the IPFS instance config
+    ///     - value: The dict value associated to the key to set in the IPFS instance config
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo or the getting/setting of its config failed
+    ///     - `ConfigError`: If the setting of the config value as a dict failed
+    /// - seealso: [IPFS Config Doc](https://github.com/ipfs/go-ipfs/blob/master/docs/config.md)
+    public func setConfigKey(_ key: String, _ value: [String: Any]) throws {
+        try openRepoIfClosed()
+
+        let config = try repo!.getConfig()
+        try config.setKey(key, value)
+        try repo!.setConfig(config)
+    }
+
     /// Creates and returns a RequestBuilder associated to this IPFS instance shell
     /// - Parameter command: The command of the request
     /// - Throws: `IPFSError`: If the request creaton failed
@@ -139,14 +197,22 @@ public class IPFS {
             throw IPFSError("unable to get shell, is the node started?")
         }
 
-        return RequestBuilder(requestBuilder: requestBuilder)
+        return RequestBuilder(requestBuilder)
     }
 
     /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
     /// - Parameters:
     ///   - primary: The primary DNS address in the form `<ip4>:<port>`
     ///   - secondary: The secondary DNS address in the form `<ip4>:<port>`
-    public func setDNSPair(_ primary: String, _ secondary: String) {
+    public class func setDNSPair(_ primary: String, _ secondary: String) {
         CoreSetDNSPair(primary, secondary, false)
+    }
+
+    /// Internal helper that opens the repo if it is closed
+    /// - Throws: `RepoError`: If the opening of the repo failed
+    private func openRepoIfClosed() throws {
+        if self.repo == nil {
+            self.repo = try Repo(self.absRepoURL)
+        }
     }
 }
