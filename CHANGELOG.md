@@ -1,5 +1,13 @@
 # Global Changelog
 
+# [1.1.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.0.0...v1.1.0) (2020-04-20)
+
+
+### Features
+
+* bind config setters/getters on android ([ccf4b45](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/ccf4b45ce25fdedbf5e4f67848714778909363c1))
+* bind config setters/getters on ios ([c4e4ac8](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/c4e4ac85713a20e4500df65b0303538bf318c655))
+
 # 1.0.0 (2020-03-17)
 
 

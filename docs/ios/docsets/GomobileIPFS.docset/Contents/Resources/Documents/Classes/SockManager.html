@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RequestOption Enumeration Reference</title>
+    <title>SockManager Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,18 +10,19 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/RequestOption" class="dashAnchor"></a>
-    <a title="RequestOption Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Class/SockManager" class="dashAnchor"></a>
+    <a title="SockManager Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (84% documented)</p>
+        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="../index.html"> Reference</a>
+        <a href="../index.html">GomobileIPFS Reference</a>
         <img id="carat" src="../img/carat.png" />
-        RequestOption Enumeration Reference
+        SockManager Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -92,14 +93,16 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>RequestOption</h1>
+            <h1>SockManager</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestOption</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">SockManager</span></code></pre>
 
                 </div>
               </div>
-            <p>Enum of the different option types: bool, string and bytes</p>
+            <p>SockManager is a class that wraps a golang <code>sockManager</code> object</p>
+
+<p><strong>Should not be used on its own</strong></p>
 
           </section>
           <section class="section task-group-section">
@@ -108,9 +111,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12GomobileIPFS13RequestOptionO4boolyACSbcACmF"></a>
-                    <a name="//apple_ref/swift/Element/bool(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12GomobileIPFS13RequestOptionO4boolyACSbcACmF">bool(_:)</a>
+                    <a name="/s:12GomobileIPFS11SockManagerCyAC10Foundation3URLVKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS11SockManagerCyAC10Foundation3URLVKcfc">init(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -118,16 +121,43 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Class constructor using sockBasePath passed as parameter as UDS base path</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a></code>: If the initialization of the socket manager failed
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">bool</span><span class="p">(</span><span class="kt">Bool</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">sockBasePath</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sockBasePath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path where the UDS will be created</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/SockManager.swift#L34-L42">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -135,9 +165,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12GomobileIPFS13RequestOptionO6stringyACSScACmF"></a>
-                    <a name="//apple_ref/swift/Element/string(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12GomobileIPFS13RequestOptionO6stringyACSScACmF">string(_:)</a>
+                    <a name="/s:12GomobileIPFS11SockManagerC03newC4PathSSyKF"></a>
+                    <a name="//apple_ref/swift/Method/newSockPath()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS11SockManagerC03newC4PathSSyKF">newSockPath()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -145,43 +175,28 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Creates an UDS and returns its path</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a></code>: If the socket creation failed
+
+</div>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">string</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">newSockPath</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:12GomobileIPFS13RequestOptionO5bytesyAC10Foundation4DataVcACmF"></a>
-                    <a name="//apple_ref/swift/Element/bytes(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12GomobileIPFS13RequestOptionO5bytesyAC10Foundation4DataVcACmF">bytes(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The path of the created socket</p>
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">bytes</span><span class="p">(</span><span class="kt">Data</span><span class="p">)</span></code></pre>
-
-                        </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/SockManager.swift#L47-L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -191,8 +206,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-17)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-20)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
