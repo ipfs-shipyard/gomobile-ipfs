@@ -6,6 +6,10 @@ import sys
 import datetime
 
 try:
+    # Flag used to discard uploaded files on failure
+    uploaded = False
+    created = False
+
     # Init bintray API client
     if "BINTRAY_USER" not in os.environ \
             or "BINTRAY_KEY" not in os.environ \
@@ -164,6 +168,7 @@ try:
                 description=version_description,
                 vcs_tag=vcs_tag
             )
+        created = True
 
         # Upload artifacts
         artifacts = [
@@ -195,10 +200,10 @@ try:
                 version=global_version,
                 remote_file_path=os.path.join(maven_path, artifact),
                 local_file_path=os.path.join(artfacts_local_dir, artifact),
-                publish=publish,
                 override=override,
             )
             sys.stdout.write("\b\b\b- done\n")
+            uploaded = True
 
         print("Signing version: %s for package: %s" %
               (global_version, artifact_id))
@@ -227,4 +232,21 @@ try:
 
 except Exception as err:
     sys.stderr.write("Error: %s\n" % str(err))
+    if created:
+        print("Deleting created version")
+        bintray.delete_version(
+            subject=bintray_orga,
+            repo=bintray_repo,
+            package=artifact_id,
+            version=global_version,
+        )
+    elif uploaded:
+        print("Deleting uploaded content")
+        bintray.discard_uploaded_content(
+            subject=bintray_orga,
+            repo=bintray_repo,
+            package=artifact_id,
+            version=global_version,
+            passphrase=bintray_gpg_pass,
+        )
     exit(1)

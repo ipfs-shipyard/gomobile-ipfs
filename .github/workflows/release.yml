@@ -46,8 +46,8 @@ jobs:
 
       - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          pip3 install -r packages/utils/manifest_get/requirements.txt
+          export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
 
@@ -64,7 +64,7 @@ jobs:
 
       - name: Update Cocoapods
         run: |
-          gem install cocoapods
+          gem update cocoapods cocoapods-trunk
           pod setup
 
       - name: Generate Android/iOS Bridge docs
@@ -112,12 +112,7 @@ jobs:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
           BINTRAY_GPG_PASS: ${{ secrets.BINTRAY_GPG_PASS }}
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        # Publish Core first and Bridge last so as to give Bintray time
-        # to publish Core so that Cocoapods can fetch it when publishing Bridge
-        run: |
-          make publish_core.ios
-          make publish_core.android
-          make publish_bridge.android
-          make publish_bridge.ios
+        run: make publish

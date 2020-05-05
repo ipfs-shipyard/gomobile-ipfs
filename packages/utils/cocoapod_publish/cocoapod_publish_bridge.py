@@ -7,9 +7,9 @@ import datetime
 import subprocess
 
 try:
-    # Flag used to clean discard uploaded files on failure
+    # Flag used to discard uploaded files on failure
     uploaded = False
-    published = False
+    created = False
 
     # Init bintray API client
     if "BINTRAY_USER" not in os.environ \
@@ -169,6 +169,7 @@ try:
                 description=version_description,
                 vcs_tag=vcs_tag
             )
+        created = True
 
         # Upload artifact
         zip_file = "%s-%s.zip" % (bintray_package, global_version)
@@ -190,7 +191,6 @@ try:
             version=global_version,
             remote_file_path=os.path.join(version_path, zip_file),
             local_file_path=os.path.join(artifacts_local_dir, zip_file),
-            publish=publish,
             override=override,
         )
         sys.stdout.write("\b\b\b- done\n")
@@ -215,7 +215,6 @@ try:
                 package=bintray_package,
                 version=global_version,
             )
-            published = True
 
             pod_version_exists = False
             code, output = subprocess.getstatusoutput(
@@ -240,8 +239,9 @@ try:
                     print("Publishing version %s on pod trunk: %s" %
                           (global_version, podspec_file))
 
-                if os.system("pod trunk push %s --silent" %
-                             os.path.join(artifacts_local_dir, podspec_file)):
+                if os.system("pod trunk push %s %s" % (
+                             os.path.join(artifacts_local_dir, podspec_file),
+                             "--skip-import-validation --synchronous")):
                     raise Exception("pod trunk push failed")
 
         print("Cocoapod publication succeeded!")
@@ -251,7 +251,7 @@ try:
 
 except Exception as err:
     sys.stderr.write("Error: %s\n" % str(err))
-    if published:
+    if created:
         print("Deleting created version")
         bintray.delete_version(
             subject=bintray_orga,

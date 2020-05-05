@@ -50,8 +50,8 @@ jobs:
 
       - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          pip3 install -r packages/utils/manifest_get/requirements.txt
+          export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
 
@@ -96,10 +96,10 @@ jobs:
           name: build-${{ github.run_id }}
           path: packages/build
 
-      - name: Set TARGET_SDK
+      - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          pip3 install -r packages/utils/manifest_get/requirements.txt
+          export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
 
@@ -149,18 +149,41 @@ jobs:
           name: build-${{ github.run_id }}
           path: packages/build
 
+      - name: Set simulator destination in env
+        working-directory: ios/Bridge
+        run:
+          DESTINATION=$(
+            xcodebuild -showdestinations
+              -project GomobileIPFS.xcodeproj
+              -scheme GomobileIPFS
+            | awk '/Ineligible destinations for/ {exit} {print}'
+            | grep 'platform:iOS Simulator'
+            | awk -F 'id:' '{print $2}'
+            | cut -d',' -f1
+            | tail -n1
+          );
+          if [ -z "$DESTINATION" ]; then
+            echo "::error::No compatible simulator found to run the test"
+            exit 1;
+          fi;
+          echo "##[set-env name=DESTINATION;]$DESTINATION"
+
       - name: Run iOS Bridge tests
         working-directory: ios/Bridge
         run:
-          xcodebuild test -project GomobileIPFS.xcodeproj
-          -scheme GomobileIPFS -sdk iphonesimulator
-          -destination "platform=iOS Simulator,name=iPhone 11,OS=13.3"
+          xcodebuild test
+            -project GomobileIPFS.xcodeproj
+            -scheme GomobileIPFS
+            -sdk iphonesimulator
+            -destination "platform=iOS Simulator,id=$DESTINATION"
 
       - name: Build iOS Bridge
-        working-directory: ios/Bridge
+        working-directory: packages
         run:
-          xcodebuild -project GomobileIPFS.xcodeproj
-          -scheme GomobileIPFS -sdk iphonesimulator
-          -destination "platform=iOS Simulator,name=iPhone 11,OS=13.3" &&
-          pip3 install -r ../../packages/utils/cocoapod_format/requirements.txt
-          && ../../packages/utils/cocoapod_format/cocoapod_format_bridge.py
+          xcodebuild
+            -project ../ios/Bridge/GomobileIPFS.xcodeproj
+            -scheme GomobileIPFS
+            -sdk iphonesimulator
+            -destination "platform=iOS Simulator,id=$DESTINATION"
+          && pip3 install -r utils/cocoapod_format/requirements.txt
+          && utils/cocoapod_format/cocoapod_format_bridge.py
