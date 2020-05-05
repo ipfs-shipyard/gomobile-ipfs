@@ -18,6 +18,9 @@ UTIL_COCOAPOD_PUBLISH = $(UTILS_DIR)/cocoapod_publish
 UTIL_COCOAPOD_PUBLISH_REQ = $(UTIL_COCOAPOD_PUBLISH)/requirements.txt
 UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_bridge.py
 UTIL_COCOAPOD_PUBLISH_CORE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_core.py
+UTIL_BINTRAY_PUBLISH = $(UTILS_DIR)/bintray_publish
+UTIL_BINTRAY_PUBLISH_REQ = $(UTIL_BINTRAY_PUBLISH)/requirements.txt
+UTIL_BINTRAY_PUBLISH_ANDROID_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_android.py
 BUILD_DIR = $(MAKEFILE_DIR)/build
 PIP = pip3
 
@@ -26,6 +29,7 @@ DEV_VERSION := 0.0.42-dev
 VERSION := $(or $(GOMOBILE_IPFS_VERSION),$(DEV_VERSION))
 ANDROID_GROUP_ID := $(shell echo $(call MANIFEST_GET_FUNC,global.group_id) | tr . /)
 ANDROID_CORE_ARTIFACT_ID := $(call MANIFEST_GET_FUNC,go_core.android.artifact_id)
+ANDROID_APP_FILENAME := $(call MANIFEST_GET_FUNC,android_demo_app.filename)
 
 GO_DIR = $(MAKEFILE_DIR)/../go
 GO_VENDOR = $(GO_DIR)/vendor
@@ -39,12 +43,16 @@ GOMOBILE_OPT ?=
 GOMOBILE_TARGET ?=
 
 ANDROID_DIR = $(MAKEFILE_DIR)/../android
+ANDROID_SRC = $(shell git ls-files $(ANDROID_DIR) | grep -v '.gitignore')
 ANDROID_BUILD_DIR = $(BUILD_DIR)/android
 ANDROID_BUILD_DIR_INT = $(ANDROID_BUILD_DIR)/intermediates
 ANDROID_BUILD_DIR_INT_CORE = $(ANDROID_BUILD_DIR_INT)/core
 ANDROID_CORE = $(ANDROID_BUILD_DIR_INT_CORE)/core.aar
 ANDROID_BUILD_DIR_MAV = $(ANDROID_BUILD_DIR)/maven
 ANDROID_BUILD_DIR_MAV_CORE = $(ANDROID_BUILD_DIR_MAV)/$(ANDROID_GROUP_ID)/$(ANDROID_CORE_ARTIFACT_ID)/$(VERSION)
+ANDROID_OUTPUT_APK = $(ANDROID_DIR)/app/build/outputs/apk/release/app-release.apk
+ANDROID_BUILD_DIR_APP = $(ANDROID_BUILD_DIR)/app/$(VERSION)
+ANDROID_BUILD_DIR_APP_APK = $(ANDROID_BUILD_DIR_APP)/$(ANDROID_APP_FILENAME)-$(VERSION).apk
 
 IOS_DIR = $(MAKEFILE_DIR)/../ios
 IOS_BUILD_DIR = $(BUILD_DIR)/ios
@@ -58,8 +66,7 @@ DOC_DIR = $(MAKEFILE_DIR)/../docs
 ANDROID_DOC_DIR = $(DOC_DIR)/android
 IOS_DOC_DIR = $(DOC_DIR)/ios
 
-
-.PHONY: help build_core build_core.android build_core.ios publish publish_core publish_core.android publish_core.ios publish_bridge publish_bridge.android publish_bridge.ios re re.android re.ios test test_bridge test_bridge.android test_bridge.ios test_core clean clean.android clean.ios
+.PHONY: help build_core build_core.android build_core.ios build_demo build_demo.android build_demo.ios clean clean.android clean.ios docgen docgen.android docgen.ios fail_on_dev publish publish_bridge publish_bridge.android publish_bridge.ios publish_core publish_core.android publish_core.ios publish_demo publish_demo.android publish_demo.ios re re.android re.ios test test_bridge test_bridge.android test_bridge.ios test_core
 
 help:
 	@echo 'Commands:'
@@ -117,8 +124,31 @@ $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_VENDOR) | $(GOMOBILE)
 $(IOS_BUILD_DIR_INT_CORE):
 	@mkdir -p $(IOS_BUILD_DIR_INT_CORE)
 
+build_demo: build_demo.android
+
+build_demo.android: $(ANDROID_BUILD_DIR_APP_APK)
+
+$(ANDROID_BUILD_DIR_APP_APK): $(ANDROID_BUILD_DIR_APP) $(ANDROID_OUTPUT_APK) $(MANIFEST)
+	@echo '------------------------------------'
+	@echo '  Android Demo: apk path creation   '
+	@echo '------------------------------------'
+	@cp $(ANDROID_OUTPUT_APK) $(ANDROID_BUILD_DIR_APP_APK)
+	@echo 'Built .apk available in: $(ANDROID_BUILD_DIR_APP)'
+	@echo 'Done!'
+
+$(ANDROID_OUTPUT_APK): $(ANDROID_SRC) $(MANIFEST) $(ANDROID_BUILD_DIR_MAV_CORE)
+	@echo '------------------------------------'
+	@echo '   Android Demo: Gradle building    '
+	@echo '------------------------------------'
+	@cd $(ANDROID_DIR) && ./gradlew app:build
+	@touch $(ANDROID_OUTPUT_APK)
+	@echo 'Done!'
+
+$(ANDROID_BUILD_DIR_APP):
+	@mkdir -p $(ANDROID_BUILD_DIR_APP)
+
 # Publish rules
-publish: publish_core publish_bridge
+publish: publish_core publish_bridge publish_demo
 
 publish_core: publish_core.android publish_core.ios
 
@@ -159,6 +189,18 @@ publish_bridge.ios: fail_on_dev build_core.ios
 		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ) -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
 	fi
 	@$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
+	@echo 'Done!'
+
+publish_demo: publish_demo.android
+
+publish_demo.android: fail_on_dev build_demo.android
+	@echo '------------------------------------'
+	@echo '  Android Demo: Bintray publishing  '
+	@echo '------------------------------------'
+	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_PUBLISH_REQ))" ]; then \
+		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
+	fi
+	$(UTIL_BINTRAY_PUBLISH_ANDROID_BIN)
 	@echo 'Done!'
 
 # Doc generation rules

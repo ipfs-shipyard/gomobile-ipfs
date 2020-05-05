@@ -4,18 +4,28 @@ android {
 	compileSdkVersion manifest.global.android.compile_sdk_version
 
 	defaultConfig {
-		applicationId "$manifest.global.android.group_id.$manifest.android_example.application_id"
+		applicationId "$manifest.global.android.group_id.$manifest.global.demo_app.application_id"
 		minSdkVersion manifest.global.android.min_sdk_version
 		targetSdkVersion manifest.global.android.target_sdk_version
 		versionCode 1
 		versionName '1.0'
 		testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+		signingConfigs {
+			release {
+				storeType 'pkcs12'
+				storeFile file(rootDir.getCanonicalPath() + '/gomobile-ipfs.pfx')
+				keyAlias 'gomobile-ipfs'
+				storePassword System.getenv('ANDROID_KEYPASS')
+				keyPassword System.getenv('ANDROID_KEYPASS')
+			}
+		}
 	}
 
 	buildTypes {
 		release {
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			signingConfig signingConfigs.release
 		}
 	}
 

@@ -105,13 +105,22 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Action
           GIT_COMMITTER_EMAIL: action@github.com
 
-      - name: Publish Android/iOS Bridge and Core packages
+      - name: Create Android keystore
+        if: steps.semantic.outputs.new_release_published == 'true'
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run:
+          echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
+
+      - name: Publish Android/iOS packages and apps
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
           BINTRAY_GPG_PASS: ${{ secrets.BINTRAY_GPG_PASS }}
+          ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}

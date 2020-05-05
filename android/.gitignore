@@ -5,6 +5,9 @@
 # Javadoc
 bridge/javadoc
 
+# Keystore
+gomobile-ipfs.pfx
+
 # Built application files
 *.apk
 *.ap_
