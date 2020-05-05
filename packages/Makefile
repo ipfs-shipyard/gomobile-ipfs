@@ -18,9 +18,13 @@ UTIL_COCOAPOD_PUBLISH = $(UTILS_DIR)/cocoapod_publish
 UTIL_COCOAPOD_PUBLISH_REQ = $(UTIL_COCOAPOD_PUBLISH)/requirements.txt
 UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_bridge.py
 UTIL_COCOAPOD_PUBLISH_CORE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_core.py
+UTIL_BINTRAY_FORMAT = $(UTILS_DIR)/bintray_format
+UTIL_BINTRAY_FORMAT_REQ = $(UTIL_BINTRAY_FORMAT)/requirements.txt
+UTIL_BINTRAY_FORMAT_IOS_BIN = $(UTIL_BINTRAY_FORMAT)/bintray_format_ios.py
 UTIL_BINTRAY_PUBLISH = $(UTILS_DIR)/bintray_publish
 UTIL_BINTRAY_PUBLISH_REQ = $(UTIL_BINTRAY_PUBLISH)/requirements.txt
 UTIL_BINTRAY_PUBLISH_ANDROID_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_android.py
+UTIL_BINTRAY_PUBLISH_IOS_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_ios.py
 BUILD_DIR = $(MAKEFILE_DIR)/build
 PIP = pip3
 
@@ -30,6 +34,8 @@ VERSION := $(or $(GOMOBILE_IPFS_VERSION),$(DEV_VERSION))
 ANDROID_GROUP_ID := $(shell echo $(call MANIFEST_GET_FUNC,global.group_id) | tr . /)
 ANDROID_CORE_ARTIFACT_ID := $(call MANIFEST_GET_FUNC,go_core.android.artifact_id)
 ANDROID_APP_FILENAME := $(call MANIFEST_GET_FUNC,android_demo_app.filename)
+IOS_CORE_PACKAGE := $(call MANIFEST_GET_FUNC,go_core.ios.package)
+IOS_APP_FILENAME := $(call MANIFEST_GET_FUNC,ios_demo_app.filename)
 
 GO_DIR = $(MAKEFILE_DIR)/../go
 GO_VENDOR = $(GO_DIR)/vendor
@@ -55,12 +61,22 @@ ANDROID_BUILD_DIR_APP = $(ANDROID_BUILD_DIR)/app/$(VERSION)
 ANDROID_BUILD_DIR_APP_APK = $(ANDROID_BUILD_DIR_APP)/$(ANDROID_APP_FILENAME)-$(VERSION).apk
 
 IOS_DIR = $(MAKEFILE_DIR)/../ios
+IOS_SRC = $(shell git ls-files $(IOS_DIR) | grep -v '.gitignore')
 IOS_BUILD_DIR = $(BUILD_DIR)/ios
 IOS_BUILD_DIR_INT = $(IOS_BUILD_DIR)/intermediates
 IOS_BUILD_DIR_INT_CORE = $(IOS_BUILD_DIR_INT)/core
 IOS_CORE = $(IOS_BUILD_DIR_INT_CORE)/Core.framework
 IOS_BUILD_DIR_CCP = $(IOS_BUILD_DIR)/cocoapods
 IOS_BUILD_DIR_CCP_CORE = $(IOS_BUILD_DIR_CCP)/$(IOS_CORE_PACKAGE)/$(VERSION)
+IOS_WORKSPACE = $(IOS_DIR)/Example.xcworkspace
+IOS_APP_PLIST = $(IOS_WORKSPACE)/release_export.plist
+IOS_BUILD_DIR_APP = $(IOS_BUILD_DIR)/app/$(VERSION)
+IOS_BUILD_DIR_APP_IPA = $(IOS_BUILD_DIR_APP)/$(IOS_APP_FILENAME)-$(VERSION).ipa
+IOS_BUILD_DIR_INT_APP = $(IOS_BUILD_DIR_INT)/app
+IOS_BUILD_DIR_INT_APP_IPA = $(IOS_BUILD_DIR_INT_APP)/ipa
+IOS_BUILD_DIR_INT_APP_IPA_OUTPUT = $(IOS_BUILD_DIR_INT_APP_IPA)/Example.ipa
+IOS_BUILD_DIR_INT_APP_ARCHIVE = $(IOS_BUILD_DIR_INT_APP)/archive
+IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT = $(IOS_BUILD_DIR_INT_APP_ARCHIVE)/app-release.xcarchive
 
 DOC_DIR = $(MAKEFILE_DIR)/../docs
 ANDROID_DOC_DIR = $(DOC_DIR)/android
@@ -124,7 +140,7 @@ $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_VENDOR) | $(GOMOBILE)
 $(IOS_BUILD_DIR_INT_CORE):
 	@mkdir -p $(IOS_BUILD_DIR_INT_CORE)
 
-build_demo: build_demo.android
+build_demo: build_demo.android build_demo.ios
 
 build_demo.android: $(ANDROID_BUILD_DIR_APP_APK)
 
@@ -146,6 +162,48 @@ $(ANDROID_OUTPUT_APK): $(ANDROID_SRC) $(MANIFEST) $(ANDROID_BUILD_DIR_MAV_CORE)
 
 $(ANDROID_BUILD_DIR_APP):
 	@mkdir -p $(ANDROID_BUILD_DIR_APP)
+
+build_demo.ios: $(IOS_BUILD_DIR_APP_IPA)
+
+$(IOS_BUILD_DIR_APP_IPA): $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT) $(MANIFEST)
+	@echo '------------------------------------'
+	@echo '    iOS Demo: Bintray formatting    '
+	@echo '------------------------------------'
+	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_FORMAT_REQ))" ]; then \
+		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_FORMAT_REQ); echo; \
+	fi
+	@$(UTIL_BINTRAY_FORMAT_IOS_BIN)
+	@echo 'Done!'
+
+$(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT): $(IOS_BUILD_DIR_INT_APP_IPA) $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
+	@echo '------------------------------------'
+	@echo '   iOS Demo: XCode building ipa     '
+	@echo '------------------------------------'
+	@xcodebuild -exportArchive \
+		-archivePath $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT) \
+		-exportOptionsPlist $(IOS_APP_PLIST) \
+		-exportPath $(IOS_BUILD_DIR_INT_APP_IPA)
+	@touch $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT)
+	@echo 'Done!'
+
+$(IOS_BUILD_DIR_INT_APP_IPA):
+	@mkdir -p $(IOS_BUILD_DIR_INT_APP_IPA)
+
+$(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT): $(IOS_BUILD_DIR_INT_APP_ARCHIVE) $(IOS_CORE) $(IOS_SRC)
+	@echo '------------------------------------'
+	@echo '  iOS Demo: XCode building archive  '
+	@echo '------------------------------------'
+	@xcodebuild archive \
+		-workspace $(IOS_WORKSPACE) \
+		-scheme Example \
+		-configuration Release \
+		-sdk iphoneos \
+		-archivePath $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
+	@touch $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
+	@echo 'Done!'
+
+$(IOS_BUILD_DIR_INT_APP_ARCHIVE):
+	@mkdir -p $(IOS_BUILD_DIR_INT_APP_ARCHIVE)
 
 # Publish rules
 publish: publish_core publish_bridge publish_demo
@@ -191,7 +249,7 @@ publish_bridge.ios: fail_on_dev build_core.ios
 	@$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
 	@echo 'Done!'
 
-publish_demo: publish_demo.android
+publish_demo: publish_demo.android publish_demo.ios
 
 publish_demo.android: fail_on_dev build_demo.android
 	@echo '------------------------------------'
@@ -201,6 +259,16 @@ publish_demo.android: fail_on_dev build_demo.android
 		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
 	fi
 	$(UTIL_BINTRAY_PUBLISH_ANDROID_BIN)
+	@echo 'Done!'
+
+publish_demo.ios: fail_on_dev build_demo.ios
+	@echo '------------------------------------'
+	@echo '    iOS Demo: Bintray publishing    '
+	@echo '------------------------------------'
+	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_PUBLISH_REQ))" ]; then \
+		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
+	fi
+	$(UTIL_BINTRAY_PUBLISH_IOS_BIN)
 	@echo 'Done!'
 
 # Doc generation rules

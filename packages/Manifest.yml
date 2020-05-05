@@ -132,3 +132,17 @@ android_demo_app:
   github_release_notes_file: *global_changelog
   readme_syntax:  # markdown || asciidoc || plain_text
   readme_content:
+
+ios_demo_app:
+  name: GomobileIPFS Example
+  package: ios
+  filename: ios-demo
+  description:
+    Simple demo app for iOS that fetches a random XKCD using Gomobile-IPFS
+
+  override: false
+  publish: true
+  public_download_numbers: true
+  github_release_notes_file: *global_changelog
+  readme_syntax:  # markdown || asciidoc || plain_text
+  readme_content:
