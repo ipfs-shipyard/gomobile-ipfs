@@ -46,8 +46,8 @@ jobs:
 
       - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          pip3 install -r packages/utils/manifest_get/requirements.txt
+          export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
 
@@ -64,7 +64,7 @@ jobs:
 
       - name: Update Cocoapods
         run: |
-          gem install cocoapods
+          gem update cocoapods cocoapods-trunk
           pod setup
 
       - name: Generate Android/iOS Bridge docs
@@ -105,19 +105,57 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Action
           GIT_COMMITTER_EMAIL: action@github.com
 
-      - name: Publish Android/iOS Bridge and Core packages
+      - name: Create Android keystore
+        if: steps.semantic.outputs.new_release_published == 'true'
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run:
+          echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
+
+      - name: Setup iOS provisioning profile
+        if: steps.semantic.outputs.new_release_published == 'true'
+        env:
+          IOS_PROFILE: ${{ secrets.IOS_PROFILE }}
+          IOS_PROFILE_UUID: ${{ secrets.IOS_PROFILE_UUID }}
+        run: |
+          mkdir -p $HOME/Library/MobileDevice/Provisioning\ Profiles
+          cd $HOME/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROFILE" | openssl base64 -A -d \
+            > "$IOS_PROFILE_UUID.mobileprovision"
+
+      - name: Setup macOS keychain
+        if: steps.semantic.outputs.new_release_published == 'true'
+        working-directory: /tmp
+        env:
+          IOS_KEYSTORE: ${{ secrets.IOS_KEYSTORE }}
+          IOS_KEYPASS: ${{ secrets.IOS_KEYPASS }}
+          IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
+          KEYCHAIN_PASS: ${{ secrets.KEYCHAIN_PASS }}
+        run: |
+          security create-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASS" build.keychain
+          security set-keychain-settings build.keychain
+          echo "$IOS_KEYSTORE" | openssl base64 -A -d > Gomobile-IPFS.p12
+          echo "$IOS_CERTIFICATE" | openssl base64 -A -d > Gomobile-IPFS.cer
+          security import Gomobile-IPFS.p12 \
+            -t priv -f pkcs12 -P "$IOS_KEYPASS" -T /usr/bin/codesign
+          security import Gomobile-IPFS.cer \
+            -t cert -T /usr/bin/codesign
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASS" build.keychain
+
+      - name: Publish Android/iOS packages and apps
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
           BINTRAY_GPG_PASS: ${{ secrets.BINTRAY_GPG_PASS }}
+          ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        # Publish Core first and Bridge last so as to give Bintray time
-        # to publish Core so that Cocoapods can fetch it when publishing Bridge
-        run: |
-          make publish_core.ios
-          make publish_core.android
-          make publish_bridge.android
-          make publish_bridge.ios
+        run: make publish

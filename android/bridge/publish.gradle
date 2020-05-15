@@ -1,5 +1,5 @@
 task javadoc(type: Javadoc) {
-	title = manifest.android_bridge.name
+    title = manifest.android_bridge.name
     source = android.sourceSets.main.java.srcDirs
     destinationDir = new File("$projectDir/javadoc")
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
@@ -30,7 +30,7 @@ publishing {
                 javadocJar
             ]
 
-			groupId manifest.global.android.group_id
+			groupId manifest.global.group_id
 			artifactId manifest.android_bridge.artifact_id
 			version rootProject.ext.version
 

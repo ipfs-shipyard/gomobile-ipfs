@@ -102,8 +102,8 @@ jobs:
 
       - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/yaml_get/requirements.txt
-          export GET_BIN=packages/utils/yaml_get/yaml_get.py
+          pip3 install -r packages/utils/manifest_get/requirements.txt
+          export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
 

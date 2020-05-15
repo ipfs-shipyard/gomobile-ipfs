@@ -4,12 +4,11 @@ import yaml
 import os
 import sys
 import datetime
-import subprocess
 
 try:
     # Flag used to discard uploaded files on failure
     uploaded = False
-    created = False
+    published = False
 
     # Init bintray API client
     if "BINTRAY_USER" not in os.environ \
@@ -31,22 +30,22 @@ try:
         manifest = yaml.safe_load(stream)
 
     bintray_orga = manifest["global"]["bintray_orga"]
-    bintray_repo = manifest["global"]["ios"]["repo"]
-    bintray_package = manifest["go_core"]["ios"]["package"]
-    description = manifest["go_core"]["ios"]["summary"]
+    bintray_repo = manifest["global"]["demo_app"]["repo"]
+    bintray_package = manifest["ios_demo_app"]["package"]
+    description = manifest["ios_demo_app"]["description"]
     licenses = [license["short_name"]
                 for license in manifest["global"]["licenses"]]
     vcs_url = manifest["global"]["github"]["git_url"]
     website = manifest["global"]["github"]["url"]
     issue_tracker = manifest["global"]["github"]["issues_url"]
     github_repo = manifest["global"]["github"]["repo"]
-    github_notes = manifest["go_core"]["ios"]["github_release_notes_file"]
-    download_count = manifest["go_core"]["ios"]["public_download_numbers"]
-    readme_content = manifest["go_core"]["ios"]["readme_content"]
-    readme_syntax = manifest["go_core"]["ios"]["readme_syntax"]
-    core_name = manifest["go_core"]["ios"]["name"]
-    publish = manifest["go_core"]["ios"]["publish"]
-    override = manifest["go_core"]["ios"]["override"]
+    github_notes = manifest["ios_demo_app"]["github_release_notes_file"]
+    download_count = manifest["ios_demo_app"]["public_download_numbers"]
+    readme_content = manifest["ios_demo_app"]["readme_content"]
+    readme_syntax = manifest["ios_demo_app"]["readme_syntax"]
+    publish = manifest["ios_demo_app"]["publish"]
+    override = manifest["ios_demo_app"]["override"]
+    filename = manifest["ios_demo_app"]["filename"]
 
     # Get version from env (CI) or fail
     if "GOMOBILE_IPFS_VERSION" in os.environ:
@@ -169,32 +168,35 @@ try:
                 description=version_description,
                 vcs_tag=vcs_tag
             )
-        created = True
 
         # Upload artifact
-        zip_file = "%s-%s.zip" % (bintray_package, global_version)
-        podspec_file = "%s.podspec" % core_name
+        artifacts = [
+            "%s-%s.ipa" % (filename, global_version),
+            "%s-%s.plist" % (filename, global_version),
+        ]
 
-        ios_build_dir_ccp = os.path.join(
+        ios_build_dir_app = os.path.join(
             os.path.dirname(os.path.dirname(current_dir)),
-            "build/ios/cocoapods",
+            "build/ios/app",
         )
         version_path = "%s/%s" % (bintray_package, global_version)
-        artifacts_local_dir = os.path.join(ios_build_dir_ccp, version_path)
+        artifacts_local_dir = os.path.join(ios_build_dir_app, global_version)
 
-        sys.stdout.write("Uploading artifact: %s ..." % zip_file)
-        sys.stdout.flush()
-        bintray.upload_content(
-            subject=bintray_orga,
-            repo=bintray_repo,
-            package=bintray_package,
-            version=global_version,
-            remote_file_path=os.path.join(version_path, zip_file),
-            local_file_path=os.path.join(artifacts_local_dir, zip_file),
-            override=override,
-        )
-        sys.stdout.write("\b\b\b- done\n")
-        uploaded = True
+        print("Uploading artifacts:")
+        for artifact in artifacts:
+            sys.stdout.write("    - artifact: %s ..." % artifact)
+            sys.stdout.flush()
+            bintray.upload_content(
+                subject=bintray_orga,
+                repo=bintray_repo,
+                package=bintray_package,
+                version=global_version,
+                remote_file_path=os.path.join(version_path, artifact),
+                local_file_path=os.path.join(artifacts_local_dir, artifact),
+                override=override,
+            )
+            sys.stdout.write("\b\b\b- done\n")
+            uploaded = True
 
         print("Signing version: %s for package: %s" %
               (global_version, bintray_package))
@@ -215,42 +217,16 @@ try:
                 package=bintray_package,
                 version=global_version,
             )
+            published = True
 
-            pod_version_exists = False
-            code, output = subprocess.getstatusoutput(
-                "pod trunk info %s | sed -e '1,/- Versions:/d' -e "
-                "'/- Owners:/,$d' | cut -f2- -d '-' | rev | cut -f2- "
-                "-d '(' | rev" % core_name
-            )
-            if code == 0:
-                for line in output.splitlines():
-                    if line.strip() == global_version:
-                        pod_version_exists = True
-                        break
-
-            if not pod_version_exists or (pod_version_exists and override):
-                podspec_file = "%s.podspec" % core_name
-                if pod_version_exists:
-                    print("Updating version %s on pod trunk: %s" %
-                          (global_version, podspec_file))
-                    os.system("echo y | pod trunk delete %s %s &> /dev/null" %
-                              (core_name, global_version))
-                else:
-                    print("Publishing version %s on pod trunk: %s" %
-                          (global_version, podspec_file))
-
-                if os.system("pod trunk push %s --skip-import-validation" %
-                             os.path.join(artifacts_local_dir, podspec_file)):
-                    raise Exception("pod trunk push failed")
-
-        print("Cocoapod publication succeeded!")
+        print("Bintray publication succeeded!")
 
     else:
-        print("Cocoapod publication skipped (already exists)")
+        print("Bintray publication skipped (already exists)")
 
 except Exception as err:
     sys.stderr.write("Error: %s\n" % str(err))
-    if created:
+    if published:
         print("Deleting created version")
         bintray.delete_version(
             subject=bintray_orga,
