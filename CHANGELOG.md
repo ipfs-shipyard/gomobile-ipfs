@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.1.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.1.0...v1.1.1) (2020-05-15)
+
+
+### Bug Fixes
+
+* various bug fixes and improvements on ci publish jobs ([95ebb27](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/95ebb27ad29a4f10c6b9d8dfe801b46fcceb1f4f))
+
 # [1.1.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.0.0...v1.1.0) (2020-04-20)
 
 
