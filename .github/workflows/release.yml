@@ -9,7 +9,7 @@ jobs:
   release_and_publish:
     name: Create release and publish
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - name: Checkout changes
         uses: actions/checkout@v2
