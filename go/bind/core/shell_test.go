@@ -88,7 +88,7 @@ func TestShell(t *testing.T) {
 						req.Argument(arg)
 					}
 
-					res, err := req.Send()
+					res, err := req.SendToBytes()
 					if err != nil {
 						t.Error(err)
 					}

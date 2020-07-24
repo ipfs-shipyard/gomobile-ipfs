@@ -13,7 +13,7 @@ import ipfs.gomobile.android.IPFS;
 final class StartIPFS extends AsyncTask<Void, Void, String> {
     private static final String TAG = "StartIPFS";
 
-    private WeakReference<MainActivity> activityRef;
+    private final WeakReference<MainActivity> activityRef;
     private boolean backgroundError;
 
     StartIPFS(MainActivity activity) {
