@@ -69,10 +69,6 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 				Type:        "basic",
 			},
 		},
-		Experimental: ipfs_config.Experiments{
-			QUIC:                 true,
-			PreferTLS:            true,
-		},
 	}
 
 	return conf, nil
