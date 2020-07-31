@@ -161,4 +161,4 @@ jobs:
 
       - name: Lint Golang
         working-directory: go
-        run: ./bin/golangci-lint run -D unused
+        run: ./bin/golangci-lint run -D unused --timeout 5m
