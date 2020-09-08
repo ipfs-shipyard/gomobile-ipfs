@@ -17,7 +17,7 @@ import (
 	mobile_node "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
 
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr/net"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	// ipfs_log "github.com/ipfs/go-log"

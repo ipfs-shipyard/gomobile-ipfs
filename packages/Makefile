@@ -108,11 +108,11 @@ $(ANDROID_BUILD_DIR_MAV_CORE): $(ANDROID_CORE) $(MANIFEST_FILE)
 	@$(UTIL_MAVEN_FORMAT_CORE_BIN) && touch $(ANDROID_BUILD_DIR_MAV_CORE)
 	@echo 'Done!'
 
-$(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_VENDOR) | $(GOMOBILE)
+$(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '   Android Core: Gomobile binding   '
 	@echo '------------------------------------'
-	@GO111MODULE=off $(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android$(GOMOBILE_TARGET) -o $(ANDROID_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	@$(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android$(GOMOBILE_TARGET) -o $(ANDROID_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(ANDROID_BUILD_DIR_INT_CORE):
@@ -130,11 +130,11 @@ $(IOS_BUILD_DIR_CCP_CORE): $(IOS_CORE) $(MANIFEST_FILE)
 	@$(UTIL_COCOAPOD_FORMAT_CORE_BIN) && touch $(IOS_BUILD_DIR_CCP_CORE)
 	@echo 'Done!'
 
-$(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_VENDOR) | $(GOMOBILE)
+$(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	@GO111MODULE=off $(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	@$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
@@ -334,7 +334,7 @@ test_bridge.ios: build_core.ios
 	xcodebuild test -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFS -sdk iphonesimulator -destination "platform=iOS Simulator,id=$$DESTINATION"
 	@echo 'Done!'
 
-test_core: $(GO_VENDOR)
+test_core:
 	@echo '------------------------------------'
 	@echo '       Go Core: running test        '
 	@echo '------------------------------------'
@@ -346,15 +346,10 @@ $(GOMOBILE):
 	@echo '------------------------------------'
 	@echo '      Go: installing Gomobile       '
 	@echo '------------------------------------'
-	@GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
+	go mod download
+	go install golang.org/x/mobile/cmd/gomobile
+	go install golang.org/x/mobile/cmd/gobind
 	@$(GOMOBILE) init -v
-	@echo 'Done!'
-
-$(GO_VENDOR): $(GO_MOD_FILES)
-	@echo '------------------------------------'
-	@echo '       Go: installing vendor        '
-	@echo '------------------------------------'
-	@cd $(GO_DIR) && GO111MODULE=on go mod vendor
 	@echo 'Done!'
 
 fail_on_dev:

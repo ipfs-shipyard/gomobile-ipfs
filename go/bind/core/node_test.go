@@ -10,7 +10,7 @@ import (
 	"time"
 
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr/net"
 )
 
 func TestNode(t *testing.T) {
