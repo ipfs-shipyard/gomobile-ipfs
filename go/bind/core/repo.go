@@ -3,6 +3,7 @@ package core
 import (
 	"path/filepath"
 
+	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
@@ -11,8 +12,7 @@ import (
 var plugins *ipfs_loader.PluginLoader
 
 type Repo struct {
-	irepo ipfs_repo.Repo
-	path  string
+	mr *node.MobileRepo
 }
 
 func RepoIsInitialized(path string) bool {
@@ -37,19 +37,32 @@ func OpenRepo(path string) (*Repo, error) {
 		return nil, err
 	}
 
-	return &Repo{irepo, path}, nil
+	mRepo := &node.MobileRepo{
+		Repo: irepo,
+		Path: path,
+	}
+
+	return &Repo{mRepo}, nil
+}
+
+func (r *Repo) EnablePubsubExperiment() {
+	r.mr.EnablePubsubExperiment = true
+}
+
+func (r *Repo) EnableNamesysPubsub() {
+	r.mr.EnableNamesysPubsub = true
 }
 
 func (r *Repo) GetRootPath() string {
-	return r.path
+	return r.mr.Path
 }
 
 func (r *Repo) SetConfig(c *Config) error {
-	return r.irepo.SetConfig(c.getConfig())
+	return r.mr.Repo.SetConfig(c.getConfig())
 }
 
 func (r *Repo) GetConfig() (*Config, error) {
-	cfg, err := r.irepo.Config()
+	cfg, err := r.mr.Repo.Config()
 	if err != nil {
 		return nil, err
 	}
@@ -58,11 +71,11 @@ func (r *Repo) GetConfig() (*Config, error) {
 }
 
 func (r *Repo) Close() error {
-	return r.irepo.Close()
+	return r.mr.Close()
 }
 
 func (r *Repo) getRepo() ipfs_repo.Repo {
-	return r.irepo
+	return r.mr
 }
 
 func loadPlugins(repoPath string) (*ipfs_loader.PluginLoader, error) {

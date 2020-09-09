@@ -30,6 +30,10 @@ func NewNode(ctx context.Context, repo *MobileRepo, mcfg *host.MobileConfig) (*I
 		NilRepo:                     false,
 		Repo:                        repo,
 		Host:                        host.NewMobileHostOption(mcfg),
+		ExtraOpts: map[string]bool{
+			"pubsub": repo.EnablePubsubExperiment,
+			"ipnsps": repo.EnableNamesysPubsub,
+		},
 	}
 
 	// create ipfs node

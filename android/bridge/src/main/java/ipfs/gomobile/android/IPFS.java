@@ -198,6 +198,36 @@ public class IPFS {
     }
 
     /**
+    * Instantiate the ipfs node with the experimental pubsub feature enabled.
+    *
+    * @throws ExtraOptionException If enable the extra option failed
+    * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipfs-pubsub">Experimental features of IPFS</a>
+    */
+    synchronized public void enablePubsubExperiment() throws ExtraOptionException {
+        try {
+            openRepoIfClosed();
+            repo.enablePubsubExperiment();
+        } catch (Exception e) {
+            throw new ExtraOptionException("Enable pubsub experiment failed", e);
+        }
+    }
+
+    /**
+    * Enable IPNS record distribution through pubsub; enables pubsub.
+    *
+    * @throws ExtraOptionException If enable the extra option failed
+    * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub">Experimental features of IPFS</a>
+    */
+    synchronized public void enableNamesysPubsub() throws ExtraOptionException {
+        try {
+            openRepoIfClosed();
+            repo.enableNamesysPubsub();
+        } catch (Exception e) {
+            throw new ExtraOptionException("Enable namesys pubsub failed", e);
+        }
+    }
+
+    /**
     * Gets the IPFS instance config as a JSON.
     *
     * @return The IPFS instance config as a JSON
@@ -332,8 +362,11 @@ public class IPFS {
         }
     }
 
-
     // Exceptions
+    public static class ExtraOptionException extends Exception {
+        ExtraOptionException(String message, Throwable err) { super(message, err); }
+    }
+
     public static class ConfigCreationException extends Exception {
         ConfigCreationException(String message, Throwable err) { super(message, err); }
     }

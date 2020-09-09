@@ -128,6 +128,22 @@ public class IPFS {
         try self.start()
     }
 
+    /// Instantiate the ipfs node with the experimental pubsub feature enabled.
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo failed
+    public func enablePubsubExperiment() throws {
+        try openRepoIfClosed()
+        self.repo!.goRepo.enablePubsubExperiment()
+    }
+
+    /// Enable IPNS record distribution through pubsub; enables pubsub.
+    /// - Throws:
+    ///     - `RepoError`: If the opening of the repo failed
+    public func enableNamesysPubsub() throws {
+        try openRepoIfClosed()
+        self.repo!.goRepo.enableNamesysPubsub()
+    }
+
     /// Gets the IPFS instance config as a dict
     /// - Throws:
     ///     - `RepoError`: If the opening of the repo or the getting of its config failed
