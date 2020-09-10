@@ -420,6 +420,7 @@
 				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
+				VALID_ARCHS = "arm64 arm64e";
 			};
 			name = Debug;
 		};
@@ -443,6 +444,7 @@
 				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
+				VALID_ARCHS = "arm64 arm64e";
 			};
 			name = Release;
 		};
