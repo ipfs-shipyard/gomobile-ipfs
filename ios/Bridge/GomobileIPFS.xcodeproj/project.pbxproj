@@ -439,6 +439,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
+				VALID_ARCHS = "arm64 arm64e";
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -471,6 +472,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
+				VALID_ARCHS = "arm64 arm64e";
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
