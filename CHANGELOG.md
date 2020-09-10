@@ -1,5 +1,20 @@
 # Global Changelog
 
+# [1.2.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.1.1...v1.2.0) (2020-09-10)
+
+
+### Bug Fixes
+
+* bump deps ([bb0afcb](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/bb0afcb5d58a68479f2f9fc0ec43e78ac458dd1a))
+* remove armv7 from XCode archs config (support dropped by gomobile) ([38476dc](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/38476dcf0e3f50e312a757c807506b70ea04a83c))
+* restore plist for unit tests ([1c0d0f4](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1c0d0f41698fe035c83f7df7a214314ef2fea6c3))
+* update & fix go mod ([d6caf1d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/d6caf1d717d410f88fecc8a1d75f37f055f203db))
+
+
+### Features
+
+* Add enable pubsub/namesys extra opt ([33af183](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/33af18397c89cf777e1768afc0d97c40f292c015))
+
 ## [1.1.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.1.0...v1.1.1) (2020-05-15)
 
 

@@ -8,6 +8,9 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a name="//apple_ref/swift/Class/IPFS" class="dashAnchor"></a>
@@ -16,6 +19,11 @@
       <div class="content-wrapper">
         <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
         <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -96,12 +104,16 @@
             <h1>IPFS</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">IPFS</span></code></pre>
 
                 </div>
               </div>
             <p>IPFS is a class that wraps a go-ipfs node and its shell over UDS</p>
 
+              <div class="slightly-smaller">
+                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L27-L236">Show on GitHub</a>
+              </div>
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -376,6 +388,88 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:12GomobileIPFS0B0C22enablePubsubExperimentyyKF"></a>
+                    <a name="//apple_ref/swift/Method/enablePubsubExperiment()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C22enablePubsubExperimentyyKF">enablePubsubExperiment()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Enable PubSub experimental feature on an IPFS node instance.</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started instance must be restarted for this feature to be enabled
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enablePubsubExperiment</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L135-L138">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C19enableNamesysPubsubyyKF"></a>
+                    <a name="//apple_ref/swift/Method/enableNamesysPubsub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C19enableNamesysPubsubyyKF">enableNamesysPubsub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Enable PubSub experimental feature and IPNS record distribution through PubSub.</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started instance must be restarted for this feature to be enabled
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enableNamesysPubsub</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L144-L147">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:12GomobileIPFS0B0C9getConfigSDySSypGyKF"></a>
                     <a name="//apple_ref/swift/Method/getConfig()" class="dashAnchor"></a>
                     <a class="token" href="#/s:12GomobileIPFS0B0C9getConfigSDySSypGyKF">getConfig()</a>
@@ -414,7 +508,7 @@
                         <p>The IPFS instance config as a dict</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L137-L141">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L155-L159">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -480,7 +574,7 @@ if the config parameter is nil</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L151-L159">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L169-L177">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -545,7 +639,7 @@ if the config parameter is nil</p>
                         <p>The dict value associated to the key passed as parameter in the IPFS instance config</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L168-L172">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L186-L190">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -622,7 +716,7 @@ if the config parameter is nil</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L183-L189">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L201-L207">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -680,7 +774,7 @@ if the config parameter is nil</p>
                         <p>A RequestBuilder based on the command passed as parameter</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L195-L201">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L213-L219">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -741,7 +835,7 @@ if the config parameter is nil</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L207-L209">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L225-L227">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -751,8 +845,8 @@ if the config parameter is nil</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-15)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-10)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
