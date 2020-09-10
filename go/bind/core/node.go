@@ -17,7 +17,7 @@ import (
 	mobile_node "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
 
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr/net"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
 	// ipfs_log "github.com/ipfs/go-log"
@@ -92,15 +92,11 @@ func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
 func NewNode(r *Repo) (*Node, error) {
 	ctx := context.Background()
 
-	if _, err := loadPlugins(r.path); err != nil {
+	if _, err := loadPlugins(r.mr.Path); err != nil {
 		return nil, err
 	}
 
-	repo := &mobile_node.MobileRepo{
-		Repo: r.irepo,
-		Path: r.path,
-	}
-	mnode, err := mobile_node.NewNode(ctx, repo, &mobile_host.MobileConfig{})
+	mnode, err := mobile_node.NewNode(ctx, r.mr, &mobile_host.MobileConfig{})
 	if err != nil {
 		return nil, err
 	}
