@@ -128,7 +128,8 @@ public class IPFS {
         try self.start()
     }
 
-    /// Instantiate the ipfs node with the experimental pubsub feature enabled.
+    /// Enable PubSub experimental feature on an IPFS node instance.
+    /// - Attention: A started instance must be restarted for this feature to be enabled
     /// - Throws:
     ///     - `RepoError`: If the opening of the repo failed
     public func enablePubsubExperiment() throws {
@@ -136,7 +137,8 @@ public class IPFS {
         self.repo!.goRepo.enablePubsubExperiment()
     }
 
-    /// Enable IPNS record distribution through pubsub; enables pubsub.
+    /// Enable PubSub experimental feature and IPNS record distribution through PubSub.
+    /// - Attention: A started instance must be restarted for this feature to be enabled
     /// - Throws:
     ///     - `RepoError`: If the opening of the repo failed
     public func enableNamesysPubsub() throws {

@@ -198,7 +198,8 @@ public class IPFS {
     }
 
     /**
-    * Instantiate the ipfs node with the experimental pubsub feature enabled.
+    * Enable PubSub experimental feature on an IPFS node instance.
+    * <b>A started instance must be restarted for this feature to be enabled.</b>
     *
     * @throws ExtraOptionException If enable the extra option failed
     * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipfs-pubsub">Experimental features of IPFS</a>
@@ -213,7 +214,8 @@ public class IPFS {
     }
 
     /**
-    * Enable IPNS record distribution through pubsub; enables pubsub.
+    * Enable PubSub experimental feature and IPNS record distribution through PubSub.
+    * <b>A started instance must be restarted for this feature to be enabled.</b>
     *
     * @throws ExtraOptionException If enable the extra option failed
     * @see <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub">Experimental features of IPFS</a>
