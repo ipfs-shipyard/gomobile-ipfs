@@ -31,9 +31,11 @@ type Node struct {
 }
 
 func (n *Node) Close() error {
+	n.muListeners.Lock()
 	for _, l := range n.listeners {
 		l.Close()
 	}
+	n.muListeners.Unlock()
 
 	return n.ipfsMobile.Close()
 }
