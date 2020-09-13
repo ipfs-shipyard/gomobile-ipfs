@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.2.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.2.0...v1.2.1) (2020-09-13)
+
+
+### Bug Fixes
+
+* race condition in node's closing ([16fa855](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/16fa855aa6228074f50f2c736187c17ed698f53a))
+
 # [1.2.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.1.1...v1.2.0) (2020-09-10)
 
 
