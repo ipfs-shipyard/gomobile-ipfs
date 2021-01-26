@@ -26,7 +26,7 @@ UTIL_BINTRAY_PUBLISH_REQ = $(UTIL_BINTRAY_PUBLISH)/requirements.txt
 UTIL_BINTRAY_PUBLISH_ANDROID_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_android.py
 UTIL_BINTRAY_PUBLISH_IOS_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_ios.py
 BUILD_DIR = $(MAKEFILE_DIR)/build
-PIP = pip3
+PIP ?= pip3
 
 MANIFEST_GET_FUNC=$(or $(shell $(UTIL_MANIFEST_GET_BIN) $(1)),$(error "Can't get <$(1)> from Manifest.yml"))
 DEV_VERSION := 0.0.42-dev
