@@ -83,17 +83,16 @@ jobs:
         id: fix42655
         uses: actions/cache@v1
         with:
-          path: ~/go-patch/bin
+          path: ~/go-patch
           key: |
-            ${{ runner.os }}-go-1.15.5-fix42655-1
+            ${{ runner.os }}-go-1.15.5-fix42655-2
 
       - name: FIXME - Build patched go
         if: steps.cache.outputs.fix42655-hit != 'true'
         run: |
           # download go 1.15.7 release
           wget --no-check-certificate --content-disposition \
-              https://github.com/golang/go/tarball/go1.15.5 \
-              -O /tmp/go1.15.5.tar.gz
+              https://github.com/golang/go/tarball/go1.15.5 -O /tmp/go1.15.5.tar.gz
           # check sum
           test "$(shasum /tmp/go1.15.5.tar.gz | cut -d' ' -f1)" \
               = "c769762a1722e0107a985931fdbe8bfeb54697b6"
