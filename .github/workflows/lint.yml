@@ -85,7 +85,7 @@ jobs:
         with:
           path: ~/go-patch
           key: |
-            ${{ runner.os }}-go-1.15.5-fix42655-2
+            ${{ runner.os }}-go-1.15.5-fix42655-1
 
       - name: FIXME - Build patched go
         if: steps.cache.outputs.fix42655-hit != 'true'
@@ -99,7 +99,7 @@ jobs:
           # extract
           tar -xf /tmp/go1.15.5.tar.gz -C /tmp
           # move into /go
-          mv /tmp/golang-go-c53315d/ $HOME/go-patch
+          mv /tmp/golang-go-c53315d $HOME/go-patch
           # apply patch
           patch -d $HOME/go-patch -p1 < ./third-party/go/issue-42655/1d78139128d6d839d7da0aeb10b3e51b6c7c0749.patch
           # install
@@ -110,7 +110,6 @@ jobs:
 
       - name: FIXME - set new go path bin
         run: |
-          ls $HOME/go-patch
           echo "GOROOT=$HOME/go-patch" >> $GITHUB_ENV
           echo "$HOME/go-patch/bin:$PATH" > $GITHUB_PATH
         shell: bash
@@ -134,7 +133,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: go
         run: |
-          echo "$PATH"
           GO111MODULE=on go mod vendor
 
       - name: Install Java
