@@ -79,27 +79,19 @@ jobs:
       #   with:
       #     go-version: 1.15.5
 
-      - name: FIXME - install patched go - golang/go/isssues/42655
-        id: fix42655
-        uses: actions/cache@v1
-        with:
-          path: ~/go-patch
-          key: |
-            ${{ runner.os }}-go-1.15.5-fix42655-1
-
+      # issue: https://github.com/golang/go/issues/42655
       - name: FIXME - Build patched go
-        if: steps.cache.outputs.fix42655-hit != 'true'
         run: |
           # download go 1.15.7 release
           wget --no-check-certificate --content-disposition \
-              https://github.com/golang/go/tarball/go1.15.5 -O /tmp/go1.15.5.tar.gz
+              https://github.com/golang/go/tarball/go1.15.6 -O /tmp/go1.15.6.tar.gz
           # check sum
-          test "$(shasum /tmp/go1.15.5.tar.gz | cut -d' ' -f1)" \
-              = "c769762a1722e0107a985931fdbe8bfeb54697b6"
+          test "$(shasum /tmp/go1.15.6.tar.gz | cut -d' ' -f1)" \
+              = "d32885007ca92aa6daddfb3581807577520f5f4e"
           # extract
-          tar -xf /tmp/go1.15.5.tar.gz -C /tmp
+          tar -xf /tmp/go1.15.6.tar.gz -C /tmp
           # move into /go
-          mv /tmp/golang-go-c53315d $HOME/go-patch
+          mv /tmp/golang-go-9b955d2 $HOME/go-patch
           # apply patch
           patch -d $HOME/go-patch -p1 < ./third-party/go/issue-42655/1d78139128d6d839d7da0aeb10b3e51b6c7c0749.patch
           # install
