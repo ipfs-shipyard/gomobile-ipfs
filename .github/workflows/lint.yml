@@ -48,6 +48,9 @@ jobs:
           config_data: |
             extends: default
             rules:
+              line-length:
+                max: 120
+                level: warning
               truthy:
                 allowed-values: ['true', 'false', 'on']
 
@@ -89,17 +92,21 @@ jobs:
         run: |
           # download go 1.15.7 release
           wget --no-check-certificate --content-disposition \
-             https://github.com/golang/go/tarball/go1.15.5 -O /tmp/go1.15.5.tar.gz
+              https://github.com/golang/go/tarball/go1.15.5 \
+              -O /tmp/go1.15.5.tar.gz
           # check sum
-          test "$(shasum /tmp/go1.15.5.tar.gz | cut -d' ' -f1)" = "c769762a1722e0107a985931fdbe8bfeb54697b6"
-          # extract 
+          test "$(shasum /tmp/go1.15.5.tar.gz | cut -d' ' -f1)" \
+              = "c769762a1722e0107a985931fdbe8bfeb54697b6"
+          # extract
           tar -xf /tmp/go1.15.5.tar.gz -C /tmp
           # move into /go
           mv /tmp/golang-go-c53315d/ $HOME/go-patch
           # apply patch
           patch -d $HOME/go-patch -p1 < ./third-party/go/issue-42655/1d78139128d6d839d7da0aeb10b3e51b6c7c0749.patch
           # install
-          cd $HOME/go-patch/src && sed -i 'run.bash.old' 's/.*ulimit -[Hc].*//g' run.bash && ./make.bash
+          cd $HOME/go-patch/src && \
+              sed -i 'run.bash.old' 's/.*ulimit -[Hc].*//g' run.bash && \
+              ./make.bash
         shell: bash
 
       - name: FIXME - set new go path bin
