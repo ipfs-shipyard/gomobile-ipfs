@@ -39,6 +39,7 @@ jobs:
               sed -i 'run.bash.old' 's/.*ulimit -[Hc].*//g' run.bash && \
               ./make.bash
         shell: bash
+
       - name: FIXME - set new go path bin
         run: |
           echo "GOROOT=$HOME/go-patch" >> $GITHUB_ENV

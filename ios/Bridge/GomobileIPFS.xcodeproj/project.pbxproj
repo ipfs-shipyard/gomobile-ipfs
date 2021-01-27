@@ -348,6 +348,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -401,10 +402,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
+				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -413,6 +416,7 @@
 		8DE4ECE22402BF6600B70884 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -431,6 +435,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 0.0.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ipfs.gomobile.bridge;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -439,7 +444,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = "arm64 arm64e";
+				VALIDATE_WORKSPACE = NO;
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -447,6 +452,7 @@
 		8DE4ECE32402BF6600B70884 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -465,6 +471,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MARKETING_VERSION = 0.0.1;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ipfs.gomobile.bridge;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -472,7 +479,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = "arm64 arm64e";
+				VALIDATE_WORKSPACE = NO;
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
@@ -480,7 +487,7 @@
 		8DE4ECE52402BF6600B70884 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9F2792GBSY;
 				INFOPLIST_FILE = GomobileIPFSTests/Info.plist;
@@ -491,11 +498,13 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = berty.GomobileIPFSTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
+				VALIDATE_WORKSPACE = NO;
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -503,7 +512,7 @@
 		8DE4ECE62402BF6600B70884 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9F2792GBSY;
 				INFOPLIST_FILE = GomobileIPFSTests/Info.plist;
@@ -514,11 +523,13 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = berty.GomobileIPFSTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
+				VALIDATE_WORKSPACE = NO;
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
