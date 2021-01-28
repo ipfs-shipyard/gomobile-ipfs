@@ -39,8 +39,8 @@ func NewNode(r *Repo) (*Node, error) {
 	ipfscfg := &ipfs_mobile.IpfsConfig{
 		RepoMobile: r.mr,
 		ExtraOpts: map[string]bool{
-			"pubsub": true, // enable pubsub by default
-			"ipnsps": true, // enable namesys ps by default
+			"pubsub": true, // enable experimental pubsub feature by default
+			"ipnsps": true, // Enable IPNS record distribution through pubsub by default
 		},
 	}
 
