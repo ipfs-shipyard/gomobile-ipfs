@@ -10,19 +10,66 @@ jobs:
     name: Create release and publish
     runs-on: macos-latest
     timeout-minutes: 60
+    env:
+      GO_VERSION: 1.15.7
+      GO_SHASUM: c384f00b35134572756e9ec99baf378116242783
     steps:
       - name: Checkout changes
         uses: actions/checkout@v2
 
-      - name: Install Go
-        uses: actions/setup-go@v1
+      # - name: Install Go
+      #   uses: actions/setup-go@v1
+      #   with:
+      #     go-version: 1.15.7
+
+      # issue: https://github.com/golang/go/issues/42655
+      - name: FIXME - install patched go - golang/go/isssues/42655
+        id: fix42655
+        uses: actions/cache@v1
         with:
-          go-version: 1.14
+          path: ~/go-patch
+          key: |
+            ${{ runner.os }}-${{ env.GO_VERSION }}-fix42655
+
+      - name: FIXME - Build patched go
+        if: steps.fix42655.outputs.cache-hit != 'true'
+        run: |
+          # download go 1.15.7 release
+          wget --no-check-certificate --content-disposition \
+              "https://github.com/golang/go/archive/go$GO_VERSION.tar.gz" \
+              -O "/tmp/go$GO_VERSION.tar.gz"
+          # check sum
+          test "$(shasum /tmp/go$GO_VERSION.tar.gz | cut -d' ' -f1)" = "$GO_SHASUM"
+          # extract
+          tar -xf /tmp/go$GO_VERSION.tar.gz -C /tmp
+          # move into HOME
+          mv /tmp/go-go$GO_VERSION $HOME/go-patch
+          # apply patch
+          patch -d $HOME/go-patch -p1 < ./third-party/go/issue-42655/1d78139128d6d839d7da0aeb10b3e51b6c7c0749.patch
+          # install
+          cd $HOME/go-patch/src && \
+              sed -i 'run.bash.old' 's/.*ulimit -[Hc].*//g' run.bash && \
+              ./make.bash
+        shell: bash
+
+      - name: FIXME - set new go path bin
+        run: |
+          echo "GOROOT=$HOME/go-patch" >> $GITHUB_ENV
+          echo "$HOME/go-patch/bin:$PATH" > $GITHUB_PATH
+        shell: bash
 
       - name: Set GOPATH in env
         run: |
-          echo "##[set-env name=GOPATH;]$(go env GOPATH)"
-          echo "##[add-path]$(go env GOPATH)/bin"
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
+          ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
+        shell: bash
+
+      - name: Set GOPATH in env
+        run: |
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
           mkdir -p $(go env GOPATH)/src/github.com/ipfs-shipyard
           ln -s $PWD $(go env GOPATH)/src/github.com/ipfs-shipyard/gomobile-ipfs
         shell: bash
@@ -49,7 +96,7 @@ jobs:
           pip3 install -r packages/utils/manifest_get/requirements.txt
           export GET_BIN=packages/utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
-          echo "##[set-env name=TARGET_SDK;]$($GET_BIN $GET_KEY)"
+          echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
       - name: Install Android SDK
         run:

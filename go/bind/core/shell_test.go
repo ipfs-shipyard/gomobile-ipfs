@@ -96,7 +96,6 @@ func TestShell(t *testing.T) {
 					cmdtc.AssertMethod(t, node, res)
 				})
 			}
-
 		})
 	}
 }

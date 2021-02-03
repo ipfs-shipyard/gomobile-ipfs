@@ -64,7 +64,6 @@ func testingNode(t *testing.T, path string) (*Node, cleanFunc) {
 		node.Close()
 		cleanRepo()
 	}
-
 }
 
 func testingSockmanager(t *testing.T) (*SockManager, cleanFunc) {

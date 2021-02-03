@@ -12,12 +12,6 @@ type Config struct {
 	cfg *ipfs_config.Config
 }
 
-func NewConfig(raw_json []byte) (cfg *Config, err error) {
-	cfg = &Config{}
-	err = cfg.Set(raw_json)
-	return cfg, err
-}
-
 func NewDefaultConfig() (*Config, error) {
 	cfg, err := initConfig(ioutil.Discard, 2048)
 	if err != nil {
@@ -25,6 +19,12 @@ func NewDefaultConfig() (*Config, error) {
 	}
 
 	return &Config{cfg}, nil
+}
+
+func NewConfig(raw_json []byte) (cfg *Config, err error) {
+	cfg = &Config{}
+	err = cfg.Set(raw_json)
+	return cfg, err
 }
 
 func (c *Config) getConfig() (cfg *ipfs_config.Config) {

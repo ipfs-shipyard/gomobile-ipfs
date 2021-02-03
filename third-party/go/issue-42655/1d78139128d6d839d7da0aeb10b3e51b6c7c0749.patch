@@ -1,0 +1,74 @@
+From 1d78139128d6d839d7da0aeb10b3e51b6c7c0749 Mon Sep 17 00:00:00 2001
+From: Elias Naur <mail@eliasnaur.com>
+Date: Fri, 25 Dec 2020 11:14:11 +0100
+Subject: [PATCH] runtime/cgo: fix Android build with NDK 22
+
+Fixes #42655
+
+Change-Id: I7d2b70098a4ba4dcb325fb0be076043789b86135
+Reviewed-on: https://go-review.googlesource.com/c/go/+/280312
+Run-TryBot: Elias Naur <mail@eliasnaur.com>
+TryBot-Result: Go Bot <gobot@golang.org>
+Reviewed-by: Ian Lance Taylor <iant@golang.org>
+Trust: Elias Naur <mail@eliasnaur.com>
+---
+ src/runtime/cgo/gcc_linux_386.c   | 2 +-
+ src/runtime/cgo/gcc_linux_amd64.c | 2 +-
+ src/runtime/cgo/gcc_linux_arm.c   | 2 +-
+ src/runtime/cgo/gcc_linux_arm64.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/runtime/cgo/gcc_linux_386.c b/src/runtime/cgo/gcc_linux_386.c
+index ece9f933c560..70c942aeb842 100644
+--- a/src/runtime/cgo/gcc_linux_386.c
++++ b/src/runtime/cgo/gcc_linux_386.c
+@@ -12,7 +12,7 @@ static void *threadentry(void*);
+ static void (*setg_gcc)(void*);
+ 
+ // This will be set in gcc_android.c for android-specific customization.
+-void (*x_cgo_inittls)(void **tlsg, void **tlsbase);
++void (*x_cgo_inittls)(void **tlsg, void **tlsbase) __attribute__((common));
+ 
+ void
+ x_cgo_init(G *g, void (*setg)(void*), void **tlsg, void **tlsbase)
+diff --git a/src/runtime/cgo/gcc_linux_amd64.c b/src/runtime/cgo/gcc_linux_amd64.c
+index 9134e0df920f..f2bf6482cb5f 100644
+--- a/src/runtime/cgo/gcc_linux_amd64.c
++++ b/src/runtime/cgo/gcc_linux_amd64.c
+@@ -14,7 +14,7 @@ static void* threadentry(void*);
+ static void (*setg_gcc)(void*);
+ 
+ // This will be set in gcc_android.c for android-specific customization.
+-void (*x_cgo_inittls)(void **tlsg, void **tlsbase);
++void (*x_cgo_inittls)(void **tlsg, void **tlsbase) __attribute__((common));
+ 
+ void
+ x_cgo_init(G *g, void (*setg)(void*), void **tlsg, void **tlsbase)
+diff --git a/src/runtime/cgo/gcc_linux_arm.c b/src/runtime/cgo/gcc_linux_arm.c
+index 61855b96b227..5bc0fee90d49 100644
+--- a/src/runtime/cgo/gcc_linux_arm.c
++++ b/src/runtime/cgo/gcc_linux_arm.c
+@@ -10,7 +10,7 @@
+ 
+ static void *threadentry(void*);
+ 
+-void (*x_cgo_inittls)(void **tlsg, void **tlsbase);
++void (*x_cgo_inittls)(void **tlsg, void **tlsbase) __attribute__((common));
+ static void (*setg_gcc)(void*);
+ 
+ void
+diff --git a/src/runtime/cgo/gcc_linux_arm64.c b/src/runtime/cgo/gcc_linux_arm64.c
+index 261c884ac959..17ff274fbbea 100644
+--- a/src/runtime/cgo/gcc_linux_arm64.c
++++ b/src/runtime/cgo/gcc_linux_arm64.c
+@@ -12,7 +12,7 @@
+ 
+ static void *threadentry(void*);
+ 
+-void (*x_cgo_inittls)(void **tlsg, void **tlsbase);
++void (*x_cgo_inittls)(void **tlsg, void **tlsbase) __attribute__((common));
+ static void (*setg_gcc)(void*);
+ 
+ void
+
+Login with GitHub

@@ -13,8 +13,7 @@ import (
 	"net"
 	"sync"
 
-	mobile_host "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/host"
-	mobile_node "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
+	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
@@ -27,7 +26,36 @@ type Node struct {
 	listeners   []manet.Listener
 	muListeners sync.Mutex
 
-	ipfsMobile *mobile_node.IpfsMobile
+	ipfsMobile *ipfs_mobile.IpfsMobile
+}
+
+func NewNode(r *Repo) (*Node, error) {
+	ctx := context.Background()
+
+	if _, err := loadPlugins(r.mr.Path); err != nil {
+		return nil, err
+	}
+
+	ipfscfg := &ipfs_mobile.IpfsConfig{
+		RepoMobile: r.mr,
+		ExtraOpts: map[string]bool{
+			"pubsub": true, // enable experimental pubsub feature by default
+			"ipnsps": true, // Enable IPNS record distribution through pubsub by default
+		},
+	}
+
+	mnode, err := ipfs_mobile.NewNode(ctx, ipfscfg)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := mnode.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
+		log.Printf("failed to bootstrap node: `%s`", err)
+	}
+
+	return &Node{
+		ipfsMobile: mnode,
+	}, nil
 }
 
 func (n *Node) Close() error {
@@ -45,7 +73,7 @@ func (n *Node) ServeUnixSocketAPI(sockpath string) (err error) {
 	return
 }
 
-// Serve API on the given port and return the current listening maddr
+// ServeTCPAPI on the given port and return the current listening maddr
 func (n *Node) ServeTCPAPI(port string) (string, error) {
 	return n.ServeMultiaddr("/ip4/127.0.0.1/tcp/" + port)
 }
@@ -83,33 +111,12 @@ func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
 	n.muListeners.Unlock()
 
 	go func(l net.Listener) {
-		if err := n.ipfsMobile.Serve(l); err != nil {
+		if err := n.ipfsMobile.ServeCoreHTTP(l); err != nil {
 			log.Printf("serve error: %s", err.Error())
 		}
 	}(manet.NetListener(ml))
 
 	return ml.Multiaddr().String(), nil
-}
-
-func NewNode(r *Repo) (*Node, error) {
-	ctx := context.Background()
-
-	if _, err := loadPlugins(r.mr.Path); err != nil {
-		return nil, err
-	}
-
-	mnode, err := mobile_node.NewNode(ctx, r.mr, &mobile_host.MobileConfig{})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := mnode.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
-		log.Printf("failed to bootstrap node: `%s`", err)
-	}
-
-	return &Node{
-		ipfsMobile: mnode,
-	}, nil
 }
 
 func init() {

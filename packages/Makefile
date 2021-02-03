@@ -26,7 +26,7 @@ UTIL_BINTRAY_PUBLISH_REQ = $(UTIL_BINTRAY_PUBLISH)/requirements.txt
 UTIL_BINTRAY_PUBLISH_ANDROID_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_android.py
 UTIL_BINTRAY_PUBLISH_IOS_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_ios.py
 BUILD_DIR = $(MAKEFILE_DIR)/build
-PIP = pip3
+PIP ?= pip3
 
 MANIFEST_GET_FUNC=$(or $(shell $(UTIL_MANIFEST_GET_BIN) $(1)),$(error "Can't get <$(1)> from Manifest.yml"))
 DEV_VERSION := 0.0.42-dev
@@ -101,21 +101,21 @@ $(ANDROID_BUILD_DIR_MAV_CORE): $(ANDROID_CORE) $(MANIFEST_FILE)
 	@echo '------------------------------------'
 	@echo '   Android Core: Maven formatting   '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_MAVEN_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_MAVEN_FORMAT_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_MAVEN_FORMAT_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_MAVEN_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_MAVEN_FORMAT_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_MAVEN_FORMAT_REQ); echo; \
 	fi
-	@$(UTIL_MAVEN_FORMAT_CORE_BIN) && touch $(ANDROID_BUILD_DIR_MAV_CORE)
+	$(UTIL_MAVEN_FORMAT_CORE_BIN) && touch $(ANDROID_BUILD_DIR_MAV_CORE)
 	@echo 'Done!'
 
 $(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '   Android Core: Gomobile binding   '
 	@echo '------------------------------------'
-	@$(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android$(GOMOBILE_TARGET) -o $(ANDROID_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	$(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android$(GOMOBILE_TARGET) -o $(ANDROID_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(ANDROID_BUILD_DIR_INT_CORE):
-	@mkdir -p $(ANDROID_BUILD_DIR_INT_CORE)
+	mkdir -p $(ANDROID_BUILD_DIR_INT_CORE)
 
 build_core.ios: $(IOS_BUILD_DIR_CCP_CORE)
 
@@ -123,17 +123,17 @@ $(IOS_BUILD_DIR_CCP_CORE): $(IOS_CORE) $(MANIFEST_FILE)
 	@echo '------------------------------------'
 	@echo '   iOS Core: CocoaPod formatting   '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_COCOAPOD_FORMAT_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_COCOAPOD_FORMAT_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ); echo; \
 	fi
-	@$(UTIL_COCOAPOD_FORMAT_CORE_BIN) && touch $(IOS_BUILD_DIR_CCP_CORE)
+	$(UTIL_COCOAPOD_FORMAT_CORE_BIN) && touch $(IOS_BUILD_DIR_CCP_CORE)
 	@echo 'Done!'
 
 $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	@$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
@@ -147,7 +147,7 @@ $(ANDROID_BUILD_DIR_APP_APK): $(ANDROID_BUILD_DIR_APP) $(ANDROID_OUTPUT_APK) $(M
 	@echo '------------------------------------'
 	@echo '  Android Demo: apk path creation   '
 	@echo '------------------------------------'
-	@cp $(ANDROID_OUTPUT_APK) $(ANDROID_BUILD_DIR_APP_APK)
+	cp $(ANDROID_OUTPUT_APK) $(ANDROID_BUILD_DIR_APP_APK)
 	@echo 'Built .apk available in: $(ANDROID_BUILD_DIR_APP)'
 	@echo 'Done!'
 
@@ -155,8 +155,8 @@ $(ANDROID_OUTPUT_APK): $(ANDROID_SRC) $(MANIFEST) $(ANDROID_BUILD_DIR_MAV_CORE)
 	@echo '------------------------------------'
 	@echo '   Android Demo: Gradle building    '
 	@echo '------------------------------------'
-	@cd $(ANDROID_DIR) && ./gradlew app:build
-	@touch $(ANDROID_OUTPUT_APK)
+	cd $(ANDROID_DIR) && ./gradlew app:build
+	touch $(ANDROID_OUTPUT_APK)
 	@echo 'Done!'
 
 $(ANDROID_BUILD_DIR_APP):
@@ -168,8 +168,8 @@ $(IOS_BUILD_DIR_APP_IPA): $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT) $(MANIFEST)
 	@echo '------------------------------------'
 	@echo '    iOS Demo: Bintray formatting    '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_FORMAT_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_FORMAT_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_FORMAT_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_BINTRAY_FORMAT_REQ); echo; \
 	fi
 	@$(UTIL_BINTRAY_FORMAT_IOS_BIN)
 	@echo 'Done!'
@@ -178,27 +178,27 @@ $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT): $(IOS_BUILD_DIR_INT_APP_IPA) $(IOS_BUILD_DI
 	@echo '------------------------------------'
 	@echo '   iOS Demo: XCode building ipa     '
 	@echo '------------------------------------'
-	@xcodebuild -exportArchive \
+	xcodebuild -exportArchive \
 		-archivePath $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT) \
 		-exportOptionsPlist $(IOS_APP_PLIST) \
 		-exportPath $(IOS_BUILD_DIR_INT_APP_IPA)
-	@touch $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT)
+	touch $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_APP_IPA):
-	@mkdir -p $(IOS_BUILD_DIR_INT_APP_IPA)
+	mkdir -p $(IOS_BUILD_DIR_INT_APP_IPA)
 
 $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT): $(IOS_BUILD_DIR_INT_APP_ARCHIVE) $(IOS_CORE) $(IOS_SRC)
 	@echo '------------------------------------'
 	@echo '  iOS Demo: XCode building archive  '
 	@echo '------------------------------------'
-	@xcodebuild archive \
+	xcodebuild archive \
 		-workspace $(IOS_WORKSPACE) \
 		-scheme Example \
 		-configuration Release \
 		-sdk iphoneos \
 		-archivePath $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
-	@touch $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
+	touch $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_APP_ARCHIVE):
@@ -213,20 +213,20 @@ publish_core.android: fail_on_dev build_core.android
 	@echo '------------------------------------'
 	@echo '   Android Core: Maven publishing   '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_MAVEN_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_MAVEN_PUBLISH_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_MAVEN_PUBLISH_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_MAVEN_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_MAVEN_PUBLISH_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_MAVEN_PUBLISH_REQ); echo; \
 	fi
-	@$(UTIL_MAVEN_PUBLISH_CORE_BIN)
+	$(UTIL_MAVEN_PUBLISH_CORE_BIN)
 	@echo 'Done!'
 
 publish_core.ios: fail_on_dev build_core.ios
 	@echo '------------------------------------'
 	@echo '   iOS Core: CocoaPod publishing   '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_COCOAPOD_PUBLISH_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_COCOAPOD_PUBLISH_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
 	fi
-	@$(UTIL_COCOAPOD_PUBLISH_CORE_BIN)
+	$(UTIL_COCOAPOD_PUBLISH_CORE_BIN)
 	@echo 'Done!'
 
 publish_bridge: publish_bridge.android publish_bridge.ios
@@ -242,10 +242,10 @@ publish_bridge.ios: fail_on_dev build_core.ios
 	@echo '------------------------------------'
 	@echo '  iOS Bridge: CocoaPod publishing   '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(cat $(UTIL_COCOAPOD_FORMAT_REQ) $(UTIL_COCOAPOD_PUBLISH_REQ) | sort | uniq | wc -l )" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ) -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(cat $(UTIL_COCOAPOD_FORMAT_REQ) $(UTIL_COCOAPOD_PUBLISH_REQ) | sort | uniq | wc -l )" ]; then \
+		$(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ) -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
 	fi
-	@$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
+	$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
 	@echo 'Done!'
 
 publish_demo: publish_demo.android publish_demo.ios
@@ -254,8 +254,8 @@ publish_demo.android: fail_on_dev build_demo.android
 	@echo '------------------------------------'
 	@echo '  Android Demo: Bintray publishing  '
 	@echo '------------------------------------'
-	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_PUBLISH_REQ))" ]; then \
-		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_PUBLISH_REQ))" ]; then \
+		$(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
 	fi
 	$(UTIL_BINTRAY_PUBLISH_ANDROID_BIN)
 	@echo 'Done!'
@@ -277,8 +277,8 @@ docgen.android: $(ANDROID_DOC_DIR) build_core.android
 	@echo '------------------------------------'
 	@echo '   Android Bridge: Doc generation   '
 	@echo '------------------------------------'
-	@cd $(ANDROID_DIR) && ./gradlew bridge:javadoc
-	@cp -rf $(ANDROID_DIR)/bridge/javadoc/* $(ANDROID_DOC_DIR)
+	cd $(ANDROID_DIR) && ./gradlew bridge:javadoc
+	cp -rf $(ANDROID_DIR)/bridge/javadoc/* $(ANDROID_DOC_DIR)
 	@echo 'Done!'
 
 $(ANDROID_DOC_DIR):
@@ -288,7 +288,7 @@ docgen.ios: $(IOS_DOC_DIR) build_core.ios
 	@echo '------------------------------------'
 	@echo '     iOS Bridge: Doc generation     '
 	@echo '------------------------------------'
-	@cd $(IOS_DIR)/Bridge && \
+	cd $(IOS_DIR)/Bridge && \
 		jazzy -o $(IOS_DOC_DIR) \
 		--readme $(IOS_DIR)/../README.md \
 		--module 'GomobileIPFS' \
@@ -298,7 +298,7 @@ docgen.ios: $(IOS_DOC_DIR) build_core.ios
 	@echo 'Done!'
 
 $(IOS_DOC_DIR):
-	@mkdir -p $(IOS_DOC_DIR)
+	mkdir -p $(IOS_DOC_DIR)
 
 # Test rules
 test: test_core test_bridge
@@ -309,7 +309,7 @@ test_bridge.android: build_core.android
 	@echo '------------------------------------'
 	@echo '   Android Bridge: running test     '
 	@echo '------------------------------------'
-	@cd $(ANDROID_DIR) && ./gradlew bridge:test && \
+	cd $(ANDROID_DIR) && ./gradlew bridge:test && \
 	EMULATOR=$$(emulator -avd -list-avds | tail -n1); \
 	if [ -z "$$EMULATOR" ]; then \
 		>&2 echo "No emulator found to run the test";	\
@@ -325,7 +325,7 @@ test_bridge.ios: build_core.ios
 	@echo '------------------------------------'
 	@echo '     iOS Bridge: running test       '
 	@echo '------------------------------------'
-	@DESTINATION=$$(xcodebuild -showdestinations -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFS | awk '/Ineligible destinations for/ {exit} {print}' | grep 'platform:iOS Simulator' | awk -F 'id:' '{print $$2}' | cut -d',' -f1 | tail -n1); \
+	DESTINATION=$$(xcodebuild -showdestinations -project $(IOS_DIR)/Bridge/GomobileIPFS.xcodeproj -scheme GomobileIPFS | awk '/Ineligible destinations for/ {exit} {print}' | grep 'platform:iOS Simulator' | awk -F 'id:' '{print $$2}' | cut -d',' -f1 | tail -n1); \
 	if [ -z "$$DESTINATION" ]; then \
 		>&2 echo "No compatible simulator found to run the test";	\
 		exit 1;	\
@@ -337,7 +337,7 @@ test_core:
 	@echo '------------------------------------'
 	@echo '       Go Core: running test        '
 	@echo '------------------------------------'
-	@cd $(GO_DIR) && go test -v ./...
+	cd $(GO_DIR) && go test -v ./...
 	@echo 'Done!'
 
 # Misc rules
@@ -348,11 +348,11 @@ $(GOMOBILE):
 	go mod download
 	go install golang.org/x/mobile/cmd/gomobile
 	go install golang.org/x/mobile/cmd/gobind
-	@$(GOMOBILE) init -v
+	$(GOMOBILE) init -v
 	@echo 'Done!'
 
 fail_on_dev:
-	@if [ "$(VERSION)" == "$(DEV_VERSION)" ]; then \
+	if [ "$(VERSION)" == "$(DEV_VERSION)" ]; then \
 		>&2 echo "Can't publish a dev version: GOMOBILE_IPFS_VERSION env variable not set";	\
 		exit 1; \
 	fi
@@ -364,12 +364,12 @@ clean.android:
 	@echo '------------------------------------'
 	@echo '  Android Core: removing build dir  '
 	@echo '------------------------------------'
-	@rm -rf $(ANDROID_BUILD_DIR)
+	rm -rf $(ANDROID_BUILD_DIR)
 	@echo 'Done!'
 
 clean.ios:
 	@echo '------------------------------------'
 	@echo '    iOS Core: removing build dir    '
 	@echo '------------------------------------'
-	@rm -rf $(IOS_BUILD_DIR)
+	rm -rf $(IOS_BUILD_DIR)
 	@echo 'Done!'

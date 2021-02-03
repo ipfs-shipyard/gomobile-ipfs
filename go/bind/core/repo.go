@@ -2,17 +2,21 @@ package core
 
 import (
 	"path/filepath"
+	"sync"
 
-	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
+	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
 )
 
-var plugins *ipfs_loader.PluginLoader
+var (
+	muPlugins sync.Mutex
+	plugins   *ipfs_loader.PluginLoader
+)
 
 type Repo struct {
-	mr *node.MobileRepo
+	mr *ipfs_mobile.RepoMobile
 }
 
 func RepoIsInitialized(path string) bool {
@@ -37,20 +41,8 @@ func OpenRepo(path string) (*Repo, error) {
 		return nil, err
 	}
 
-	mRepo := &node.MobileRepo{
-		Repo: irepo,
-		Path: path,
-	}
-
+	mRepo := ipfs_mobile.NewRepoMobile(path, irepo)
 	return &Repo{mRepo}, nil
-}
-
-func (r *Repo) EnablePubsubExperiment() {
-	r.mr.EnablePubsubExperiment = true
-}
-
-func (r *Repo) EnableNamesysPubsub() {
-	r.mr.EnableNamesysPubsub = true
 }
 
 func (r *Repo) GetRootPath() string {
@@ -79,6 +71,9 @@ func (r *Repo) getRepo() ipfs_repo.Repo {
 }
 
 func loadPlugins(repoPath string) (*ipfs_loader.PluginLoader, error) {
+	muPlugins.Lock()
+	defer muPlugins.Unlock()
+
 	if plugins != nil {
 		return plugins, nil
 	}
