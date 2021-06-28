@@ -75,7 +75,7 @@ func TestShell(t *testing.T) {
 
 	for clientk, clienttc := range casesClient {
 		t.Run(clientk, func(t *testing.T) {
-			maddr, err := node.ServeMultiaddr(clienttc.MAddr)
+			maddr, err := node.ServeAPIMultiaddr(clienttc.MAddr)
 			if err != nil {
 				t.Fatal(err)
 			}
