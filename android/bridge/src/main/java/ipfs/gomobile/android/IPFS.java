@@ -168,6 +168,8 @@ public class IPFS {
             openRepoIfClosed();
             node = Core.newNode(repo, BLEDriver);
             node.serveUnixSocketAPI(absSockPath);
+            // serve config addresses `Addresses.API` & `Addresses.Gateway`
+            node.serveConfig();
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }

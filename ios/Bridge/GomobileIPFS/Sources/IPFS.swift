@@ -105,6 +105,9 @@ public class IPFS {
         let maddr: String = try self.node!.serve(onTCPPort: "0")
         self.shell = CoreNewShell(maddr)
         #endif
+
+        // serve config api & gateway
+        try self.node!.serveConfig()
     }
 
     /// Stops this IPFS instance
