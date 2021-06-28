@@ -43,7 +43,7 @@ GO_MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.sum
 
 CORE_PACKAGE = github.com/ipfs-shipyard/gomobile-ipfs/go/bind/core
 EXT_PACKAGE ?=
-GOMOBILE = go run golang.org/x/mobile/cmd/gomobile
+GOMOBILE ?= go run golang.org/x/mobile/cmd/gomobile
 GOMOBILE_OPT ?=
 GOMOBILE_TARGET ?=
 
