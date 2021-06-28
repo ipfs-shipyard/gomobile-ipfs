@@ -78,6 +78,18 @@ func (im *IpfsMobile) ServeCoreHTTP(l net.Listener, opts ...ipfs_corehttp.ServeO
 	return ipfs_corehttp.Serve(im.IpfsNode, l, opts...)
 }
 
+func (im *IpfsMobile) ServeGateway(l net.Listener, writable bool, opts ...ipfs_corehttp.ServeOption) error {
+	opts = append(opts,
+		ipfs_corehttp.HostnameOption(),
+		ipfs_corehttp.GatewayOption(writable, "/ipfs", "/ipns"),
+		ipfs_corehttp.VersionOption(),
+		ipfs_corehttp.CheckVersionOption(),
+		ipfs_corehttp.CommandsROOption(im.commandCtx),
+	)
+
+	return ipfs_corehttp.Serve(im.IpfsNode, l, opts...)
+}
+
 func NewNode(ctx context.Context, cfg *IpfsConfig) (*IpfsMobile, error) {
 	if err := cfg.fillDefault(); err != nil {
 		return nil, fmt.Errorf("invalid configuration: %w", err)

@@ -95,6 +95,30 @@ func (n *Node) ServeConfigAPI() error {
 	return nil
 }
 
+func (n *Node) ServeGateway(smaddr string, writable bool) (string, error) {
+	maddr, err := ma.NewMultiaddr(smaddr)
+	if err != nil {
+		return "", err
+	}
+
+	ml, err := manet.Listen(maddr)
+	if err != nil {
+		return "", err
+	}
+
+	n.muListeners.Lock()
+	n.listeners = append(n.listeners, ml)
+	n.muListeners.Unlock()
+
+	go func(l net.Listener) {
+		if err := n.ipfsMobile.ServeGateway(l, writable); err != nil {
+			log.Printf("serve error: %s", err.Error())
+		}
+	}(manet.NetListener(ml))
+
+	return "", nil
+}
+
 func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
 	maddr, err := ma.NewMultiaddr(smaddr)
 	if err != nil {
