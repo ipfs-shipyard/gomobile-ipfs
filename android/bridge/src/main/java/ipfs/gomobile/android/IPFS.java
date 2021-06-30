@@ -153,7 +153,8 @@ public class IPFS {
     }
 
     /**
-    * Starts this IPFS instance.
+    * Starts this IPFS instance. Also serve config Gateway & API located inside
+    * the config (if any)
     *
     * @throws NodeStartException If the node is already started or if its startup fails
     */
@@ -168,8 +169,9 @@ public class IPFS {
             openRepoIfClosed();
             node = Core.newNode(repo, BLEDriver);
             node.serveUnixSocketAPI(absSockPath);
-            // serve config addresses `Addresses.API` & `Addresses.Gateway`
-            node.serveConfig();
+
+            // serve config Addresses API & Gateway
+            node.serve();
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }

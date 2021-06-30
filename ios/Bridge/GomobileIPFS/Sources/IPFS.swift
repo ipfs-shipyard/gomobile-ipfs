@@ -106,8 +106,8 @@ public class IPFS {
         self.shell = CoreNewShell(maddr)
         #endif
 
-        // serve config api & gateway
-        try self.node!.serveConfig()
+        // serve config api & gateway (if any)
+        try self.node!.serve()
     }
 
     /// Stops this IPFS instance
