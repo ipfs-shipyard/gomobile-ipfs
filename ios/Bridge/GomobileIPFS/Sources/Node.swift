@@ -77,4 +77,16 @@ public class Node {
 
         return maddr
     }
+
+    /// Serves any multiaddr (api & gateway) inside `Addresses.Api` and
+    /// `Addresses.Gateway` in the config (if any)
+    /// - Throws: `NodeError`: If the node failed to serve
+    /// - Returns: The TCP/IP MultiAddr the node is serving on
+    public func serve() throws {
+        do {
+            try self.node.serveConfig()
+        } catch let error as NSError {
+            throw NodeError("unable to serve config api", error)
+        }
+    }
 }

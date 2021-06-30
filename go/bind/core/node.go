@@ -9,6 +9,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"sync"
@@ -81,21 +82,21 @@ func (n *Node) ServeTCPAPI(port string) (string, error) {
 func (n *Node) ServeConfig() error {
 	cfg, err := n.ipfsMobile.Repo.Config()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to get config: %s", err.Error())
 	}
 
 	if len(cfg.Addresses.API) > 0 {
 		for _, maddr := range cfg.Addresses.API {
 			if _, err := n.ServeAPIMultiaddr(maddr); err != nil {
-				log.Printf("cannot serve `%s`: %s", maddr, err.Error())
+				return fmt.Errorf("cannot serve `%s`: %s", maddr, err.Error())
 			}
 		}
 	}
 
 	if len(cfg.Addresses.Gateway) > 0 {
 		for _, maddr := range cfg.Addresses.Gateway {
-			if _, err := n.ServeAPIMultiaddr(maddr); err != nil {
-				log.Printf("cannot serve `%s`: %s", maddr, err.Error())
+			if _, err := n.ServeGatewayMultiaddr(maddr, true); err != nil {
+				return fmt.Errorf("cannot serve `%s`: %s", maddr, err.Error())
 			}
 		}
 	}
