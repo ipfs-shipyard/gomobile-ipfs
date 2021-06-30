@@ -95,7 +95,8 @@ func (n *Node) ServeConfig() error {
 
 	if len(cfg.Addresses.Gateway) > 0 {
 		for _, maddr := range cfg.Addresses.Gateway {
-			if _, err := n.ServeGatewayMultiaddr(maddr, true); err != nil {
+			// public gateway should be readonly by default
+			if _, err := n.ServeGatewayMultiaddr(maddr, false); err != nil {
 				return fmt.Errorf("cannot serve `%s`: %s", maddr, err.Error())
 			}
 		}
