@@ -164,7 +164,7 @@ public class IPFS {
             node.serveUnixSocketAPI(absSockPath);
 
             // serve config Addresses API & Gateway
-            node.serve();
+            node.serveConfig()
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }
@@ -309,6 +309,25 @@ public class IPFS {
     }
 
     /**
+     * Serves node gateway over the given multiaddr
+     *
+     * @param multiaddr The multiaddr to listen on
+     * @param writable If true: will also support support `POST`, `PUT`, and `DELETE` methods.
+     * @return The MultiAddr the node is serving on
+     * @throws NodeListenException If the node failed to serve
+     * @see <a href="https://docs.ipfs.io/concepts/ipfs-gateway/#gateway-providers">IPFS Doc</a>
+     */
+    synchronized public static string serveGatewayMultiaddr(@NonNull String multiaddr, @NonNull Boolean writable)
+        throw NodeListenException {
+        try {
+            return node.serveGatewayMultiaddr(multiaddr, writable)
+        } catch (Exception e) {
+            throw new NodeListenException("failed to listen on gateway", e);
+        }
+
+    }
+
+    /**
     * Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
     *
     * @param primary The primary DNS address in the form {@code <ip4>:<port>}
@@ -339,6 +358,10 @@ public class IPFS {
     // Exceptions
     public static class ExtraOptionException extends Exception {
         ExtraOptionException(String message, Throwable err) { super(message, err); }
+    }
+
+    public static class NodeListenException extends Exception {
+        NodeListenException(String message, Throwable err) { super(message, err); }
     }
 
     public static class ConfigCreationException extends Exception {

@@ -54,7 +54,7 @@ public class Node {
     /// Serves node API over UDS
     /// - Parameter onUDS: The UDS path to serve on
     /// - Throws: `NodeError`: If the node failed to serve
-    public func serve(onUDS: String) throws {
+    public func serveAPI(onUDS: String) throws {
         do {
             try self.node.serveUnixSocketAPI(onUDS)
         } catch let error as NSError {
@@ -66,7 +66,7 @@ public class Node {
     /// - Parameter onTCPPort: The TCP port to serve on
     /// - Throws: `NodeError`: If the node failed to serve
     /// - Returns: The TCP/IP MultiAddr the node is serving on
-    public func serve(onTCPPort: String) throws -> String {
+    public func serveAPI(onTCPPort: String) throws -> String {
         var err: NSError?
 
         let maddr = self.node.serveTCPAPI(onTCPPort, error: &err)
@@ -75,6 +75,21 @@ public class Node {
             throw NodeError("unable to serve api on TCP", err)
         }
 
+        return maddr
+    }
+
+    /// Serves node Gateway over the given Multiaddr
+    /// - Parameter onMultiaddr: The multiaddr to serve on
+    /// - Parameter writable: If true: will also support support `POST`, `PUT`, and `DELETE` methods.
+    /// - Throws: `NodeError`: If the node failed to serve
+    public func serveGateway(onMultiaddr: String, writable: Bool = false) throws -> String{
+        var err: NSError?
+
+        let maddr = self.node.serveGatewayMultiaddr(onMultiaddr, writable: writable, error: &err)
+        if err != nil {
+            throw NodeError("unable to serve gateway on \(onMultiaddr)", err)
+        }
+        
         return maddr
     }
 
