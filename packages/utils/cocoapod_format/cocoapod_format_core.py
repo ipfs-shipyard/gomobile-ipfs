@@ -52,7 +52,7 @@ try:
                 bintray_package,
                 global_version,
             ),
-            "framework": "Core.framework",
+            "framework": "Core.xcframework",
         }
 
         i = 0

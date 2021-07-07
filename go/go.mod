@@ -1,6 +1,6 @@
 module github.com/ipfs-shipyard/gomobile-ipfs/go
 
-go 1.14
+go 1.16
 
 require (
 	github.com/ipfs/go-datastore v0.4.5
@@ -13,5 +13,3 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/pkg/errors v0.9.1
 )
-
-replace github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.18.0 // required by go1.15
