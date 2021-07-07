@@ -19,8 +19,8 @@
 		8DE4ED012402C0ED00B70884 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECFA2402C0ED00B70884 /* Error.swift */; };
 		8DE4ED022402C0ED00B70884 /* IPFS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECFB2402C0ED00B70884 /* IPFS.swift */; };
 		8DE4ED032402C0ED00B70884 /* Repo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DE4ECFC2402C0ED00B70884 /* Repo.swift */; };
-		8DE4ED062402C16B00B70884 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ED052402C16B00B70884 /* Core.framework */; platformFilter = ios; };
-		8DE4ED072402C16B00B70884 /* Core.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ED052402C16B00B70884 /* Core.framework */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8DE4ED062402C16B00B70884 /* Core.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ED052402C16B00B70884 /* Core.xcframework */; platformFilter = ios; };
+		8DE4ED072402C16B00B70884 /* Core.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ED052402C16B00B70884 /* Core.xcframework */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8DE4ED072402C16B00B70884 /* Core.framework in Embed Frameworks */,
+				8DE4ED072402C16B00B70884 /* Core.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,7 +63,7 @@
 		8DE4ECFA2402C0ED00B70884 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		8DE4ECFB2402C0ED00B70884 /* IPFS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPFS.swift; sourceTree = "<group>"; };
 		8DE4ECFC2402C0ED00B70884 /* Repo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repo.swift; sourceTree = "<group>"; };
-		8DE4ED052402C16B00B70884 /* Core.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Core.framework; path = ../../packages/build/ios/intermediates/core/Core.framework; sourceTree = "<group>"; };
+		8DE4ED052402C16B00B70884 /* Core.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Core.xcframework; path = ../../packages/build/ios/intermediates/core/Core.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DE4ED062402C16B00B70884 /* Core.framework in Frameworks */,
+				8DE4ED062402C16B00B70884 /* Core.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,7 +143,7 @@
 		8DE4ED042402C16B00B70884 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				8DE4ED052402C16B00B70884 /* Core.framework */,
+				8DE4ED052402C16B00B70884 /* Core.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
