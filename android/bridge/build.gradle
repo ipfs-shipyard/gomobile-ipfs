@@ -27,6 +27,7 @@ android {
     }
 
    lintOptions {
+       disable 'GradleDependency'
        htmlReport false
        warningsAsErrors true
        abortOnError true
