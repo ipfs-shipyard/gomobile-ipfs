@@ -69,54 +69,15 @@ jobs:
     name: Lint Java/Android
     runs-on: macos-latest
     timeout-minutes: 20
-    env:
-      GO_VERSION: 1.15.7
-      GO_SHASUM: c384f00b35134572756e9ec99baf378116242783
     steps:
       - name: Checkout changes
         uses: actions/checkout@v2
 
-      # FIXME - used a patched go until #42655 is fixed
-      # - name: Install Go
-      #   uses: actions/setup-go@v1
-      #   with:
-      #     go-version: 1.15.5
-
-      # issue: https://github.com/golang/go/issues/42655
-      - name: FIXME - install patched go - golang/go/isssues/42655
-        id: fix42655
-        uses: actions/cache@v1
+      FIXME - used a patched go until #42655 is fixed
+      - name: Install Go
+        uses: actions/setup-go@v1
         with:
-          path: ~/go-patch
-          key: |
-            ${{ runner.os }}-${{ env.GO_VERSION }}-fix42655
-
-      - name: FIXME - Build patched go
-        if: steps.fix42655.outputs.cache-hit != 'true'
-        run: |
-          # download go 1.15.7 release
-          wget --no-check-certificate --content-disposition \
-              "https://github.com/golang/go/archive/go$GO_VERSION.tar.gz" \
-              -O "/tmp/go$GO_VERSION.tar.gz"
-          # check sum
-          test "$(shasum /tmp/go$GO_VERSION.tar.gz | cut -d' ' -f1)" = "$GO_SHASUM"
-          # extract
-          tar -xf /tmp/go$GO_VERSION.tar.gz -C /tmp
-          # move into HOME
-          mv /tmp/go-go$GO_VERSION $HOME/go-patch
-          # apply patch
-          patch -d $HOME/go-patch -p1 < ./third-party/go/issue-42655/1d78139128d6d839d7da0aeb10b3e51b6c7c0749.patch
-          # install
-          cd $HOME/go-patch/src && \
-              sed -i 'run.bash.old' 's/.*ulimit -[Hc].*//g' run.bash && \
-              ./make.bash
-        shell: bash
-
-      - name: FIXME - set new go path bin
-        run: |
-          echo "GOROOT=$HOME/go-patch" >> $GITHUB_ENV
-          echo "$HOME/go-patch/bin:$PATH" > $GITHUB_PATH
-        shell: bash
+          go-version: 1.16
 
       - name: Set GOPATH in env
         run: |
@@ -194,7 +155,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.14
+          go-version: 1.16
 
       - name: Install GolangCI-Lint
         working-directory: go
