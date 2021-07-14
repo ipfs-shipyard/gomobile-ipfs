@@ -1,3 +1,5 @@
+apply plugin: 'maven-publish'
+
 task javadoc(type: Javadoc) {
     title = manifest.android_bridge.name
     source = android.sourceSets.main.java.srcDirs
@@ -22,6 +24,16 @@ task sourcesJar(type: Jar) {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
     publications {
         Production(MavenPublication) {
             artifacts = [
@@ -30,7 +42,7 @@ publishing {
                 javadocJar
             ]
 
-			groupId manifest.global.group_id
+            groupId manifest.global.group_id
 			artifactId manifest.android_bridge.artifact_id
 			version rootProject.ext.version
 
@@ -80,52 +92,12 @@ publishing {
     }
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['Production']
-
-    pkg {
-		userOrg = manifest.global.bintray_orga
-        repo = manifest.global.android.repo
-        name = manifest.android_bridge.artifact_id
-        desc = manifest.android_bridge.description
-
-        override = manifest.android_bridge.override
-        publish = manifest.android_bridge.publish
-        publicDownloadNumbers = manifest.android_bridge.public_download_numbers
-
-        websiteUrl = manifest.global.github.url
-        vcsUrl = manifest.global.github.git_url
-        issueTrackerUrl = manifest.global.github.issues_url
-        githubRepo = manifest.global.github.repo
-        githubReleaseNotesFile = manifest.android_bridge.github_release_notes_file
-
-        licenses = new String[manifest.global.licenses.size()]
-        def i = 0
-        manifest.global.licenses.each {
-            licenses[i++] = it.short_name
+tasks.withType(MavenPublication) {
+    dependsOn build
+    onlyIf {
+        if (rootProject.ext.version == '0.0.42-dev') {
+            throw new GradleException("Can't publish a dev version")
         }
-
-        version {
-            name = rootProject.ext.version
-            desc = "$manifest.global.android.repo-$manifest.android_bridge.artifact_id-$rootProject.ext.version"
-            released = new Date()
-            vcsTag = "v$rootProject.ext.version"
-
-            gpg {
-                sign = true
-                passphrase = System.getenv('BINTRAY_GPG_PASS')
-            }
-        }
+        return true
     }
 }
-
-bintrayUpload.onlyIf {
-    if (rootProject.ext.version == '0.0.42-dev') {
-        throw new GradleException("Can't publish a dev version")
-    }
-    return true
-}
-
-bintrayUpload.dependsOn build

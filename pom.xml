@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ipfs.gomobile</groupId>
+  <artifactId>core</artifactId>
+  <version>1.3.0</version>
+
+  <name>Gomobile-IPFS - Android Core</name>
+  <description>Android Gomobile package exposing go-ipfs methods required by Gomobile-IPFS-Bridge</description>
+  <url>https://github.com/ipfs-shipyard/gomobile-ipfs</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>aeddi</id>
+      <name>Antoine Eddi</name>
+      <email>antoine.e.b@gmail.com</email>
+      <organization>Berty Technologies</organization>
+      <organizationUrl>https://berty.tech</organizationUrl>
+    </developer>
+    <developer>
+      <id>gfanton</id>
+      <name>Guilhem Fanton</name>
+      <email>guilhem.fanton@gmail.com</email>
+      <organization>Berty Technologies</organization>
+      <organizationUrl>https://berty.tech</organizationUrl>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs</url>
+    </repository>
+  </distributionManagement>
+
+  <scm>
+    <connection>scm:git:git://github.com/ipfs-shipyard/gomobile-ipfs.git</connection>
+    <developerConnection>scm:git:ssh://github.com:ipfs-shipyard/gomobile-ipfs.git</developerConnection>
+    <url>https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <version>4.1.1.4</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+      <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+      <!-- <java.version>1.8</java.version> -->
+    <javadoc.opts>-Xdoclint:none</javadoc.opts>
+  </properties>
+
+  <build>
+    <sourceDirectory>./build/android/intermediates</sourceDirectory>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.simpligility.maven.plugins</groupId>
+          <artifactId>android-maven-plugin</artifactId>
+          <version>4.0.0</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <!-- we only use source for javadoc, do not compile -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <phase>none</phase>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.3.0</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <additionalJOptions>
+                  <additionalJOption>-Xdoclint:none</additionalJOption>
+                </additionalJOptions>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
