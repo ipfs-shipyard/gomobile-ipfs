@@ -1,4 +1,4 @@
-module github.com/ipfs-shipyard/gomobile-ipfs/go
+module github.com/ipfs-shipyard/gomobile-ipfs
 
 go 1.16
 
@@ -12,4 +12,7 @@ require (
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/pkg/errors v0.9.1
+	golang.org/x/mobile v0.0.0
 )
+
+replace golang.org/x/mobile => github.com/aeddi/mobile v0.0.3-silicon
