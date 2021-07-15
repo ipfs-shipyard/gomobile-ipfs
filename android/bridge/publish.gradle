@@ -29,8 +29,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs")
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
@@ -92,12 +92,11 @@ publishing {
     }
 }
 
-tasks.withType(MavenPublication) {
-    dependsOn build
-    onlyIf {
-        if (rootProject.ext.version == '0.0.42-dev') {
-            throw new GradleException("Can't publish a dev version")
-        }
-        return true
-    }
+
+
+tasks.register('publishToGitHubPackages') {
+    group = 'publishing'
+    description = 'Publishes all Maven publications to GitHubPackages.'
+    dependsOn 'build'
+    dependsOn 'publish'
 }

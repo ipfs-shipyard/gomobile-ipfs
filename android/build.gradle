@@ -11,11 +11,11 @@ buildscript {
 
 task importManifest {
     def ManifestFile = new File("${rootDir.getPath()}/../packages/Manifest.yml")
-	def EnvVersion = System.env['GOMOBILE_IPFS_VERSION']
+	  def EnvVersion = System.env['GOMOBILE_IPFS_VERSION']
 
     rootProject.ext {
         manifest = new org.yaml.snakeyaml.Yaml().load(ManifestFile.newInputStream())
-		version = (EnvVersion != null) ? EnvVersion : '0.0.42-dev'
+		    version = (EnvVersion != null) ? EnvVersion : '0.0.42-dev'
     }
 }
 
@@ -25,9 +25,9 @@ task setupAllProjectsRepos(dependsOn: 'importManifest') {
             google()
             jcenter()
             // If gomobile-ipfs core is available locally, use it
-            maven { url "${rootDir.getPath()}/../packages/build/android/maven" }
+            maven { url "${rootDir.getPath()}/../repo" }
             // If not available locally, download it from Bintray repo
-            maven { url rootProject.ext.manifest.global.android.bintray_url }
+            // maven { url rootProject.ext.manifest.global.android.bintray_url }
         }
     }
 }
