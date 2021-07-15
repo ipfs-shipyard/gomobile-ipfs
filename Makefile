@@ -15,8 +15,8 @@ go_src = $(shell find go -name '*.go')
 go_mod_files = go.mod go.sum
 
 build.ios: $(IOS_CORE)
-
 android.build: $(ANDROID_CORE) android.core.repo
+clean: android.clean
 
 $(ANDROID_BUILD_DIR_INT):
 	mkdir -p $@
