@@ -24,16 +24,24 @@ task sourcesJar(type: Jar) {
 }
 
 publishing {
-    repositories {
+     repositories  {
+        // external publishing
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs")
+            name = "github" // @MANIFEST
+            url = uri("https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs") // @MANIFEST
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
+
+        // local publishing
+        maven {
+            name = "local"
+            url = layout.buildDirectory.dir('../../../repo') // @MANIFEST
+        }
     }
+
     publications {
         Production(MavenPublication) {
             artifacts = [
@@ -43,8 +51,8 @@ publishing {
             ]
 
             groupId manifest.global.group_id
-			artifactId manifest.android_bridge.artifact_id
-			version rootProject.ext.version
+			      artifactId manifest.android_bridge.artifact_id
+			      version rootProject.ext.version
 
             pom {
                 name = manifest.android_bridge.name
@@ -92,11 +100,21 @@ publishing {
     }
 }
 
-
-
-tasks.register('publishToGitHubPackages') {
+tasks.register('publishToLocalRepository') {
     group = 'publishing'
     description = 'Publishes all Maven publications to GitHubPackages.'
     dependsOn 'build'
-    dependsOn 'publish'
+    dependsOn tasks.withType(PublishToMavenRepository).matching {
+        it.repository == publishing.repositories.local
+    }
 }
+
+tasks.register('publishToRemoteRepository') {
+    group = 'publishing'
+    description = 'Publishes all Maven publications to remote repository's
+    dependsOn 'build'
+    dependsOn tasks.withType(PublishToMavenRepository).matching {
+        it.repository == publishing.repositories.github // @MANIFEST
+    }
+}
+

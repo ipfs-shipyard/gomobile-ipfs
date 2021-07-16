@@ -27,7 +27,7 @@ task setupAllProjectsRepos(dependsOn: 'importManifest') {
             // If gomobile-ipfs core is available locally, use it
             maven { url "${rootDir.getPath()}/../repo" }
             // If not available locally, download it from Bintray repo
-            // maven { url rootProject.ext.manifest.global.android.bintray_url }
+            maven { url "https://github.com/ipfs-shipyard/gomobile-ipfs.git" } // @MANIFEST
         }
     }
 }
