@@ -1,26 +1,18 @@
+import javax.xml.transform.Source
+
 apply plugin: 'maven-publish'
+// apply plugin: 'signing'
 
 task javadoc(type: Javadoc) {
     title = manifest.android_bridge.name
-    source = android.sourceSets.main.java.srcDirs
+    source = "${buildDir}/source"
     destinationDir = new File("$projectDir/javadoc")
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-afterEvaluate {
-    javadoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.javaCompileProvider.get().classpath.files
-    })
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
 }
 
 publishing {
@@ -38,34 +30,35 @@ publishing {
         // local publishing
         maven {
             name = "local"
-            url = layout.buildDirectory.dir('repo') // @MANIFEST
+            url = layout.buildDirectory.dir("$projectDir/repo") // @MANIFEST
         }
     }
 
     publications {
         Production(MavenPublication) {
-            artifacts = [
-                "$buildDir/outputs/aar/bridge-release.aar",
-                sourcesJar,
-                javadocJar
-            ]
+            artifact(javadocJar)
+            artifact(project.ext.coreAar)
+            artifact(project.ext.coreJar) {
+                classifier "sources"
+                extension "jar"
+            }
 
             groupId manifest.global.group_id
-			      artifactId manifest.android_bridge.artifact_id
+			      artifactId manifest.go_core.android.artifact_id
 			      version rootProject.ext.version
 
             pom {
                 name = manifest.android_bridge.name
                 url = manifest.global.github.url
-                description = manifest.android_bridge.description
+                description = manifest.go_core.android.description
                 packaging = manifest.global.android.packaging
 
                 scm {
                     connection = manifest.global.android.scm.connection
                     developerConnection = manifest.global.android.scm.developer_connection
                     url = manifest.global.android.scm.url
+                    }
                 }
-            }
 
             pom.withXml {
                 def licensesNode = asNode().appendNode('licenses')
@@ -98,4 +91,8 @@ publishing {
             }
         }
     }
+}
+
+tasks.withType(PublishToMavenRepository) {
+    dependsOn 'assemble'
 }
