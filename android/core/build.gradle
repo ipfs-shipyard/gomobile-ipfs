@@ -62,3 +62,4 @@ task extractApi(type: Copy) {
 assemble.dependsOn extractApi
 
 apply from: 'publish.gradle'
+

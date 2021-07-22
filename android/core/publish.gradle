@@ -30,7 +30,7 @@ publishing {
         // local publishing
         maven {
             name = "local"
-            url = layout.buildDirectory.dir("$projectDir/repo") // @MANIFEST
+            url = "${projectDir}/repo" // @MANIFEST
         }
     }
 
@@ -44,8 +44,8 @@ publishing {
             }
 
             groupId manifest.global.group_id
-			      artifactId manifest.go_core.android.artifact_id
-			      version rootProject.ext.version
+            artifactId manifest.go_core.android.artifact_id
+            version rootProject.ext.version
 
             pom {
                 name = manifest.android_bridge.name
