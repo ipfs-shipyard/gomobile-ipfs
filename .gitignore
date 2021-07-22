@@ -8,6 +8,14 @@
 *.so
 *.dylib
 
+# build folder
+build
+repo
+target
+
+# pom file
+pom.xml.versionsBackup
+
 # Test binary, build with `go test -c`
 *.test
 

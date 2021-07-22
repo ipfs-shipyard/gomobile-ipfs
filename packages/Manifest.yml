@@ -40,10 +40,12 @@ global:
     compile_sdk_version: &compile_sdk_version 29
     min_sdk_version: 21
     target_sdk_version: *compile_sdk_version
-
-    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-android
+    
     repo: gomobile-ipfs-android
     packaging: aar
+
+    repositories:
+      github: https://maven.pkg.github.com/ipfs-shipyard/gomobile-ipfs
 
     scm:
       connection: scm:git:git://github.com/ipfs-shipyard/gomobile-ipfs.git

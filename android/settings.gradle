@@ -1,2 +1,2 @@
-include ':app', ':bridge'
+include ':app', ':bridge', ':core'
 rootProject.name='GomobileIPFSExample'
