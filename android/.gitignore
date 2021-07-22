@@ -28,6 +28,7 @@ release/
 # Gradle files
 .gradle/
 build/
+libs/gomobile
 
 # Local configuration file (sdk path, etc)
 local.properties

@@ -59,6 +59,12 @@ task extractApi(type: Copy) {
     into "$buildDir/source"
 }
 
+tasks.whenTaskAdded { task ->
+    if (task.name.contains("compile")) {
+        task.enabled = false
+    }
+}
+
 assemble.dependsOn extractApi
 
 apply from: 'publish.gradle'
