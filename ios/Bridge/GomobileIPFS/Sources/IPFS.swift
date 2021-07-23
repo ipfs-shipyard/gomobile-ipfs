@@ -94,7 +94,7 @@ public class IPFS {
 
         // Create a shell over UDS on physical device
         #if !targetEnvironment(simulator)
-        try self.node!.serve(onUDS: self.absSockPath)
+        try self.node!.serveAPI(onUDS: self.absSockPath)
         self.shell = CoreNewUDSShell(self.absSockPath)
         /*
         ** On iOS simulator, temporary directory's absolute path exceeds
@@ -102,9 +102,12 @@ public class IPFS {
         ** only used for debug, we can safely fallback on shell over TCP
         */
         #else
-        let maddr: String = try self.node!.serve(onTCPPort: "0")
+        let maddr: String = try self.node!.serveAPI(onTCPPort: "0")
         self.shell = CoreNewShell(maddr)
         #endif
+
+        // serve config api & gateway (if any)
+        try self.node!.serve()
     }
 
     /// Stops this IPFS instance
@@ -199,6 +202,19 @@ public class IPFS {
 
         return RequestBuilder(requestBuilder)
     }
+
+    /// Serves node Gateway over the given Multiaddr
+    /// - Parameter onMultiaddr: The multiaddr to serve on
+    /// - Parameter writable: If true: will also support support `POST`, `PUT`, and `DELETE` methods.
+    /// - Throws: `NodeError`: If the node failed to serve
+    public func serveGateway(onMultiaddr: String, _ writable: Bool = false) throws -> String{
+        guard let node = self.node else {
+            throw IPFSError("unable to serve the gateway, is the node started?")
+        }
+
+        return try node.serveGateway(onMultiaddr: onMultiaddr, writable: writable)
+    }
+
 
     /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
     /// - Parameters:

@@ -9,6 +9,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"sync"
@@ -69,25 +70,34 @@ func (n *Node) Close() error {
 }
 
 func (n *Node) ServeUnixSocketAPI(sockpath string) (err error) {
-	_, err = n.ServeMultiaddr("/unix/" + sockpath)
+	_, err = n.ServeAPIMultiaddr("/unix/" + sockpath)
 	return
 }
 
 // ServeTCPAPI on the given port and return the current listening maddr
 func (n *Node) ServeTCPAPI(port string) (string, error) {
-	return n.ServeMultiaddr("/ip4/127.0.0.1/tcp/" + port)
+	return n.ServeAPIMultiaddr("/ip4/127.0.0.1/tcp/" + port)
 }
 
-func (n *Node) ServeConfigAPI() error {
+func (n *Node) ServeConfig() error {
 	cfg, err := n.ipfsMobile.Repo.Config()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to get config: %s", err.Error())
 	}
 
 	if len(cfg.Addresses.API) > 0 {
 		for _, maddr := range cfg.Addresses.API {
-			if _, err := n.ServeMultiaddr(maddr); err != nil {
-				log.Printf("cannot serve `%s`: %s", maddr, err.Error())
+			if _, err := n.ServeAPIMultiaddr(maddr); err != nil {
+				return fmt.Errorf("cannot serve `%s`: %s", maddr, err.Error())
+			}
+		}
+	}
+
+	if len(cfg.Addresses.Gateway) > 0 {
+		for _, maddr := range cfg.Addresses.Gateway {
+			// public gateway should be readonly by default
+			if _, err := n.ServeGatewayMultiaddr(maddr, false); err != nil {
+				return fmt.Errorf("cannot serve `%s`: %s", maddr, err.Error())
 			}
 		}
 	}
@@ -95,7 +105,40 @@ func (n *Node) ServeConfigAPI() error {
 	return nil
 }
 
-func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
+func (n *Node) ServeUnixSocketGateway(sockpath string, writable bool) (err error) {
+	_, err = n.ServeGatewayMultiaddr("/unix/"+sockpath, writable)
+	return
+}
+
+func (n *Node) ServeTCPGateway(port string, writable bool) (string, error) {
+	return n.ServeGatewayMultiaddr("/ip4/127.0.0.1/tcp/"+port, writable)
+}
+
+func (n *Node) ServeGatewayMultiaddr(smaddr string, writable bool) (string, error) {
+	maddr, err := ma.NewMultiaddr(smaddr)
+	if err != nil {
+		return "", err
+	}
+
+	ml, err := manet.Listen(maddr)
+	if err != nil {
+		return "", err
+	}
+
+	n.muListeners.Lock()
+	n.listeners = append(n.listeners, ml)
+	n.muListeners.Unlock()
+
+	go func(l net.Listener) {
+		if err := n.ipfsMobile.ServeGateway(l, writable); err != nil {
+			log.Printf("serve error: %s", err.Error())
+		}
+	}(manet.NetListener(ml))
+
+	return ml.Multiaddr().String(), nil
+}
+
+func (n *Node) ServeAPIMultiaddr(smaddr string) (string, error) {
 	maddr, err := ma.NewMultiaddr(smaddr)
 	if err != nil {
 		return "", err
