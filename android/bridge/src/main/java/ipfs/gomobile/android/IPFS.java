@@ -164,7 +164,7 @@ public class IPFS {
             node.serveUnixSocketAPI(absSockPath);
 
             // serve config Addresses API & Gateway
-            node.serveConfig()
+            node.serveConfig();
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
         }
@@ -317,10 +317,9 @@ public class IPFS {
      * @throws NodeListenException If the node failed to serve
      * @see <a href="https://docs.ipfs.io/concepts/ipfs-gateway/#gateway-providers">IPFS Doc</a>
      */
-    synchronized public static string serveGatewayMultiaddr(@NonNull String multiaddr, @NonNull Boolean writable)
-        throw NodeListenException {
+    synchronized public String serveGatewayMultiaddr(@NonNull String multiaddr, @NonNull Boolean writable) throws NodeListenException {
         try {
-            return node.serveGatewayMultiaddr(multiaddr, writable)
+            return node.serveGatewayMultiaddr(multiaddr, writable);
         } catch (Exception e) {
             throw new NodeListenException("failed to listen on gateway", e);
         }
