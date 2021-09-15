@@ -1,5 +1,8 @@
 // from: https://gist.github.com/cs8425/107e01a0652f1f1f6e033b5b68364b5e
 
+// @FIXME(gfanton): this hack doesn't work anymore on go1.17
+// +build !go1.17
+
 //nolint
 package core
 
