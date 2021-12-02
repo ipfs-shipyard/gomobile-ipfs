@@ -158,7 +158,7 @@ func identityConfig(out io.Writer, nbits int) (ipfs_config.Identity, error) {
 
 	// currently storing key unencrypted. in the future we need to encrypt it.
 	// TODO(security)
-	skbytes, err := sk.Bytes()
+	skbytes, err := libp2p_ci.MarshalPrivateKey(sk)
 	if err != nil {
 		return ident, err
 	}
