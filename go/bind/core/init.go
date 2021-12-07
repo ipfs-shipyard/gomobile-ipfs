@@ -7,6 +7,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
 	ipfs_config "github.com/ipfs/go-ipfs-config"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
@@ -94,6 +95,8 @@ func addressesConfig() ipfs_config.Addresses {
 
 			"/ip4/0.0.0.0/udp/0/quic",
 			"/ip6/::/udp/0/quic",
+
+			ble.DefaultAddr,
 		},
 
 		// @FIXME: use random port here to avoid collision

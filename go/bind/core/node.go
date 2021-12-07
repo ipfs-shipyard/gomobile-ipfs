@@ -8,17 +8,24 @@ package core
 // Main API exposed to the ios/android
 
 import (
+	"bytes"
 	"context"
+	"encoding/gob"
 	"log"
 	"net"
 	"sync"
 
+	ble "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
+	proximity "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/proximitytransport"
+	"go.uber.org/zap"
 
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
+	"github.com/libp2p/go-libp2p"
+	p2p "github.com/libp2p/go-libp2p"
 	// ipfs_log "github.com/ipfs/go-log"
 )
 
@@ -29,14 +36,34 @@ type Node struct {
 	ipfsMobile *ipfs_mobile.IpfsMobile
 }
 
-func NewNode(r *Repo) (*Node, error) {
+func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 	ctx := context.Background()
 
 	if _, err := loadPlugins(r.mr.Path); err != nil {
 		return nil, err
 	}
 
+	var bleOpt libp2p.Option
+
+	switch {
+	// Java embedded driver (android)
+	case driver != nil:
+		logger := zap.NewExample()
+		defer logger.Sync()
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
+	// Go embedded driver (ios)
+	case ble.Supported:
+		logger := zap.NewExample()
+		defer logger.Sync()
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
+	default:
+		log.Printf("cannot enable BLE on an unsupported platform")
+	}
+
 	ipfscfg := &ipfs_mobile.IpfsConfig{
+		HostConfig: &ipfs_mobile.HostConfig{
+			Options: []p2p.Option{bleOpt},
+		},
 		RepoMobile: r.mr,
 		ExtraOpts: map[string]bool{
 			"pubsub": true, // enable experimental pubsub feature by default
@@ -117,6 +144,16 @@ func (n *Node) ServeMultiaddr(smaddr string) (string, error) {
 	}(manet.NetListener(ml))
 
 	return ml.Multiaddr().String(), nil
+}
+
+func getBytes(key interface{}) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(key)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 func init() {
