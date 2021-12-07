@@ -38,7 +38,7 @@ global:
 
   android:
     compile_sdk_version: &compile_sdk_version 29
-    min_sdk_version: 21
+    min_sdk_version: 24
     target_sdk_version: *compile_sdk_version
 
     bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-android

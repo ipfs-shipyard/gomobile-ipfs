@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
@@ -15,12 +16,14 @@ import core.Repo;
 import core.Node;
 import core.Shell;
 import core.SockManager;
+import tech.berty.gobridge.bledriver.BleInterface;
 
 /**
 * IPFS is a class that wraps a go-ipfs node and its shell over UDS.
 */
 public class IPFS {
 
+    private WeakReference<Context> context;
     // Paths
     private static final String defaultRepoPath = "/ipfs/repo";
     private final String absRepoPath;
@@ -76,6 +79,8 @@ public class IPFS {
         Objects.requireNonNull(repoPath, "repoPath should not be null");
 
         String absPath;
+
+        this.context = new WeakReference<>(context);
 
         if (internalStorage) {
             absPath = context.getFilesDir().getAbsolutePath();
@@ -157,9 +162,11 @@ public class IPFS {
             throw new NodeStartException("Node already started");
         }
 
+        BleInterface BLEDriver = new BleInterface(context.get());
+
         try {
             openRepoIfClosed();
-            node = Core.newNode(repo);
+            node = Core.newNode(repo, BLEDriver);
             node.serveUnixSocketAPI(absSockPath);
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);

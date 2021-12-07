@@ -33,7 +33,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
         MainActivity activity = activityRef.get();
         if (activity == null || activity.isFinishing()) return;
 
-        activity.displayFetchProgress();
+        activity.displayStatusProgress(activity.getString(R.string.titleXKCDFetching));
     }
 
     @Override
@@ -86,13 +86,15 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
         if (activity == null || activity.isFinishing()) return;
 
         if (backgroundError) {
-            activity.displayFetchError(result);
+            activity.displayStatusError(activity.getString(R.string.titleXKCDFetchingErr), result);
             Log.e(TAG, "XKCD fetch error: " + result);
         } else {
-            activity.displayFetchSuccess();
+            activity.displayStatusSuccess();
+
+            // Put directly data through this way because of size limit with Intend
+            DisplayImageActivity.fetchedData = fetchedData;
 
             Intent intent = new Intent(activity, DisplayImageActivity.class);
-            intent.putExtra("ImageData", fetchedData);
             intent.putExtra("Title", result);
             activity.startActivity(intent);
         }
