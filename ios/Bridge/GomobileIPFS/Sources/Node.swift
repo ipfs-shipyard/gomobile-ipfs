@@ -34,7 +34,7 @@ public class Node {
     public init(_ repo: Repo) throws {
         var err: NSError?
 
-        if let node = CoreNewNode(repo.goRepo, &err) {
+        if let node = CoreNewNode(repo.goRepo, nil, &err) {
             self.node = node
         } else {
             throw NodeError("creation failed", err)

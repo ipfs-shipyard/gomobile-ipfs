@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8AF76E4826EF532E007DF24A /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */; };
+		8AF76E4926EF532E007DF24A /* CoreBluetooth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8D1B639D24487FC900CE188F /* ConfigIPFSTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */; };
 		8D2C38A424470D470005C2DD /* RequestIPFSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */; };
 		8DE4ECD72402BF6600B70884 /* GomobileIPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */; };
@@ -40,6 +42,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8AF76E4926EF532E007DF24A /* CoreBluetooth.framework in Embed Frameworks */,
 				8DE4ED072402C16B00B70884 /* Core.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -48,6 +51,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigIPFSTest.swift; sourceTree = "<group>"; };
 		8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestIPFSTests.swift; sourceTree = "<group>"; };
 		8DE4ECCD2402BF6500B70884 /* GomobileIPFS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GomobileIPFS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AF76E4826EF532E007DF24A /* CoreBluetooth.framework in Frameworks */,
 				8DE4ED062402C16B00B70884 /* Core.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,6 +148,7 @@
 		8DE4ED042402C16B00B70884 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */,
 				8DE4ED052402C16B00B70884 /* Core.xcframework */,
 			);
 			name = Frameworks;
@@ -416,7 +422,6 @@
 		8DE4ECE22402BF6600B70884 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -452,7 +457,6 @@
 		8DE4ECE32402BF6600B70884 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
