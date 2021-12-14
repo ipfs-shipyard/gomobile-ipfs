@@ -162,7 +162,7 @@ public class IPFS {
             throw new NodeStartException("Node already started");
         }
 
-        BleInterface BLEDriver = new BleInterface(context.get());
+        BleInterface BLEDriver = new BleInterface(context.get(), true);
 
         try {
             openRepoIfClosed();

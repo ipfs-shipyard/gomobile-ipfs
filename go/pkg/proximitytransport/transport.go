@@ -28,10 +28,20 @@ var _ ProximityTransport = &proximityTransport{}
 // TransportMap prevents instantiating multiple Transport
 var TransportMap sync.Map
 
+// Define log level for driver loggers
+const (
+	Verbose = iota
+	Debug
+	Info
+	Warn
+	Error
+)
+
 type ProximityTransport interface {
 	HandleFoundPeer(remotePID string) bool
 	HandleLostPeer(remotePID string)
 	ReceiveFromPeer(remotePID string, payload []byte)
+	Log(level int, message string)
 }
 
 type proximityTransport struct {
@@ -284,6 +294,19 @@ func (t *proximityTransport) HandleLostPeer(sRemotePID string) {
 		if conn.RemoteMultiaddr().Equal(remoteMa) {
 			conn.Close()
 		}
+	}
+}
+
+func (t *proximityTransport) Log(level int, message string) {
+	switch level {
+	case Verbose, Debug:
+		t.logger.Debug(message)
+	case Info:
+		t.logger.Info(message)
+	case Warn:
+		t.logger.Warn(message)
+	case Error:
+		t.logger.Error(message)
 	}
 }
 

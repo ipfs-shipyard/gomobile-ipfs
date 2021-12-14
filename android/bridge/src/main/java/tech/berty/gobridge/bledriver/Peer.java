@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Peer {
     private static final String TAG = "bty.ble.Peer";
+    private final Logger mLogger;
 
     private static final long TIMEOUT = 30000;
     private final String mPeerID;
@@ -18,7 +19,8 @@ public class Peer {
 
     private Runnable mTimeoutRunnable;
 
-    public Peer(String peerID) {
+    public Peer(Logger logger, String peerID) {
+        mLogger = logger;
         mPeerID = peerID;
     }
 
@@ -35,7 +37,7 @@ public class Peer {
     }
 
     public synchronized void removeDevices() {
-        Log.d(TAG, String.format("removeDevices called: pid=%s", mPeerID));
+        mLogger.d(TAG, String.format("removeDevices called: pid=%s", mLogger.sensitiveObject(mPeerID)));
 
         mClientDevices.clear();
         mServerDevices.clear();
