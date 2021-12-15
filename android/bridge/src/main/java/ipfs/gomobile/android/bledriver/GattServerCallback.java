@@ -1,4 +1,4 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -9,13 +9,11 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;

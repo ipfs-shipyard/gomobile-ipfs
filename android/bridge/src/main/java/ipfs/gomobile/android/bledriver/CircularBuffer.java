@@ -1,4 +1,4 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 // https://github.com/eugenp/tutorials/blob/master/data-structures/src/main/java/com/baeldung/circularbuffer/CircularBuffer.java
 

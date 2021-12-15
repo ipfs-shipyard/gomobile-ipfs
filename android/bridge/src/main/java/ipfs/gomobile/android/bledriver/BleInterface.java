@@ -1,7 +1,6 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 import android.content.Context;
-import android.util.Log;
 
 import core.Core;
 import core.ProximityDriver;

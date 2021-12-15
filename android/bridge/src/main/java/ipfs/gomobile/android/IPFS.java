@@ -16,7 +16,7 @@ import core.Repo;
 import core.Node;
 import core.Shell;
 import core.SockManager;
-import tech.berty.gobridge.bledriver.BleInterface;
+import ipfs.gomobile.android.bledriver.BleInterface;
 
 /**
 * IPFS is a class that wraps a go-ipfs node and its shell over UDS.

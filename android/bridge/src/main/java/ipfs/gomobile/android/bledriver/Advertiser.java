@@ -1,11 +1,10 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;

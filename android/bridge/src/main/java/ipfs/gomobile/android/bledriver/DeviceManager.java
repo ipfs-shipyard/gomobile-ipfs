@@ -1,6 +1,4 @@
-package tech.berty.gobridge.bledriver;
-
-import android.util.Log;
+package ipfs.gomobile.android.bledriver;
 
 import androidx.annotation.NonNull;
 

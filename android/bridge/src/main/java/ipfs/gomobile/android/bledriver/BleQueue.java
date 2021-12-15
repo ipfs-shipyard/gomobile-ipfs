@@ -1,14 +1,9 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 import android.os.Handler;
-import android.util.Log;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
-
-import androidx.arch.core.executor.TaskExecutor;
 
 // Vastly inspired from https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02
 // Github repo: https://github.com/weliem/blessed-android

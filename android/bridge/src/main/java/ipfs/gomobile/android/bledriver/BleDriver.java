@@ -1,4 +1,4 @@
-package tech.berty.gobridge.bledriver;
+package ipfs.gomobile.android.bledriver;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -11,8 +11,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Base64;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 
