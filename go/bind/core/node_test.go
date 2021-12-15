@@ -20,7 +20,7 @@ func TestNode(t *testing.T) {
 	repo, clean := testingRepo(t, path)
 	defer clean()
 
-	node, err := NewNode(repo)
+	node, err := NewNode(repo, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,1 +1,1 @@
-// Required by dnsconfig_android.go
+// Required by dnsconfig.go

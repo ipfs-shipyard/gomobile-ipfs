@@ -1,3 +1,6 @@
+//go:build go1.17
+// +build go1.17
+
 // from: https://gist.github.com/cs8425/107e01a0652f1f1f6e033b5b68364b5e
 
 //nolint
@@ -16,22 +19,23 @@ import (
 var defaultNS []string
 
 // need to keep sync with go version
-//go:linkname resolvConf net.resolvConf
 var resolvConf resolverConfig
 
 // copy from /src/net/dnsconfig_unix.go
 type dnsConfig struct {
-	servers    []string      // server addresses (in host:port form) to use
-	search     []string      // rooted suffixes to append to local name
-	ndots      int           // number of dots in name to trigger absolute lookup
-	timeout    time.Duration // wait before giving up on a query, including retries
-	attempts   int           // lost packets before giving up on server
-	rotate     bool          // round robin among servers
-	unknownOpt bool          // anything unknown was encountered
-	lookup     []string      // OpenBSD top-level database "lookup" order
-	err        error         // any error that occurs during open of resolv.conf
-	mtime      time.Time     // time of resolv.conf modification
-	soffset    uint32        // used by serverOffset
+	servers       []string      // server addresses (in host:port form) to use
+	search        []string      // rooted suffixes to append to local name
+	ndots         int           // number of dots in name to trigger absolute lookup
+	timeout       time.Duration // wait before giving up on a query, including retries
+	attempts      int           // lost packets before giving up on server
+	rotate        bool          // round robin among servers
+	unknownOpt    bool          // anything unknown was encountered
+	lookup        []string      // OpenBSD top-level database "lookup" order
+	err           error         // any error that occurs during open of resolv.conf
+	mtime         time.Time     // time of resolv.conf modification
+	soffset       uint32        // used by serverOffset
+	singleRequest bool          // use sequential A and AAAA queries instead of parallel queries
+	useTCP        bool          // force usage of TCP for DNS resolutions
 }
 
 // copy from /src/net/dnsclient_unix.go
@@ -47,14 +51,14 @@ type resolverConfig struct {
 	dnsConfig *dnsConfig   // parsed resolv.conf structure used in lookups
 }
 
-//go:linkname (*resolverConfig).tryUpdate net.(*resolverConfig).tryUpdate
-func (conf *resolverConfig) tryUpdate(name string)
+//go:linkname tryUpdate net.(*resolverConfig).tryUpdate
+func tryUpdate(conf *resolverConfig, name string)
 
 // Need an empty .s file (dnsconfig_empty.s)
 
 func setDefaultNS(addrs []string, loadFromSystem bool) {
 	if resolvConf.dnsConfig == nil {
-		resolvConf.tryUpdate("")
+		tryUpdate(&resolvConf, "")
 	}
 
 	if loadFromSystem {

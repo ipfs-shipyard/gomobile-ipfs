@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class DisplayImageActivity extends AppCompatActivity {
     private static final String TAG = "DisplayImageActivity";
 
+    public static byte[] fetchedData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +29,7 @@ public class DisplayImageActivity extends AppCompatActivity {
         }
 
         try {
-            byte[] data = intent.getExtras().getByteArray("ImageData");
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(fetchedData, 0, fetchedData.length);
 
             ImageView imageView = findViewById(R.id.imageView);
             imageView.setImageBitmap(bitmap);

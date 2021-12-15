@@ -65,7 +65,11 @@ func (req *RequestBuilder) BodyString(body string) {
 }
 
 func (req *RequestBuilder) BodyBytes(body []byte) {
-	req.rb.BodyBytes(body)
+	// Need to copy body
+	// https://github.com/golang/go/issues/33745
+	var dest = make([]byte, len(body))
+	copy(dest, body)
+	req.rb.BodyBytes(dest)
 }
 
 func (req *RequestBuilder) Header(name, value string) {

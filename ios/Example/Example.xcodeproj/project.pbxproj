@@ -13,6 +13,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		8AF76E4B26F0A438007DF24A /* AttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF76E4A26F0A438007DF24A /* AttachmentHandler.swift */; };
+		8AF76E4D26F4D074007DF24A /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF76E4C26F4D074007DF24A /* ScannerViewController.swift */; };
 		8DAEFB2223FF3B2200818B81 /* GomobileIPFS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DAEFB1B23FF38F300818B81 /* GomobileIPFS.framework */; };
 		8DAEFB2323FF3B2200818B81 /* GomobileIPFS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DAEFB1B23FF38F300818B81 /* GomobileIPFS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CC03C613238A9D4F00F635EE /* PeerCountUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */; };
@@ -54,6 +56,9 @@
 		607FACE51AFB9204008FA782 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		8AF76E4426E23ED4007DF24A /* Core.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Core.xcframework; path = "/Users/d4ryl00/gomobile-ipfs/ios/Bridge/../../packages/build/ios/intermediates/core/Core.xcframework"; sourceTree = "<absolute>"; };
+		8AF76E4A26F0A438007DF24A /* AttachmentHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentHandler.swift; sourceTree = "<group>"; };
+		8AF76E4C26F4D074007DF24A /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		8DAEFB1B23FF38F300818B81 /* GomobileIPFS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GomobileIPFS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerCountUpdater.swift; sourceTree = "<group>"; };
 		CC18F99E238ACE12007D9E36 /* DisplayImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayImageController.swift; sourceTree = "<group>"; };
@@ -100,8 +105,10 @@
 		607FACD21AFB9204008FA782 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				8AF76E4A26F0A438007DF24A /* AttachmentHandler.swift */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				8AF76E4C26F4D074007DF24A /* ScannerViewController.swift */,
 				CC18F99E238ACE12007D9E36 /* DisplayImageController.swift */,
 				CC03C612238A9D4F00F635EE /* PeerCountUpdater.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -140,6 +147,7 @@
 		8DAEFB1A23FF38F300818B81 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8AF76E4426E23ED4007DF24A /* Core.xcframework */,
 				8DAEFB1B23FF38F300818B81 /* GomobileIPFS.framework */,
 			);
 			name = Frameworks;
@@ -253,7 +261,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC18F99F238ACE12007D9E36 /* DisplayImageController.swift in Sources */,
+				8AF76E4D26F4D074007DF24A /* ScannerViewController.swift in Sources */,
 				CC03C613238A9D4F00F635EE /* PeerCountUpdater.swift in Sources */,
+				8AF76E4B26F0A438007DF24A /* AttachmentHandler.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
@@ -344,7 +354,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -393,7 +403,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;

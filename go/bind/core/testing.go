@@ -55,7 +55,7 @@ func testingNode(t *testing.T, path string) (*Node, cleanFunc) {
 	repo, cleanRepo := testingRepo(t, path)
 
 	// create new node
-	node, err := NewNode(repo)
+	node, err := NewNode(repo, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

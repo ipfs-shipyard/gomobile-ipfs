@@ -10,9 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
         android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +20,7 @@
             android:id="@+id/ipfsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
+            android:layout_marginTop="100dp"
             android:text="@string/titleStarting"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -31,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
-            android:id="@+id/ipfsProgress"
+            android:id="@+id/ipfsStartingProgress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="115dp"
             android:layout_height="19dp"
@@ -55,7 +53,7 @@
             android:id="@+id/peerCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="40dp"
             android:text="@string/titlePeerCon"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -68,30 +66,27 @@
             android:id="@+id/xkcdButton"
             android:layout_width="140dp"
             android:layout_height="48dp"
-            android:layout_marginTop="84dp"
-            android:text="@string/button"
+            android:layout_marginTop="8dp"
+            android:text="@string/xkcdButton"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/peerCounter" />
+            app:layout_constraintTop_toBottomOf="@+id/onlineTitle" />
 
         <TextView
-            android:id="@+id/xkcdStatus"
+            android:id="@+id/ipfsStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/titleFetching"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/xkcdButton" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <ProgressBar
-            android:id="@+id/xkcdProgress"
+            android:id="@+id/ipfsProgress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="115dp"
             android:layout_height="19dp"
@@ -100,10 +95,10 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/xkcdStatus" />
+            app:layout_constraintTop_toBottomOf="@+id/ipfsStatus" />
 
         <TextView
-            android:id="@+id/xkcdError"
+            android:id="@+id/ipfsError"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -114,7 +109,57 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/xkcdStatus" />
+            app:layout_constraintTop_toBottomOf="@+id/ipfsStatus" />
+
+        <TextView
+            android:id="@+id/offlineTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/offlineTitle"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/xkcdButton" />
+
+        <TextView
+            android:id="@+id/onlineTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/onlineTitle"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/peerCounter" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/offlineTitle">
+
+            <Button
+                android:id="@+id/shareButton"
+                android:layout_width="140dp"
+                android:layout_height="48dp"
+                android:layout_weight="0.5"
+                android:text="@string/shareButton"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/fetchButton"
+                android:layout_width="140dp"
+                android:layout_height="48dp"
+                android:layout_weight="0.5"
+                android:text="@string/fetchButton"
+                android:visibility="invisible" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

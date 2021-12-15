@@ -4,7 +4,18 @@
     <string name="titlePeerID">Your Peer ID is:</string>
     <string name="titlePeerIDErr">Error:</string>
     <string name="titlePeerCon">Peers connected: %1$d</string>
-    <string name="titleFetching">Fetching XKCD on IPFS</string>
-    <string name="titleFetchingErr">Fetching XKCD failed</string>
-    <string name="button">Random XKCD</string>
+    <string name="onlineTitle">Work online</string>
+    <string name="offlineTitle">Work online / offline with Bluetooth</string>
+    <string name="titleImageSharing">Sharing image on IPFS</string>
+    <string name="titleImageSharingErr">Sharing image failed</string>
+    <string name="titleImageFetching">Fetching image on IPFS</string>
+    <string name="titleImageFetchingErr">Fetching image failed</string>
+    <string name="titleFetchedImage">Fetched remote image</string>
+    <string name="titleXKCDFetching">Fetching XKCD on IPFS</string>
+    <string name="titleXKCDFetchingErr">Fetching XKCD failed</string>
+    <string name="xkcdButton">Random XKCD</string>
+    <string name="shareButton">Share an image</string>
+    <string name="fetchButton">Fetch an image</string>
+    <string name="ble_permissions_explain">To exchange messages offline via Bluetooth even when the app is in background, the Android API requires the location permission to be granted.\\nWe do not use your location data in any way.</string>
+    <string name="ble_permissions_denied">IPFS will start without Bluetooth module</string>
 </resources>

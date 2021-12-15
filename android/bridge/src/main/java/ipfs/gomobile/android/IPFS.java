@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
@@ -15,12 +16,14 @@ import core.Repo;
 import core.Node;
 import core.Shell;
 import core.SockManager;
+import ipfs.gomobile.android.bledriver.BleInterface;
 
 /**
 * IPFS is a class that wraps a go-ipfs node and its shell over UDS.
 */
 public class IPFS {
 
+    private WeakReference<Context> context;
     // Paths
     private static final String defaultRepoPath = "/ipfs/repo";
     private final String absRepoPath;
@@ -76,6 +79,8 @@ public class IPFS {
         Objects.requireNonNull(repoPath, "repoPath should not be null");
 
         String absPath;
+
+        this.context = new WeakReference<>(context);
 
         if (internalStorage) {
             absPath = context.getFilesDir().getAbsolutePath();
@@ -157,9 +162,11 @@ public class IPFS {
             throw new NodeStartException("Node already started");
         }
 
+        BleInterface BLEDriver = new BleInterface(context.get(), true);
+
         try {
             openRepoIfClosed();
-            node = Core.newNode(repo);
+            node = Core.newNode(repo, BLEDriver);
             node.serveUnixSocketAPI(absSockPath);
         } catch (Exception e) {
             throw new NodeStartException("Node start failed", e);
@@ -304,18 +311,18 @@ public class IPFS {
         return new RequestBuilder(requestBuilder);
     }
 
-    /**
-    * Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
-    *
-    * @param primary The primary DNS address in the form {@code <ip4>:<port>}
-    * @param secondary The secondary DNS address in the form {@code <ip4>:<port>}
-    */
-    public static void setDNSPair(@NonNull String primary, @NonNull String secondary) {
-        Objects.requireNonNull(primary, "primary should not be null");
-        Objects.requireNonNull(secondary, "secondary should not be null");
+     /**
+     * Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
+     *
+     * @param primary The primary DNS address in the form {@code <ip4>:<port>}
+     * @param secondary The secondary DNS address in the form {@code <ip4>:<port>}
+     */
+     public static void setDNSPair(@NonNull String primary, @NonNull String secondary) {
+         Objects.requireNonNull(primary, "primary should not be null");
+         Objects.requireNonNull(secondary, "secondary should not be null");
 
-        Core.setDNSPair(primary, secondary, false);
-    }
+         Core.setDNSPair(primary, secondary, false);
+     }
 
     /**
     * Internal helper that opens the repo if it is closed.
