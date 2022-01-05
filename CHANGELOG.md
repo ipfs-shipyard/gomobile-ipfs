@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.4](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.3...v1.0.4) (2022-01-05)
+
+
+### Bug Fixes
+
+* try other artifact uploaod ([f8ee4af](https://github.com/n0izn0iz/gomobile-ipfs/commit/f8ee4afb861f073b5cb76ef16b1ece63cc92d28c))
+
 ## [1.0.3](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.2...v1.0.3) (2022-01-05)
 
 
