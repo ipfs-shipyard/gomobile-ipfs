@@ -7,6 +7,7 @@ require (
 	github.com/ipfs/go-ipfs v0.9.1
 	github.com/ipfs/go-ipfs-api v0.2.0
 	github.com/ipfs/go-ipfs-config v0.14.0
+	github.com/ipfs/go-ipfs-files v0.0.8
 	github.com/libp2p/go-libp2p v0.14.3
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-record v0.1.3
@@ -80,7 +81,6 @@ require (
 	github.com/ipfs/go-ipfs-ds-help v0.1.1 // indirect
 	github.com/ipfs/go-ipfs-exchange-interface v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-exchange-offline v0.0.1 // indirect
-	github.com/ipfs/go-ipfs-files v0.0.8 // indirect
 	github.com/ipfs/go-ipfs-keystore v0.0.2 // indirect
 	github.com/ipfs/go-ipfs-pinner v0.1.1 // indirect
 	github.com/ipfs/go-ipfs-posinfo v0.0.1 // indirect
