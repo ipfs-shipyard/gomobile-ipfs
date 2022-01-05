@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.9](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.8...v1.0.9) (2022-01-05)
+
+
+### Bug Fixes
+
+* push podspec too ([b75aea0](https://github.com/n0izn0iz/gomobile-ipfs/commit/b75aea095f93ab4a66e1bb298e6cf88c4c0dc8c2))
+
 ## [1.0.8](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.7...v1.0.8) (2022-01-05)
 
 
