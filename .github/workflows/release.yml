@@ -155,7 +155,7 @@ jobs:
       #      -S apple-tool:,apple:,codesign: \
       #      -s -k "$KEYCHAIN_PASS" build.keychain
 
-      - name: Publish Android/iOS packages and apps
+      - name: Publish iOS packages on github
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
@@ -166,4 +166,24 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        run: make publish_bridge.ios
+        run: make publish_bridge.ios || true
+
+      - name: upload core pod
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.semantic.outputs.upload_url }}
+          asset_path: ./packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/core-${{ steps.semantic.outputs.new_release_version }}.zip
+          asset_name: gomobile-ipfs-core-${{ steps.semantic.outputs.new_release_version }}.zip
+          asset_content_type: application/zip
+
+      - name: upload bridge pod
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.semantic.outputs.upload_url }}
+          asset_path: ./packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/bridge-${{ steps.semantic.outputs.new_release_version }}.zip
+          asset_name: gomobile-ipfs-bridge-${{ steps.semantic.outputs.new_release_version }}.zip
+          asset_content_type: application/zip
