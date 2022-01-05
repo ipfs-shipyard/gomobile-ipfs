@@ -132,28 +132,28 @@ jobs:
           echo "$IOS_PROFILE" | openssl base64 -A -d \
             > "$IOS_PROFILE_UUID.mobileprovision"
 
-      - name: Setup macOS keychain
-        if: steps.semantic.outputs.new_release_published == 'true'
-        working-directory: /tmp
-        env:
-          IOS_KEYSTORE: ${{ secrets.IOS_KEYSTORE }}
-          IOS_KEYPASS: ${{ secrets.IOS_KEYPASS }}
-          IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
-          KEYCHAIN_PASS: ${{ secrets.KEYCHAIN_PASS }}
-        run: |
-          security create-keychain -p "$KEYCHAIN_PASS" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "$KEYCHAIN_PASS" build.keychain
-          security set-keychain-settings build.keychain
-          echo "$IOS_KEYSTORE" | openssl base64 -A -d > Gomobile-IPFS.p12
-          echo "$IOS_CERTIFICATE" | openssl base64 -A -d > Gomobile-IPFS.cer
-          security import Gomobile-IPFS.p12 \
-            -t priv -f pkcs12 -P "$IOS_KEYPASS" -T /usr/bin/codesign
-          security import Gomobile-IPFS.cer \
-            -t cert -T /usr/bin/codesign
-          security set-key-partition-list \
-            -S apple-tool:,apple:,codesign: \
-            -s -k "$KEYCHAIN_PASS" build.keychain
+      #- name: Setup macOS keychain
+      #  if: steps.semantic.outputs.new_release_published == 'true'
+      #  working-directory: /tmp
+      #  env:
+      #    IOS_KEYSTORE: ${{ secrets.IOS_KEYSTORE }}
+      #    IOS_KEYPASS: ${{ secrets.IOS_KEYPASS }}
+      #    IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
+      #    KEYCHAIN_PASS: ${{ secrets.KEYCHAIN_PASS }}
+      #  run: |
+      #    security create-keychain -p "$KEYCHAIN_PASS" build.keychain
+      #    security default-keychain -s build.keychain
+      #    security unlock-keychain -p "$KEYCHAIN_PASS" build.keychain
+      #    security set-keychain-settings build.keychain
+      #    echo "$IOS_KEYSTORE" | openssl base64 -A -d > Gomobile-IPFS.p12
+      #    echo "$IOS_CERTIFICATE" | openssl base64 -A -d > Gomobile-IPFS.cer
+      #    security import Gomobile-IPFS.p12 \
+      #      -t priv -f pkcs12 -P "$IOS_KEYPASS" -T /usr/bin/codesign
+      #    security import Gomobile-IPFS.cer \
+      #      -t cert -T /usr/bin/codesign
+      #    security set-key-partition-list \
+      #      -S apple-tool:,apple:,codesign: \
+      #      -s -k "$KEYCHAIN_PASS" build.keychain
 
       - name: Publish Android/iOS packages and apps
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -166,4 +166,4 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        run: make publish
+        run: make publish.ios
