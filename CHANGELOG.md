@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.3](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.2...v1.0.3) (2022-01-05)
+
+
+### Bug Fixes
+
+* force publish pods on github ([e10a8c1](https://github.com/n0izn0iz/gomobile-ipfs/commit/e10a8c13117b01fd450727a4cba6c55fc953bf45))
+
 ## [1.0.2](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.1...v1.0.2) (2022-01-05)
 
 
