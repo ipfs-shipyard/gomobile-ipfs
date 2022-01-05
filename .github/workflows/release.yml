@@ -174,4 +174,6 @@ jobs:
           tag_name: v${{ steps.semantic.outputs.new_release_version }}
           files: |
             packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/core-${{ steps.semantic.outputs.new_release_version }}.zip
+            packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core.podspec
             packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/bridge-${{ steps.semantic.outputs.new_release_version }}.zip
+            packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge.podspec
