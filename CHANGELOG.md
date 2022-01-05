@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.8](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.7...v1.0.8) (2022-01-05)
+
+
+### Bug Fixes
+
+* sync version name ([fede84d](https://github.com/n0izn0iz/gomobile-ipfs/commit/fede84d81e6abd16316335af32b2478b6ef22446))
+
 ## [1.0.7](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.6...v1.0.7) (2022-01-05)
 
 
