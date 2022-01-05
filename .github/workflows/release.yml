@@ -155,7 +155,7 @@ jobs:
       #      -S apple-tool:,apple:,codesign: \
       #      -s -k "$KEYCHAIN_PASS" build.keychain
 
-      - name: Publish iOS packages on github
+      - name: Build iOS packages
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
@@ -166,7 +166,7 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        run: make publish_bridge.ios || true
+        run: make build_bridge.ios
 
       - name: Add artifacts
         uses: softprops/action-gh-release@v1

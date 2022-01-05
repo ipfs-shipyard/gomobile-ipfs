@@ -248,6 +248,16 @@ publish_bridge.ios: fail_on_dev build_core.ios
 	$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
 	@echo 'Done!'
 
+build_bridge.ios: fail_on_dev build_core.ios
+	@echo '------------------------------------'
+	@echo '  iOS Bridge: CocoaPod publishing   '
+	@echo '------------------------------------'
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(cat $(UTIL_COCOAPOD_FORMAT_REQ) $(UTIL_COCOAPOD_PUBLISH_REQ) | sort | uniq | wc -l )" ]; then \
+		$(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ) -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
+	fi
+	$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN)
+	@echo 'Done!'
+
 publish_demo: publish_demo.android publish_demo.ios
 
 publish_demo.android: fail_on_dev build_demo.android
