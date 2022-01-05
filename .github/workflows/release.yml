@@ -166,4 +166,4 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION:
             ${{ steps.semantic.outputs.new_release_version }}
-        run: make publish.ios
+        run: make publish_bridge.ios
