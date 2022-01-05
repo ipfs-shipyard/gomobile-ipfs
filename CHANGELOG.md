@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.1.1](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.1.0...v1.1.1) (2022-01-05)
+
+
+### Bug Fixes
+
+* expose serveAPI ([836b8ba](https://github.com/n0izn0iz/gomobile-ipfs/commit/836b8bad798c6c5704de17fb901301228be0ec50))
+
 # [1.1.0](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.9...v1.1.0) (2022-01-05)
 
 
