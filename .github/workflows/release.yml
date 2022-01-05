@@ -170,7 +170,6 @@ jobs:
 
       - name: Add artifacts
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/core-${{ steps.semantic.outputs.new_release_version }}.zip
