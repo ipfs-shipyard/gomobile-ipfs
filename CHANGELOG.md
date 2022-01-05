@@ -1,5 +1,20 @@
 # Global Changelog
 
+# [1.1.0](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.9...v1.1.0) (2022-01-05)
+
+
+### Bug Fixes
+
+* make gateway readonly ([6d1d54e](https://github.com/n0izn0iz/gomobile-ipfs/commit/6d1d54e9b812ea12f50fadaedb68f7b4ea3cf3bc))
+
+
+### Features
+
+*  add serve config to ios/android init ([2734259](https://github.com/n0izn0iz/gomobile-ipfs/commit/27342597c8d949788a5c9ec0d2167b332c7828dd))
+* add gateway tests ([1bc26b7](https://github.com/n0izn0iz/gomobile-ipfs/commit/1bc26b73330be33e9007bb5868bd89f9534251b9))
+* add serve gateway ([f77bab2](https://github.com/n0izn0iz/gomobile-ipfs/commit/f77bab2a8deab31ea91f12a1074e472074aa9bb2))
+* expose serve function ([a1c4651](https://github.com/n0izn0iz/gomobile-ipfs/commit/a1c46511df276d32792c580e097bea4fc7b8354c))
+
 ## [1.0.9](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.8...v1.0.9) (2022-01-05)
 
 
