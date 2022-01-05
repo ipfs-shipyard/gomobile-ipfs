@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.2](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.1...v1.0.2) (2022-01-05)
+
+
+### Bug Fixes
+
+* publish ios bridge ([9f02a39](https://github.com/n0izn0iz/gomobile-ipfs/commit/9f02a39d848daaf73c06b0d38b01a868e484d6a0))
+
 ## [1.0.1](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.0...v1.0.1) (2022-01-05)
 
 
