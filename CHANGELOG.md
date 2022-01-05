@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.5](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.4...v1.0.5) (2022-01-05)
+
+
+### Bug Fixes
+
+* don't try to publish on bintray ([55c0b08](https://github.com/n0izn0iz/gomobile-ipfs/commit/55c0b0807abde57f9ad5519435fe2f0248b12260))
+
 ## [1.0.4](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.3...v1.0.4) (2022-01-05)
 
 
