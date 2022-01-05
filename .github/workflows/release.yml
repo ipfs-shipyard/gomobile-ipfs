@@ -75,11 +75,11 @@ jobs:
           gem update cocoapods cocoapods-trunk
           pod setup
 
-      - name: Generate Android/iOS Bridge docs
-        run: |
-          gem install jazzy
-          rm -rf docs/android docs/ios
-          cd packages && make docgen
+      #- name: Generate Android/iOS Bridge docs
+      #  run: |
+      #    gem install jazzy
+      #    rm -rf docs/android docs/ios
+      #    cd packages && make docgen
 
       - name: Create semantic-release config file
         run: |
