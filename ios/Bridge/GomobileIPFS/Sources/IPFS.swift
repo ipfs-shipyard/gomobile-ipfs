@@ -207,12 +207,24 @@ public class IPFS {
     /// - Parameter onMultiaddr: The multiaddr to serve on
     /// - Parameter writable: If true: will also support support `POST`, `PUT`, and `DELETE` methods.
     /// - Throws: `NodeError`: If the node failed to serve
-    public func serveGateway(onMultiaddr: String, _ writable: Bool = false) throws -> String{
+    public func serveGateway(onMultiaddr: String, _ writable: Bool = false) throws -> String {
         guard let node = self.node else {
             throw IPFSError("unable to serve the gateway, is the node started?")
         }
 
         return try node.serveGateway(onMultiaddr: onMultiaddr, writable: writable)
+    }
+
+    /// Serves node opi over the given TCPPort
+    /// - Parameter onMultiaddr: The multiaddr to serve on
+    /// - Parameter writable: If true: will also support support `POST`, `PUT`, and `DELETE` methods.
+    /// - Throws: `NodeError`: If the node failed to serve
+    public func serve(onTCPPort: String) throws -> String {
+        guard let node = self.node else {
+            throw IPFSError("unable to serve the api, is the node started?")
+        }
+
+        return try node.serve(onTCPPort: onTCPPort)
     }
 
 
