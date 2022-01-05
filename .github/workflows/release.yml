@@ -171,6 +171,7 @@ jobs:
       - name: Add artifacts
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ steps.semantic.outputs.new_release_version }}
           files: |
             packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/core-${{ steps.semantic.outputs.new_release_version }}.zip
             packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/bridge-${{ steps.semantic.outputs.new_release_version }}.zip
