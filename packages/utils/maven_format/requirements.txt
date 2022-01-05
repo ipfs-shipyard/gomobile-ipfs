@@ -1,2 +1,2 @@
-pystache==0.5.4
+pystache==0.6.0
 PyYAML==5.3
