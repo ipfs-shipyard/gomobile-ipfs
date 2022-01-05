@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.0.1](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.0.0...v1.0.1) (2022-01-05)
+
+
+### Bug Fixes
+
+* skip macos keychain setup ([4fb5040](https://github.com/n0izn0iz/gomobile-ipfs/commit/4fb5040fb88c779af940e358b159a68f6c9e31db))
+
 # 1.0.0 (2022-01-05)
 
 
