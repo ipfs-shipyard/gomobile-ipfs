@@ -27,7 +27,7 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 	datastore := defaultDatastoreConfig()
 	conf := &ipfs_config.Config{
 		API: ipfs_config.API{
-			HTTPHeaders: map[string][]string{},
+			HTTPHeaders: map[string][]string{"Access-Control-Allow-Origin": {"http://127.0.0.1:4242", "http://127.0.0.1:5001"}},
 		},
 
 		// setup the node's default addresses.
