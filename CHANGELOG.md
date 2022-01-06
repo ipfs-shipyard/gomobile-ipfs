@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.1.2](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.1.1...v1.1.2) (2022-01-06)
+
+
+### Bug Fixes
+
+* add cors headers ([988e088](https://github.com/n0izn0iz/gomobile-ipfs/commit/988e088e472ae42877a89a14d8d34c8317dd2b0f))
+
 ## [1.1.1](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.1.0...v1.1.1) (2022-01-05)
 
 
