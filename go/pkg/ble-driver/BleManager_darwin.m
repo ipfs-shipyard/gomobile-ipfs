@@ -150,16 +150,13 @@ static inline char itoh(int i) {
 }
 
 - (void)addService {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self.logger d:@"addService: service=%@", [self.serviceUUID UUIDString]];
+    [self.logger d:@"addService: service=%@", [self.serviceUUID UUIDString]];
 
-        [self.bleOn await];
-        if (self.cmEnable && self.pmEnable) {
-            [self.pManager addService:self.bertyService];
-            [self.serviceAdded await];
-        }
-    });
+    [self.bleOn await];
+    if (self.cmEnable && self.pmEnable) {
+        [self.pManager addService:self.bertyService];
+        [self.serviceAdded await];
+    }
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didAddService:(CBService *)service error:(nullable NSError *)error {
@@ -190,6 +187,8 @@ static inline char itoh(int i) {
             }  else {
                 [self.logger e:@"startScanning error: localPID is null"];
             }
+        } else {
+            [self.logger i:@"startScanning: scanner is already enabled"];
         }
     }
 }
