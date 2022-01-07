@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.1.3](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.1.2...v1.1.3) (2022-01-07)
+
+
+### Bug Fixes
+
+* temporary disable ble until it doesn't prevent stoping the node ([3131a37](https://github.com/n0izn0iz/gomobile-ipfs/commit/3131a37a7074e2d060dfc062a604f0d3c6d3962d))
+
 ## [1.1.2](https://github.com/n0izn0iz/gomobile-ipfs/compare/v1.1.1...v1.1.2) (2022-01-06)
 
 
