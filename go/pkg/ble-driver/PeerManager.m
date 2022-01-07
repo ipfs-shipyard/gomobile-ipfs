@@ -24,7 +24,7 @@
 
 - (void)dealloc {
     [_connectedPeers release];
-    [_logger release];
+    _logger = nil;
     
     [super dealloc];
 }

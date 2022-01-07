@@ -27,7 +27,7 @@
     [_tasks removeAllObjects];
     [_tasks release];
     [_queue release];
-    [_logger release];
+    _logger = nil;
 
     [super dealloc];
 }

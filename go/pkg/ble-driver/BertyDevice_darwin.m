@@ -90,7 +90,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
 }
 
 - (void)dealloc {
-    [_logger release];
+    _logger = nil;
     [_clientSideIdentifier release];
     [_serverSideIdentifier release];
     [_peripheral release];
