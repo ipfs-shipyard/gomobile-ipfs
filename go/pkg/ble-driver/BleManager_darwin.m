@@ -152,7 +152,9 @@ static inline char itoh(int i) {
 - (void)addService {
     [self.logger d:@"addService: service=%@", [self.serviceUUID UUIDString]];
 
-    [self.bleOn await];
+    [self.bleOn await:5 withCancelBlock:^{
+        [self.logger e:@"addService error: timeout"];
+    }];
     if (self.cmEnable && self.pmEnable) {
         [self.pManager addService:self.bertyService];
         [self.serviceAdded await];
