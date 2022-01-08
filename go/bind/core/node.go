@@ -16,12 +16,17 @@ import (
 	"net"
 	"sync"
 
+	ble "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
+	proximity "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/proximitytransport"
+	"go.uber.org/zap"
 
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
+	"github.com/libp2p/go-libp2p"
+	p2p "github.com/libp2p/go-libp2p"
 	// ipfs_log "github.com/ipfs/go-log"
 )
 
@@ -39,31 +44,27 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 		return nil, err
 	}
 
-	hostConfig := &ipfs_mobile.HostConfig{}
+	var bleOpt libp2p.Option
 
-	/*
-		var bleOpt libp2p.Option
-		switch {
-		// Java embedded driver (android)
-		case driver != nil:
-			logger := zap.NewExample()
-			defer logger.Sync()
-			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
-		// Go embedded driver (ios)
-		case ble.Supported:
-			logger := zap.NewExample()
-			defer logger.Sync()
-			bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
-		default:
-			log.Printf("cannot enable BLE on an unsupported platform")
-		}
-		if bleOpt != nil {
-			hostConfig.Options = append(hostConfig.Options, bleOpt)
-		}
-	*/
+	switch {
+	// Java embedded driver (android)
+	case driver != nil:
+		logger := zap.NewExample()
+		defer logger.Sync()
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
+	// Go embedded driver (ios)
+	case ble.Supported:
+		logger := zap.NewExample()
+		defer logger.Sync()
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
+	default:
+		log.Printf("cannot enable BLE on an unsupported platform")
+	}
 
 	ipfscfg := &ipfs_mobile.IpfsConfig{
-		HostConfig: hostConfig,
+		HostConfig: &ipfs_mobile.HostConfig{
+			Options: []p2p.Option{bleOpt},
+		},
 		RepoMobile: r.mr,
 		ExtraOpts: map[string]bool{
 			"pubsub": true, // enable experimental pubsub feature by default
