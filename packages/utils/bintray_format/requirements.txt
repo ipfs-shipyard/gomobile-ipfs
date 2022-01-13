@@ -1,2 +1,0 @@
-pystache==0.6.0
-PyYAML==5.3
