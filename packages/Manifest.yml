@@ -32,16 +32,12 @@ global:
       email: guilhem.fanton@gmail.com
       <<: *berty
 
-  bintray_orga: berty
-
   group_id: ipfs.gomobile
 
   android:
     compile_sdk_version: &compile_sdk_version 29
     min_sdk_version: 24
     target_sdk_version: *compile_sdk_version
-
-    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-android
     repo: gomobile-ipfs-android
     packaging: aar
 
@@ -53,13 +49,11 @@ global:
 
   ios:
     platform: :ios, '10.0'
-
-    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-ios
     repo: gomobile-ipfs-ios
+    package_url: https://github.com/{repo}/releases/download/{version}/{name}-{version}.pod.zip
 
   demo_app:
     application_id: example
-    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-demo
     repo: gomobile-ipfs-demo
 
 go_core:

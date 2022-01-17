@@ -17,7 +17,7 @@ jobs:
       - name: Lint EditorConfig
         uses: snow-actions/eclint@v1.0.1
         with:
-          args: 'check'
+          args: "check"
 
   lint_markdown:
     name: Lint Markdown
@@ -73,7 +73,6 @@ jobs:
       - name: Checkout changes
         uses: actions/checkout@v2
 
-      FIXME - used a patched go until #42655 is fixed
       - name: Install Go
         uses: actions/setup-go@v1
         with:
@@ -113,8 +112,7 @@ jobs:
           echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
       - name: Install Android SDK
-        run:
-          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+        run: SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
           BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
           BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
           PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
@@ -159,8 +157,7 @@ jobs:
 
       - name: Install GolangCI-Lint
         working-directory: go
-        run:
-          curl -sSfL
+        run: curl -sSfL
           https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
           | sh -s v1.23.7
 

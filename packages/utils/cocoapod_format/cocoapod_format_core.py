@@ -18,10 +18,11 @@ try:
     description = manifest["go_core"]["ios"]["summary"]
     website = manifest["global"]["github"]["url"]
     platform = manifest["global"]["ios"]["platform"]
-    bintray_url = manifest["global"]["ios"]["bintray_url"]
-    bintray_package = manifest["go_core"]["ios"]["package"]
+    ios_package = manifest["go_core"]["ios"]["package"]
     licenses = manifest["global"]["licenses"]
     developers = manifest["global"]["developers"]
+    ios_package_url = manifest["global"]["ios"]["package_url"]
+    repo = manifest["global"]["github"]["repo"]
 
     # Get version from env (CI) or set to dev
     if "GOMOBILE_IPFS_VERSION" in os.environ:
@@ -45,12 +46,10 @@ try:
             "license": {"type": '', "text": ''},
             "authors": [],
             "platform": platform,
-            "source": "%s/%s/%s/%s-%s.zip" % (
-                bintray_url,
-                bintray_package,
-                global_version,
-                bintray_package,
-                global_version,
+            "source": ios_package_url.format(
+                name=core_name,
+                version="v"+global_version,
+                repo=repo
             ),
             "framework": "Core.xcframework",
         }
@@ -97,7 +96,8 @@ try:
         )
         ios_build_dir_int = os.path.join(ios_build_dir, "intermediates/core")
         ios_build_dir_ccp = os.path.join(ios_build_dir, "cocoapods")
-        zip_file = "%s-%s.zip" % (bintray_package, global_version)
+        zip_filename = "%s-v%s.pod" % (core_name, global_version)
+        zip_file = "%s.zip" % zip_filename
 
         if os.system("cd %s && zip -ry %s ." %
                      (ios_build_dir_int, os.path.join(temp_dir, zip_file))):
@@ -106,7 +106,7 @@ try:
         # Create dest directory
         dest_dir = os.path.join(
             ios_build_dir_ccp,
-            bintray_package,
+            ios_package,
             global_version,
         )
         print("Creating destination directory: %s" % dest_dir)

@@ -20,11 +20,9 @@ UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_bri
 UTIL_COCOAPOD_PUBLISH_CORE_BIN = $(UTIL_COCOAPOD_PUBLISH)/cocoapod_publish_core.py
 UTIL_BINTRAY_FORMAT = $(UTILS_DIR)/bintray_format
 UTIL_BINTRAY_FORMAT_REQ = $(UTIL_BINTRAY_FORMAT)/requirements.txt
-UTIL_BINTRAY_FORMAT_IOS_BIN = $(UTIL_BINTRAY_FORMAT)/bintray_format_ios.py
 UTIL_BINTRAY_PUBLISH = $(UTILS_DIR)/bintray_publish
 UTIL_BINTRAY_PUBLISH_REQ = $(UTIL_BINTRAY_PUBLISH)/requirements.txt
 UTIL_BINTRAY_PUBLISH_ANDROID_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_android.py
-UTIL_BINTRAY_PUBLISH_IOS_BIN = $(UTIL_BINTRAY_PUBLISH)/bintray_publish_ios.py
 BUILD_DIR = $(MAKEFILE_DIR)/build
 PIP ?= pip3
 
@@ -171,7 +169,7 @@ $(IOS_BUILD_DIR_APP_IPA): $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT) $(MANIFEST)
 	if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_FORMAT_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_FORMAT_REQ))" ]; then \
 		$(PIP) install -r $(UTIL_BINTRAY_FORMAT_REQ); echo; \
 	fi
-	@$(UTIL_BINTRAY_FORMAT_IOS_BIN)
+	#TODO
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_APP_IPA_OUTPUT): $(IOS_BUILD_DIR_INT_APP_IPA) $(IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT)
@@ -206,6 +204,8 @@ $(IOS_BUILD_DIR_INT_APP_ARCHIVE):
 
 # Publish rules
 publish: publish_core publish_bridge publish_demo
+
+publish.ios: publish_core.ios publish_bridge.ios
 
 publish_core: publish_core.android publish_core.ios
 
@@ -248,6 +248,16 @@ publish_bridge.ios: fail_on_dev build_core.ios
 	$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN) && $(UTIL_COCOAPOD_PUBLISH_BRIDGE_BIN)
 	@echo 'Done!'
 
+build_bridge.ios: fail_on_dev build_core.ios
+	@echo '------------------------------------'
+	@echo '  iOS Bridge: CocoaPod publishing   '
+	@echo '------------------------------------'
+	if [ "$$($(PIP) freeze | grep -f $(UTIL_COCOAPOD_FORMAT_REQ) -f $(UTIL_COCOAPOD_PUBLISH_REQ) | wc -l)" != "$$(cat $(UTIL_COCOAPOD_FORMAT_REQ) $(UTIL_COCOAPOD_PUBLISH_REQ) | sort | uniq | wc -l )" ]; then \
+		$(PIP) install -r $(UTIL_COCOAPOD_FORMAT_REQ) -r $(UTIL_COCOAPOD_PUBLISH_REQ); echo; \
+	fi
+	$(UTIL_COCOAPOD_FORMAT_BRIDGE_BIN)
+	@echo 'Done!'
+
 publish_demo: publish_demo.android publish_demo.ios
 
 publish_demo.android: fail_on_dev build_demo.android
@@ -267,7 +277,7 @@ publish_demo.ios: fail_on_dev build_demo.ios
 	@if [ "$$($(PIP) freeze | grep -f $(UTIL_BINTRAY_PUBLISH_REQ) | wc -l)" != "$$(wc -l < $(UTIL_BINTRAY_PUBLISH_REQ))" ]; then \
 		echo 'Installing pip dependencies:'; $(PIP) install -r $(UTIL_BINTRAY_PUBLISH_REQ); echo; \
 	fi
-	$(UTIL_BINTRAY_PUBLISH_IOS_BIN)
+	#TODO
 	@echo 'Done!'
 
 # Doc generation rules

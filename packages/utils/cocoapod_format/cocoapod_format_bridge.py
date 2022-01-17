@@ -18,13 +18,14 @@ try:
     description = manifest["ios_bridge"]["summary"]
     website = manifest["global"]["github"]["url"]
     platform = manifest["global"]["ios"]["platform"]
-    bintray_url = manifest["global"]["ios"]["bintray_url"]
-    bintray_package = manifest["ios_bridge"]["package"]
+    ios_package = manifest["ios_bridge"]["package"]
     core_name = manifest["go_core"]["ios"]["name"]
     swift_version = manifest["ios_bridge"]["swift_version"]
     header_dir = manifest["ios_bridge"]["import_name"]
     licenses = manifest["global"]["licenses"]
     developers = manifest["global"]["developers"]
+    ios_package_url = manifest["global"]["ios"]["package_url"]
+    repo = manifest["global"]["github"]["repo"]
 
     # Get version from env (CI) or set to dev
     if "GOMOBILE_IPFS_VERSION" in os.environ:
@@ -48,12 +49,10 @@ try:
             "license": {"type": '', "text": ''},
             "authors": [],
             "platform": platform,
-            "source": "%s/%s/%s/%s-%s.zip" % (
-                bintray_url,
-                bintray_package,
-                global_version,
-                bintray_package,
-                global_version,
+            "source": ios_package_url.format(
+                name=bridge_name,
+                version="v"+global_version,
+                repo=repo
             ),
             "static_framework": True,
             "dependency": "'%s', '~> %s'" % (core_name, global_version),
@@ -107,7 +106,7 @@ try:
             "../../../ios/Bridge/GomobileIPFS/Sources",
         )
 
-        zip_filename = "%s-%s" % (bintray_package, global_version)
+        zip_filename = "%s-v%s.pod" % (bridge_name, global_version)
         zip_file = "%s.zip" % zip_filename
 
         shutil.make_archive(
@@ -119,7 +118,7 @@ try:
         # Create dest directory
         dest_dir = os.path.join(
             ios_build_dir_ccp,
-            bintray_package,
+            ios_package,
             global_version,
         )
         print("Creating destination directory: %s" % dest_dir)
