@@ -1,5 +1,34 @@
 # Global Changelog
 
+# [1.3.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.2.1...v1.3.0) (2022-01-18)
+
+
+### Bug Fixes
+
+* add a timeout in a BLE semaphore ([4c20e2f](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4c20e2f19e15298464e387ba5fc9798a85cda94a))
+* Android DNS hack for go 1.17 ([840b642](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/840b6422f6bc5cccce48e591a00b0ef02c2c7160))
+* appcompat deps ([760729f](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/760729f35fd882507b0b8b8652efe3ac51624648))
+* crash on BLE stop on iOS ([22253f4](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/22253f46bfcc074acf7f32437ba7494b02c5d1f7))
+* disable `GradleDependency` ([1b4f093](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1b4f093581b11ac9c8f6f54ea3738ef654e8ea24))
+* fix golang ci ([76bbd7b](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/76bbd7b1fd43d9a4bb77806350c0243b0f881020))
+* go cache ([5645437](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/5645437b9b93620fe39cfc242ecf3ee18ae67c2c))
+* **release:** disable docgen until fixed ([0edb74e](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/0edb74e1aef4efcf7d3fdfe6d8169e0e3d3169ac))
+* **release:** upgrade pystache to prevent use_2to3 conflict with setuptools>=58 ([4bbacae](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4bbacae5e7b88009990e9ced567fe7a118fbcbb9))
+* use active arch only ([4290f69](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4290f69d3cba1b724d37a8369a347500de85fd1d))
+* yml lint ([e60be6b](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/e60be6b5015dc6b1e79d8a4d52b653d7955141c2))
+
+
+### Features
+
+* add logger (android) ([c66daa7](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/c66daa7be51670ff8780b8afff8503d1fd78ec00))
+* add sharing image to the Android demo app ([1214be0](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1214be02e2056c1b43337e09ca1ac097885d428a))
+* add the proximity transport + Android BLE driver + iOS BLE driver ([67de3b9](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/67de3b91feaa51c429acc78c1a20549fb9e9aa8e))
+* change core to accept a proximity transport for the node startup ([692ec85](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/692ec85a66858dfa2d6e52971c5fb5d7f02082b0))
+* **ios:** add logger + refacto logs ([b091582](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/b091582bb301c19d8211c9366ba40767dc0bf907))
+* **release:** cocoapod github distribution ([4e635c0](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4e635c0824a6e66d0ec31d8637a4fc6e6a96a4fb))
+* rework ipfs config ([cf0b300](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/cf0b300e89079738946e0636cae2bfe84d4d59fc))
+* update gomobile to support xcframework ([a4caef8](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/a4caef8ae320ce19b120c7658449a28479682106))
+
 ## [1.2.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.2.0...v1.2.1) (2020-09-13)
 
 
