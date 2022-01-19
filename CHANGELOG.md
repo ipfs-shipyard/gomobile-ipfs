@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.3.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.0...v1.3.1) (2022-01-19)
+
+
+### Bug Fixes
+
+* makefile rule header ([8afb35f](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/8afb35f0f693f151033f28093cb788af6d467c86))
+
 # [1.3.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.2.1...v1.3.0) (2022-01-18)
 
 
