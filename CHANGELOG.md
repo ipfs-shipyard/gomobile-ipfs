@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.3.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.1...v1.3.2) (2022-01-19)
+
+
+### Bug Fixes
+
+* release commit ([29b2572](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/29b2572e80e32294c1bd04275a559fdb388c45d0))
+
 ## [1.3.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.0...v1.3.1) (2022-01-19)
 
 
