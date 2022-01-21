@@ -1,5 +1,12 @@
 # Global Changelog
 
+# [1.4.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.2...v1.4.0) (2022-01-21)
+
+
+### Features
+
+* bump to libp2p 0.17.0 ([798aa57](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/798aa57f6ff9ece28d2e5652eb2b45c13bba933c))
+
 ## [1.3.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.1...v1.3.2) (2022-01-19)
 
 
