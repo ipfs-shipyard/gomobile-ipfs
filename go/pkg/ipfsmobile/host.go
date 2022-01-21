@@ -1,7 +1,6 @@
 package node
 
 import (
-	"context"
 	"fmt"
 
 	p2p "github.com/libp2p/go-libp2p"
@@ -46,13 +45,13 @@ type HostMobile struct {
 }
 
 func NewHostConfigOption(hopt ipfs_p2p.HostOption, cfg *HostConfig) ipfs_p2p.HostOption {
-	return func(ctx context.Context, id p2p_peer.ID, ps p2p_pstore.Peerstore, options ...p2p.Option) (p2p_host.Host, error) {
+	return func(id p2p_peer.ID, ps p2p_pstore.Peerstore, options ...p2p.Option) (p2p_host.Host, error) {
 		// add p2p custom options
 		if cfg.Options != nil {
 			options = append(options, cfg.Options...)
 		}
 
-		host, err := hopt(ctx, id, ps, options...)
+		host, err := hopt(id, ps, options...)
 		if err != nil {
 			return nil, err
 		}
