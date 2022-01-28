@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.4.4](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.3...v1.4.4) (2022-01-28)
+
+
+### Bug Fixes
+
+* **pods:** exclude arm64 simulator until supported ([cfd623c](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/cfd623ca6d282e07758405ac951610142ebc52f9))
+
 ## [1.4.3](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.2...v1.4.3) (2022-01-28)
 
 
