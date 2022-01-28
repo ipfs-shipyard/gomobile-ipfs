@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.4.3](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.2...v1.4.3) (2022-01-28)
+
+
+### Bug Fixes
+
+* retry bridge publish ([ce62a8a](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/ce62a8a1dbcf56c996dcb4d5e2673b6be6a46a20))
+
 ## [1.4.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.1...v1.4.2) (2022-01-28)
 
 
