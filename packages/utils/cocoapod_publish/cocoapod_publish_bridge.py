@@ -3,6 +3,7 @@ import yaml
 import os
 import sys
 import subprocess
+import time
 
 try:
     # Import Manifest.yml
@@ -77,9 +78,18 @@ try:
             version_path = "%s/%s" % (ios_package, global_version)
             artifacts_local_dir = os.path.join(ios_build_dir_ccp, version_path)
 
-            if os.system("pod trunk push %s %s" % (
-                    os.path.join(artifacts_local_dir, podspec_file),
-                    "--skip-import-validation --synchronous")):
+            success = False
+            for n in range(10):
+                if os.system("pod trunk push %s %s" % (
+                        os.path.join(artifacts_local_dir, podspec_file),
+                        "--skip-import-validation --synchronous")) == 0:
+                    success = True
+                    break
+                print(
+                    "Warning: failed to publish bridge, waiting 2 minutes for CocoaPods repo sync and retrying...")
+                time.sleep(120)
+
+            if not success:
                 raise Exception("pod trunk push failed")
 
     print("Cocoapod publication succeeded!")
