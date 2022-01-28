@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.4.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.1...v1.4.2) (2022-01-28)
+
+
+### Bug Fixes
+
+* Revert "chore: allow to re-trigger release" ([59a6e50](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/59a6e5020a5f693f8022024440896d4e15bc349e))
+
 ## [1.4.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.0...v1.4.1) (2022-01-28)
 
 
