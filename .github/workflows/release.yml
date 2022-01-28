@@ -120,6 +120,7 @@ jobs:
       #  run: echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
 
       - name: Setup iOS provisioning profile
+        if: steps.semantic.outputs.new_release_published == 'true'
         env:
           IOS_PROFILE: ${{ secrets.IOS_PROFILE }}
           IOS_PROFILE_UUID: ${{ secrets.IOS_PROFILE_UUID }}
@@ -130,6 +131,7 @@ jobs:
             > "$IOS_PROFILE_UUID.mobileprovision"
 
       - name: Setup macOS keychain
+        if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: /tmp
         env:
           IOS_KEYSTORE: ${{ secrets.IOS_KEYSTORE }}
@@ -152,6 +154,7 @@ jobs:
             -s -k "$KEYCHAIN_PASS" build.keychain
 
       - name: Build iOS artifacts
+        if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
           GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}
@@ -168,6 +171,7 @@ jobs:
             packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge.podspec
 
       - name: Publish iOS packages
+        if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
           #ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
