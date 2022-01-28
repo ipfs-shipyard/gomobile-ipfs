@@ -23,4 +23,7 @@ Pod::Spec.new do |spec|
   {{#header_dir}}spec.header_dir          = '{{header_dir}}'{{/header_dir}}
   {{#framework}}spec.vendored_frameworks = '{{framework}}'{{/framework}}
   {{#dependency}}spec.dependency            {{{dependency}}}{{/dependency}}
+
+  spec.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  spec.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 end
