@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.4.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.0...v1.4.1) (2022-01-28)
+
+
+### Bug Fixes
+
+* apply recommended go.mod changes ([be7b032](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/be7b032a130bfb8c52825a60cab15660cbf0a051))
+
 # [1.4.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.3.2...v1.4.0) (2022-01-21)
 
 
