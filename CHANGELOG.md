@@ -1,5 +1,22 @@
 # Global Changelog
 
+# [1.5.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.4...v1.5.0) (2022-01-29)
+
+
+### Bug Fixes
+
+* add cors headers ([2a5737f](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/2a5737f707bf7d75db36f07eb37469a5b76ca971))
+* expose serveAPI ([9647494](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/9647494f1f5e604dfebd420c5226ff4d90848a0a))
+* make gateway readonly ([013bc9d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/013bc9d7960afdcdc3744fcd5eb7f85e9e84af41))
+
+
+### Features
+
+*  add serve config to ios/android init ([f25fd1e](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/f25fd1eeeeaa3b382e49057375cad33e3bc49d1e))
+* add gateway tests ([4a9f733](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4a9f7333ec6dcf3ec78f79f64dc383532dd6d24e))
+* add serve gateway ([a0cfba9](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/a0cfba952b51f8fdddbc9575b0ecc9360936d635))
+* expose serve function ([49bc7ca](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/49bc7cae81ec256ee21b3cc1bc561ede6bec8676))
+
 ## [1.4.4](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.3...v1.4.4) (2022-01-28)
 
 
