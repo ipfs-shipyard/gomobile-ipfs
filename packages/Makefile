@@ -131,7 +131,7 @@ $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios,iossimulator$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
