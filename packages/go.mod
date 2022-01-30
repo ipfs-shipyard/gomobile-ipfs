@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0
-	golang.org/x/mobile v0.0.0
+	golang.org/x/mobile v0.0.0-20220112015953-858099ff7816
 )
 
 require (
@@ -238,7 +238,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	lukechampine.com/blake3 v1.1.6 // indirect
 )
-
-replace golang.org/x/mobile => github.com/aeddi/mobile v0.0.3-silicon
 
 replace github.com/ipfs-shipyard/gomobile-ipfs/go => ../go
