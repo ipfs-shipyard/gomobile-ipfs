@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.5.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.5.0...v1.5.1) (2022-01-30)
+
+
+### Bug Fixes
+
+* use upstream gomobile and target simulator ([5c3929a](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/5c3929a7c550df37a69ffdf1e4d7f7a303cd0f36))
+
 # [1.5.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.4.4...v1.5.0) (2022-01-29)
 
 
