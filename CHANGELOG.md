@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.5.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.5.1...v1.5.2) (2022-02-01)
+
+
+### Bug Fixes
+
+* build all apple archs supported by upstream gomobile ([048c1e8](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/048c1e8721f64f968ff04b14b76d654bceb4499d))
+
 ## [1.5.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.5.0...v1.5.1) (2022-01-30)
 
 
