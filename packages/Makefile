@@ -127,11 +127,15 @@ $(IOS_BUILD_DIR_CCP_CORE): $(IOS_CORE) $(MANIFEST_FILE)
 	$(UTIL_COCOAPOD_FORMAT_CORE_BIN) && touch $(IOS_BUILD_DIR_CCP_CORE)
 	@echo 'Done!'
 
+# From https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile#hdr-Build_a_library_for_Android_and_iOS
+# To generate a fat XCFramework that supports iOS, macOS, and macCatalyst for all supportec architectures (amd64 and arm64),
+# specify -target ios,macos,maccatalyst
+
 $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios,iossimulator$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios,macos,maccatalyst$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
