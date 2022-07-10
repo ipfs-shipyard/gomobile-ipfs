@@ -40,6 +40,7 @@ global:
     target_sdk_version: *compile_sdk_version
     repo: gomobile-ipfs-android
     packaging: aar
+    bintray_url: https://repo1.maven.org/maven2/
 
     scm:
       connection: scm:git:git://github.com/ipfs-shipyard/gomobile-ipfs.git
