@@ -67,7 +67,7 @@ public class requestIPFSTests {
     public void testCatFile() throws Exception {
         byte[] latestRaw = ipfs.newRequest("cat")
                 .withArgument("/ipns/xkcd.hacdias.com/latest/info.json")
-                .send();
+                .sendToBytes();
 
         try {
             new JSONObject(new String(latestRaw));

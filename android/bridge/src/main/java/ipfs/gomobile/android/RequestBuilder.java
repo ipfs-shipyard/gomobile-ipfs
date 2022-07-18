@@ -100,10 +100,10 @@ public class RequestBuilder {
     */
     public File sendToFile(@NonNull File output)
         throws RequestBuilderException, SecurityException, IOException {
-        Objects.requireNonNull(argument, "output should not be null");
+        Objects.requireNonNull(output, "output should not be null");
 
         if (!output.exists() && !output.createNewFile()) {
-            throw new RequestBuilderException("Can't create file");
+            throw new RequestBuilderException("Can't create file", new IOException("Can't create file"));
         }
 
         InputStream input = send();

@@ -2,9 +2,7 @@ package ipfs.gomobile.android;
 
 import java.io.InputStream;
 
-import ipfs.Reader;
-
-final class InputStreamToGo implements Reader {
+final class InputStreamToGo implements core.Reader {
     private final InputStream inputStream;
 
     InputStreamToGo(InputStream inputStream) {

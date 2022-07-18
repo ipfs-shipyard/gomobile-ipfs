@@ -5,13 +5,11 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ipfs.ReadCloser;
-
 final class InputStreamFromGo extends InputStream {
-    private final ReadCloser readCloser;
+    private final core.ReadCloser readCloser;
     private boolean closed;
 
-    InputStreamFromGo(ReadCloser readCloser) {
+    InputStreamFromGo(@NonNull core.ReadCloser readCloser) {
         this.readCloser = readCloser;
     }
 
