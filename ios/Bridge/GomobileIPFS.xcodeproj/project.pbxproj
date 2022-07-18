@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AB96057288589CB00AC7579 /* InputStreamFromGo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB96055288589CB00AC7579 /* InputStreamFromGo.swift */; };
+		1AB96058288589CB00AC7579 /* InputStreamToGo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB96056288589CB00AC7579 /* InputStreamToGo.swift */; };
 		8AF76E4826EF532E007DF24A /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */; };
 		8AF76E4926EF532E007DF24A /* CoreBluetooth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8D1B639D24487FC900CE188F /* ConfigIPFSTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */; };
@@ -51,6 +53,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1AB96055288589CB00AC7579 /* InputStreamFromGo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputStreamFromGo.swift; sourceTree = "<group>"; };
+		1AB96056288589CB00AC7579 /* InputStreamToGo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputStreamToGo.swift; sourceTree = "<group>"; };
 		8AF76E4626EA36F9007DF24A /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		8D1B639C24487FC900CE188F /* ConfigIPFSTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigIPFSTest.swift; sourceTree = "<group>"; };
 		8D2C38A324470D470005C2DD /* RequestIPFSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestIPFSTests.swift; sourceTree = "<group>"; };
@@ -134,6 +138,8 @@
 		8DE4ECE72402BFE500B70884 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1AB96055288589CB00AC7579 /* InputStreamFromGo.swift */,
+				1AB96056288589CB00AC7579 /* InputStreamToGo.swift */,
 				8DE4ECF92402C0ED00B70884 /* Config.swift */,
 				8DE4ECFA2402C0ED00B70884 /* Error.swift */,
 				8DE4ECFB2402C0ED00B70884 /* IPFS.swift */,
@@ -265,7 +271,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AB96057288589CB00AC7579 /* InputStreamFromGo.swift in Sources */,
 				8DE4ED032402C0ED00B70884 /* Repo.swift in Sources */,
+				1AB96058288589CB00AC7579 /* InputStreamToGo.swift in Sources */,
 				8DE4ECFF2402C0ED00B70884 /* SockManager.swift in Sources */,
 				8DE4ED022402C0ED00B70884 /* IPFS.swift in Sources */,
 				8DE4ED002402C0ED00B70884 /* Config.swift in Sources */,

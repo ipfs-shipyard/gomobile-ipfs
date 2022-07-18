@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Ipfs
+import Core
 
-public class InputStreamToGo: NSObject, IpfsReaderProtocol {
+public class InputStreamToGo: NSObject, CoreReaderProtocol {
     private var inputStream: InputStream
 
     init(_ inputStream: InputStream) {
@@ -19,8 +19,8 @@ public class InputStreamToGo: NSObject, IpfsReaderProtocol {
     public func read(_ p0: Data?, n: UnsafeMutablePointer<Int>?) throws {
         var read: Int
 
-        var bytes = UnsafeMutablePointer<UInt8>((p0 as! NSData).bytes)
-        read = self.inputStream.read(p0, maxLength: p0?.count)
+        let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer((p0! as NSData).bytes))
+        read = self.inputStream.read(bytes, maxLength: p0!.count)
         n?.initialize(to: read)
 
         if read == 0 && self.inputStream.streamStatus == .atEnd {

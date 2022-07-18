@@ -58,7 +58,7 @@ class RequestIPFSTests: XCTestCase {
     func testCatFile() throws {
         let latestRaw = try ipfs.newRequest("cat")
             .with(argument: "/ipns/xkcd.hacdias.com/latest/info.json")
-            .send()
+            .sendToBytes()
 
         do {
             try JSONSerialization.jsonObject(with: latestRaw, options: [])

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Ipfs
+import Core
 
 public class InputStreamFromGoError: IPFSError  {
     private static var code: Int = 6
@@ -25,9 +25,9 @@ public class InputStreamFromGo: InputStream {
     private var _streamStatus: Stream.Status
     private var _streamError: Error?
     private var _delegate: StreamDelegate?
-    private var readCloser: IpfsReadCloser
+    private var readCloser: CoreReadCloser
 
-    init(_ readCloser: IpfsReadCloser) {
+    init(_ readCloser: CoreReadCloser) {
         self._streamStatus = .notOpen
         self._streamError = nil
         self.readCloser = readCloser
