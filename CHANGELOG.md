@@ -1,5 +1,12 @@
 # Global Changelog
 
+# [1.7.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.6.0...v1.7.0) (2022-07-19)
+
+
+### Features
+
+* Add bug, question and feature request forms. ([41c021b](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/41c021b5df3a81f471eba2f7a28d8e6873327661))
+
 # [1.6.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.5.2...v1.6.0) (2022-07-18)
 
 
