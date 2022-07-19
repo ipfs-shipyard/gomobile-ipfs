@@ -1,0 +1,71 @@
+name: "Bug report"
+description: Report a bug found while using gomobile-ipfs.
+labels: ["bug", "🔍 Ready for Review"]
+assignees:
+- peletron
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      description: What OS are you seeing the problem on?
+      options:
+        - iOS
+        - Android
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OS version
+      description: What is the version of the OS you are using?
+      placeholder: e.g. iOS 15.4 or Android 11.0 or Ubuntu 20.04.4
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: What device are you using?
+      placeholder: e.g. iPhone 12 Pro Max or a Synology NAS
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+       1. Set up this environment ...
+       2. Add this code ...
+       3. Call this function ...
+    validations:
+      required: true
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+      description: A description including code snippets, stack traces, debug logs, etc.
+      placeholder: Currently ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Please provide what would be your expectation to happen.
+      placeholder: In this situation, gomobile-ipfs should ...
+  - type: textarea
+    id: other
+    attributes:
+      label: Other
+      placeholder: Any other details?
