@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
-	ipfs_config "github.com/ipfs/go-ipfs-config"
+	ipfs_config "github.com/ipfs/kubo/config"
 	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 )
@@ -25,6 +25,8 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 	}
 
 	datastore := defaultDatastoreConfig()
+	MDNSInterval := &ipfs_config.OptionalInteger{}
+	MDNSInterval.UnmarshalJSON([]byte("10"))
 	conf := &ipfs_config.Config{
 		API: ipfs_config.API{
 			HTTPHeaders: map[string][]string{"Access-Control-Allow-Origin": {"http://127.0.0.1:4242", "http://127.0.0.1:5001"}},
@@ -40,12 +42,12 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 		Discovery: ipfs_config.Discovery{
 			MDNS: ipfs_config.MDNS{
 				Enabled:  true,
-				Interval: 10,
+				Interval: MDNSInterval,
 			},
 		},
 
 		Routing: ipfs_config.Routing{
-			Type: "dhtclient",
+			Type: ipfs_config.NewOptionalString("dhtclient"),
 		},
 
 		// setup the node mount points.

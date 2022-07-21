@@ -24,7 +24,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
-	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
+	ipfs_bs "github.com/ipfs/kubo/core/bootstrap"
 	"github.com/libp2p/go-libp2p"
 	p2p "github.com/libp2p/go-libp2p"
 	// ipfs_log "github.com/ipfs/go-log"

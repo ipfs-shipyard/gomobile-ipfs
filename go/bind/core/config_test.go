@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	ipfs_config "github.com/ipfs/go-ipfs-config"
+	ipfs_config "github.com/ipfs/kubo/config"
 )
 
 const sampleFakeConfig = `

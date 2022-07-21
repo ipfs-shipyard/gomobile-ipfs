@@ -6,10 +6,10 @@ import (
 	"sync"
 
 	host "github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	pstore "github.com/libp2p/go-libp2p-core/peerstore"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
-	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	ma "github.com/multiformats/go-multiaddr"
 	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	"github.com/pkg/errors"
@@ -46,7 +46,8 @@ type ProximityTransport interface {
 
 type proximityTransport struct {
 	host     host.Host
-	upgrader *tptu.Upgrader
+	upgrader tpt.Upgrader
+	rcmgr    network.ResourceManager
 
 	connMap  sync.Map
 	cache    *RingBufferMap
@@ -57,7 +58,7 @@ type proximityTransport struct {
 	ctx      context.Context
 }
 
-func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
+func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) func(h host.Host, u tpt.Upgrader, rcmgr network.ResourceManager) (*proximityTransport, error) {
 	if l == nil {
 		l = zap.NewNop()
 	}
@@ -69,11 +70,12 @@ func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) fu
 		driver = &NoopProximityDriver{}
 	}
 
-	return func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
+	return func(h host.Host, u tpt.Upgrader, rcmgr network.ResourceManager) (*proximityTransport, error) {
 		l.Debug("NewTransport called", zap.String("driver", driver.ProtocolName()))
 		transport := &proximityTransport{
 			host:     h,
 			upgrader: u,
+			rcmgr:    rcmgr,
 			cache:    NewRingBufferMap(l, 128),
 			driver:   driver,
 			logger:   l,
