@@ -2,7 +2,7 @@ name: "Bug report"
 description: Report a bug found while using gomobile-ipfs.
 labels: ["bug", "🔍 Ready for Review"]
 assignees:
-- peletron
+- jefft0
 body:
   - type: checkboxes
     attributes:
@@ -11,39 +11,27 @@ body:
       options:
       - label: I have searched the existing issues
         required: true
-  - type: dropdown
-    id: os
+  - type: input
+    id: package-version
     attributes:
-      label: OS
-      description: What OS are you seeing the problem on?
-      options:
-        - iOS
-        - Android
-        - Linux
-        - macOS
-        - Windows
-        - Other
+      label: Package version
+      description: What version of gomobile-ipfs are you using?
+      placeholder: v1.7.0
     validations:
       required: true
   - type: input
-    id: version
+    id: language-version
     attributes:
-      label: OS version
-      description: What is the version of the OS you are using?
-      placeholder: e.g. iOS 15.4 or Android 11.0 or Ubuntu 20.04.4
+      label: Language version and compiler version
+      description: What programming language version and compiler are you using?
+      placeholder: go1.17.13, javac 11.0.12, Android Studio 2021.2.1 for Android 12
     validations:
       required: true
-  - type: input
-    id: device
-    attributes:
-      label: Device
-      description: What device are you using?
-      placeholder: e.g. iPhone 12 Pro Max or a Synology NAS
   - type: textarea
-    id: reproduction
+    id: bug-description
     attributes:
-      label: Steps to reproduce
-      description: Steps to reproduce the behavior.
+      label: Bug description
+      description: Provide a bug description and a code snippet if applicable.
       placeholder: |
        1. Set up this environment ...
        2. Add this code ...
@@ -54,7 +42,7 @@ body:
     id: current-behavior
     attributes:
       label: Current behavior
-      description: A description including code snippets, stack traces, debug logs, etc.
+      description: Output after code execution including stack traces, debug logs, etc.
       placeholder: Currently ...
     validations:
       required: true
@@ -64,6 +52,16 @@ body:
       label: Expected behavior
       description: Please provide what would be your expectation to happen.
       placeholder: In this situation, gomobile-ipfs should ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: What is your development environment?
+      placeholder: macOS 10.15.7 on Samsung Galaxy S20
+    validations:
+      required: true
   - type: textarea
     id: other
     attributes:
