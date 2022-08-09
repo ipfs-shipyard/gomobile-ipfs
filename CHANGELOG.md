@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.7.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.0...v1.7.1) (2022-08-09)
+
+
+### Bug Fixes
+
+* Update bug_template to be more like the one at go-ipfs-log ([c76c94d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/c76c94db20fb46f98705ede9508a0678d665f712))
+
 # [1.7.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.6.0...v1.7.0) (2022-07-19)
 
 
