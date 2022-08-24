@@ -2,10 +2,13 @@ package core
 
 import (
 	"context"
+	"errors"
+	"io"
 	"io/ioutil"
 	"strings"
 
 	ipfs_api "github.com/ipfs/go-ipfs-api"
+	files "github.com/ipfs/go-ipfs-files"
 )
 
 type Shell struct {
@@ -30,7 +33,19 @@ type RequestBuilder struct {
 	rb *ipfs_api.RequestBuilder
 }
 
-func (req *RequestBuilder) Send() ([]byte, error) {
+func (req *RequestBuilder) Send() (*ReadCloser, error) {
+	res, err := req.rb.Send(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	if res.Error != nil {
+		return nil, errors.New(res.Error.Error())
+	}
+	return &ReadCloser{res.Output}, nil
+}
+
+func (req *RequestBuilder) SendToBytes() ([]byte, error) {
 	res, err := req.rb.Send(context.Background())
 	if err != nil {
 		return nil, err
@@ -38,7 +53,7 @@ func (req *RequestBuilder) Send() ([]byte, error) {
 
 	defer res.Close()
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, errors.New(res.Error.Error())
 	}
 
 	return ioutil.ReadAll(res.Output)
@@ -52,12 +67,16 @@ func (req *RequestBuilder) BoolOptions(key string, value bool) {
 	req.rb.Option(key, value)
 }
 
-func (req *RequestBuilder) ByteOptions(key string, value []byte) {
+func (req *RequestBuilder) BytesOptions(key string, value []byte) {
 	req.rb.Option(key, value)
 }
 
 func (req *RequestBuilder) StringOptions(key string, value string) {
 	req.rb.Option(key, value)
+}
+
+func (req *RequestBuilder) Body(body Reader) {
+	req.rb.Body(body)
 }
 
 func (req *RequestBuilder) BodyString(body string) {
@@ -72,8 +91,36 @@ func (req *RequestBuilder) BodyBytes(body []byte) {
 	req.rb.BodyBytes(dest)
 }
 
+func (req *RequestBuilder) FileBody(name string, body Reader) {
+	fr := files.NewReaderFile(body)
+	slf := files.NewSliceDirectory([]files.DirEntry{files.FileEntry(name, fr)})
+	req.rb.Body(files.NewMultiFileReader(slf, false))
+}
+
 func (req *RequestBuilder) Header(name, value string) {
 	req.rb.Header(name, value)
+}
+
+type Reader interface {
+	io.Reader
+}
+
+type ReadCloser struct {
+	readCloser io.ReadCloser
+}
+
+func (rc *ReadCloser) Close() error {
+	return rc.readCloser.Close()
+}
+
+func (rc *ReadCloser) Read(p []byte) (n int, err error) {
+	n, err = rc.readCloser.Read(p)
+	if err == io.EOF && n > 0 {
+		// Some bytes were read before the EOF. Return the bytes with no error
+		// (to not throw an exception). The next call will return (0, io.EOF) .
+		err = nil
+	}
+	return
 }
 
 // Helpers
