@@ -227,7 +227,6 @@ public class IPFS {
         return try node.serveAPI(onTCPPort: onTCPPort)
     }
 
-
     /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
     /// - Parameters:
     ///   - primary: The primary DNS address in the form `<ip4>:<port>`
