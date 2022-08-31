@@ -51,8 +51,8 @@ public class BleQueue {
     }
 
     /**
-     * The current command has been completed, move to the next command in the queue (if any)
-     */
+    * The current command has been completed, move to the next command in the queue (if any)
+    */
     public synchronized void completedCommand(int status) {
         mLogger.v(TAG, String.format("id=%s completedCommand called", mLogger.sensitiveObject(mId)));
 
@@ -73,8 +73,8 @@ public class BleQueue {
     }
 
     /**
-     * Retry the current command. Typically used when a read/write fails and triggers a bonding procedure
-     */
+    * Retry the current command. Typically used when a read/write fails and triggers a bonding procedure
+    */
     public synchronized void retryCommand() {
         // TODO: to implement in driver
         mLogger.v(TAG, String.format("id=%s retryCommand called", mLogger.sensitiveObject(mId)));
@@ -127,10 +127,10 @@ public class BleQueue {
     }
 
     /**
-     * Execute the next command in the subscribe queue.
-     * A queue is used because the calls have to be executed sequentially.
-     * If the read or write fails, the next command in the queue is executed.
-     */
+    * Execute the next command in the subscribe queue.
+    * A queue is used because the calls have to be executed sequentially.
+    * If the read or write fails, the next command in the queue is executed.
+    */
     public synchronized void nextCommand() {
         mLogger.v(TAG, String.format("id=%s nextCommand called", mLogger.sensitiveObject(mId)));
 

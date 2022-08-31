@@ -156,8 +156,8 @@ public class PeerDevice {
 
             @Override
             public void onCharacteristicRead(BluetoothGatt gatt,
-                                             BluetoothGattCharacteristic characteristic,
-                                             int status) {
+                                                BluetoothGattCharacteristic characteristic,
+                                                int status) {
                 super.onCharacteristicRead(gatt, characteristic, status);
                 mLogger.v(TAG, String.format("onCharacteristicRead: device=%s", mLogger.sensitiveObject(getMACAddress())));
 
@@ -198,8 +198,8 @@ public class PeerDevice {
 
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt,
-                                              BluetoothGattCharacteristic characteristic,
-                                              int status) {
+                                                BluetoothGattCharacteristic characteristic,
+                                                int status) {
                 super.onCharacteristicWrite(gatt, characteristic, status);
                 mLogger.v(TAG, String.format("onCharacteristicWrite for device %s", mLogger.sensitiveObject(getMACAddress())));
 

@@ -259,12 +259,12 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     // have to cut data ourself to fit with MTU.
     @Override
     public void onCharacteristicWriteRequest(BluetoothDevice device,
-                                             int requestId,
-                                             BluetoothGattCharacteristic characteristic,
-                                             boolean prepareWrite,
-                                             boolean responseNeeded,
-                                             int offset,
-                                             byte[] value) {
+                                                int requestId,
+                                                BluetoothGattCharacteristic characteristic,
+                                                boolean prepareWrite,
+                                                boolean responseNeeded,
+                                                int offset,
+                                                byte[] value) {
         super.onCharacteristicWriteRequest(device, requestId, characteristic, prepareWrite,
             responseNeeded, offset, value);
         mLogger.v(TAG, String.format("onCharacteristicWriteRequest called: device=%s characteristic=%s requestId=%d preparedWrite=%b needResponse=%b", mLogger.sensitiveObject(device.getAddress()), characteristic.getUuid(), requestId, prepareWrite, responseNeeded));
