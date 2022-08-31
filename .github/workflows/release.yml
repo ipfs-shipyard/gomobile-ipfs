@@ -47,38 +47,38 @@ jobs:
         working-directory: go
         run: GO111MODULE=on go mod vendor
 
-      #- name: Install Java
-      #  uses: actions/setup-java@v1
-      #  with:
-      #    java-version: 1.8
+      # - name: Install Java
+      #   uses: actions/setup-java@v1
+      #   with:
+      #     java-version: 1.8
 
-      #- name: Set TARGET_SDK in env
-      #  run: |
-      #    pip3 install -r packages/utils/manifest_get/requirements.txt
-      #    export GET_BIN=packages/utils/manifest_get/manifest_get.py
-      #    export GET_KEY=global.android.target_sdk_version
-      #    echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
+      # - name: Set TARGET_SDK in env
+      #   run: |
+      #     pip3 install -r packages/utils/manifest_get/requirements.txt
+      #     export GET_BIN=packages/utils/manifest_get/manifest_get.py
+      #     export GET_KEY=global.android.target_sdk_version
+      #     echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
-      #- name: Install Android SDK
-      #  run: SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
-      #    BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
-      #    BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
-      #    PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
-      #    PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+      # - name: Install Android SDK
+      #   run: SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+      #     BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
+      #     BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
+      #     PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
+      #     PLATFORM=$(echo $PLATFORMS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
 
-      #    $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
-      #    > /dev/null
+      #     $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
+      #     > /dev/null
 
       - name: Update Cocoapods
         run: |
           gem update cocoapods cocoapods-trunk
           pod setup
 
-      #- name: Generate Android/iOS Bridge docs
-      #  run: |
-      #    gem install jazzy
-      #    rm -rf docs/android docs/ios
-      #    cd packages && make docgen.ios
+      # - name: Generate Android/iOS Bridge docs
+      #   run: |
+      #     gem install jazzy
+      #     rm -rf docs/android docs/ios
+      #     cd packages && make docgen.ios
 
       - name: Create semantic-release config file
         run: |
@@ -112,12 +112,12 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Action
           GIT_COMMITTER_EMAIL: action@github.com
 
-      #- name: Create Android keystore
-      #  if: steps.semantic.outputs.new_release_published == 'true'
-      #  working-directory: android
-      #  env:
-      #    ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-      #  run: echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
+      # - name: Create Android keystore
+      #   if: steps.semantic.outputs.new_release_published == 'true'
+      #   working-directory: android
+      #   env:
+      #     ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+      #   run: echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
 
       - name: Setup iOS provisioning profile
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -174,7 +174,7 @@ jobs:
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
-          #ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
+          # ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}
         run: make publish.ios
