@@ -66,13 +66,13 @@ public class requestIPFSTests {
     @Test
     public void testCatFile() throws Exception {
         byte[] latestRaw = ipfs.newRequest("cat")
-                .withArgument("/ipns/xkcd.hacdias.com/latest/info.json")
+                .withArgument("/ipfs/Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu")
                 .send();
 
-        try {
-            new JSONObject(new String(latestRaw));
-        } catch (JSONException e) {
-            fail("error while parsing fetched JSON: " + new String(latestRaw));
-        }
+        assertEquals(
+            "response should have the correct length",
+            12435,
+            latestRaw.length
+        );
     }
 }

@@ -1,5 +1,19 @@
 # Global Changelog
 
+## [1.7.3](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.2...v1.7.3) (2022-08-23)
+
+
+### Bug Fixes
+
+* In Manifest.yml, give the bintray_url for maven ([eec9875](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/eec9875860cce069397741b6cd72447b910baa47))
+
+## [1.7.2](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.1...v1.7.2) (2022-08-23)
+
+
+### Bug Fixes
+
+* In testCatFile, fetch a reliable sample file. ([3dc6933](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/3dc6933c57a370c71b5879d314b4466dba07e095))
+
 ## [1.7.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.0...v1.7.1) (2022-08-09)
 
 
