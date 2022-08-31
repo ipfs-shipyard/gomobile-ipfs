@@ -117,7 +117,7 @@ jobs:
       #   working-directory: android
       #   env:
       #     ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-      #   run: echo "$ANDROID_KEYSTORE" | openssl base64 -A -d > gomobile-ipfs.pfx
+      #   run: echo "$ANDROID_KEYSTORE" | openssl base64 -A -d>gomobile-ipfs.pfx
 
       - name: Setup iOS provisioning profile
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -157,18 +157,20 @@ jobs:
         if: steps.semantic.outputs.new_release_published == 'true'
         working-directory: packages
         env:
-          GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}
+          GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}  # yamllint disable-line rule:line-length
         run: make build_bridge.ios
 
       - name: Add iOS artifacts to release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.semantic.outputs.new_release_version }}
+          # yamllint disable rule:line-length
           files: |
             packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
             packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core.podspec
             packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
             packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge.podspec
+          # yamllint enable rule:line-length
 
       - name: Publish iOS packages
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -176,5 +178,6 @@ jobs:
         env:
           # ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-          GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}
+          GOMOBILE_IPFS_VERSION: >-
+            ${{ steps.semantic.outputs.new_release_version }}
         run: make publish.ios
