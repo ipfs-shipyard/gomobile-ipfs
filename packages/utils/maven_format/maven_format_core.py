@@ -108,8 +108,14 @@ try:
                          )):
                 exit(1)
         else:
-            # TODO: add Android javadoc generation using Java version > 1.8
-            raise Exception("Can't generate javadoc using Java version > 1.8")
+            if os.system("javadoc -Xdoclint:none -quiet -classpath '%s' "
+                         "-sourcepath '%s' go core -d %s" %
+                         (
+                            target_sdk_path,
+                            temp_dir,
+                            os.path.join(temp_dir, "javadoc")
+                         )):
+                exit(1)
 
         # Create a jar containing the javadoc
         if os.system("cd %s && jar -cf ../%s ." %
