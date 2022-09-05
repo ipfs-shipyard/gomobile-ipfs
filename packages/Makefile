@@ -32,6 +32,7 @@ VERSION := $(or $(GOMOBILE_IPFS_VERSION),$(DEV_VERSION))
 ANDROID_GROUP_ID := $(shell echo $(call MANIFEST_GET_FUNC,global.group_id) | tr . /)
 ANDROID_CORE_ARTIFACT_ID := $(call MANIFEST_GET_FUNC,go_core.android.artifact_id)
 ANDROID_APP_FILENAME := $(call MANIFEST_GET_FUNC,android_demo_app.filename)
+ANDROID_MINIMUM_VERSION := $(call MANIFEST_GET_FUNC,android.min_sdk_version)
 IOS_CORE_PACKAGE := $(call MANIFEST_GET_FUNC,go_core.ios.package)
 IOS_APP_FILENAME := $(call MANIFEST_GET_FUNC,ios_demo_app.filename)
 
@@ -41,15 +42,17 @@ GO_MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.sum
 
 CORE_PACKAGE = github.com/ipfs-shipyard/gomobile-ipfs/go/bind/core
 EXT_PACKAGE ?=
-GOMOBILE ?= go run golang.org/x/mobile/cmd/gomobile
 GOMOBILE_OPT ?=
 GOMOBILE_TARGET ?=
+GOMOBILE_ANDROID_TARGET ?= android
+GOMOBILE_IOS_TARGET ?= ios
 
 ANDROID_DIR = $(MAKEFILE_DIR)/../android
 ANDROID_SRC = $(shell git ls-files $(ANDROID_DIR) | grep -v '.gitignore')
 ANDROID_BUILD_DIR = $(BUILD_DIR)/android
 ANDROID_BUILD_DIR_INT = $(ANDROID_BUILD_DIR)/intermediates
 ANDROID_BUILD_DIR_INT_CORE = $(ANDROID_BUILD_DIR_INT)/core
+ANDROID_GOMOBILE_CACHE="$(ANDROID_BUILD_DIR_INT_CORE)/.gomobile-cache"
 ANDROID_CORE = $(ANDROID_BUILD_DIR_INT_CORE)/core.aar
 ANDROID_BUILD_DIR_MAV = $(ANDROID_BUILD_DIR)/maven
 ANDROID_BUILD_DIR_MAV_CORE = $(ANDROID_BUILD_DIR_MAV)/$(ANDROID_GROUP_ID)/$(ANDROID_CORE_ARTIFACT_ID)/$(VERSION)
@@ -62,6 +65,7 @@ IOS_SRC = $(shell git ls-files $(IOS_DIR) | grep -v '.gitignore')
 IOS_BUILD_DIR = $(BUILD_DIR)/ios
 IOS_BUILD_DIR_INT = $(IOS_BUILD_DIR)/intermediates
 IOS_BUILD_DIR_INT_CORE = $(IOS_BUILD_DIR_INT)/core
+IOS_GOMOBILE_CACHE="$(IOS_BUILD_DIR_INT_CORE)/.gomobile-cache"
 IOS_CORE = $(IOS_BUILD_DIR_INT_CORE)/Core.xcframework
 IOS_BUILD_DIR_CCP = $(IOS_BUILD_DIR)/cocoapods
 IOS_BUILD_DIR_CCP_CORE = $(IOS_BUILD_DIR_CCP)/$(IOS_CORE_PACKAGE)/$(VERSION)
@@ -105,11 +109,22 @@ $(ANDROID_BUILD_DIR_MAV_CORE): $(ANDROID_CORE) $(MANIFEST_FILE)
 	$(UTIL_MAVEN_FORMAT_CORE_BIN) && touch $(ANDROID_BUILD_DIR_MAV_CORE)
 	@echo 'Done!'
 
-$(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
+$(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	@echo '------------------------------------'
 	@echo '   Android Core: Gomobile binding   '
 	@echo '------------------------------------'
-	$(GOMOBILE) bind -v $(GOMOBILE_OPT) -target=android$(GOMOBILE_TARGET) -o $(ANDROID_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	go mod download
+	go run golang.org/x/mobile/cmd/gomobile init
+	mkdir -p $(ANDROID_GOMOBILE_CACHE) android/libs
+	GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+		-o $(ANDROID_CORE) \
+		-v $(GOMOBILE_OPT) \
+		-cache $(ANDROID_GOMOBILE_CACHE) \
+		-target=$(GOMOBILE_ANDROID_TARGET)$(GOMOBILE_TARGET) \
+		-androidapi $(ANDROID_MINIMUM_VERSION) \
+		$(CORE_PACKAGE) $(EXT_PACKAGE)
+	touch $@
+	go mod tidy
 	@echo 'Done!'
 
 $(ANDROID_BUILD_DIR_INT_CORE):
@@ -131,11 +146,22 @@ $(IOS_BUILD_DIR_CCP_CORE): $(IOS_CORE) $(MANIFEST_FILE)
 # To generate a fat XCFramework that supports iOS, macOS, and macCatalyst for all supportec architectures (amd64 and arm64),
 # specify -target ios,macos,maccatalyst
 
-$(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES) | $(GOMOBILE)
+$(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	$(GOMOBILE) bind $(GOMOBILE_OPT) -target=ios,macos,maccatalyst$(GOMOBILE_TARGET) -o $(IOS_CORE) $(CORE_PACKAGE) $(EXT_PACKAGE)
+	go mod download
+	go install golang.org/x/mobile/cmd/gobind
+	go run golang.org/x/mobile/cmd/gomobile init
+	mkdir -p $(IOS_GOMOBILE_CACHE) ios/Frameworks
+	go run golang.org/x/mobile/cmd/gomobile bind \
+			-o $(IOS_CORE) \
+			$(GOMOBILE_OPT) \
+			-cache $(IOS_GOMOBILE_CACHE) \
+			-target=$(GOMOBILE_IOS_TARGET)$(GOMOBILE_TARGET) \
+			$(CORE_PACKAGE) $(EXT_PACKAGE)
+	touch $@
+	go mod tidy
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
@@ -355,16 +381,6 @@ test_core:
 	@echo 'Done!'
 
 # Misc rules
-$(GOMOBILE):
-	@echo '------------------------------------'
-	@echo '      Go: installing modules        '
-	@echo '------------------------------------'
-	go mod download
-	go install golang.org/x/mobile/cmd/gomobile
-	go install golang.org/x/mobile/cmd/gobind
-	$(GOMOBILE) init -v
-	@echo 'Done!'
-
 fail_on_dev:
 	if [ "$(VERSION)" == "$(DEV_VERSION)" ]; then \
 		>&2 echo "Can't publish a dev version: GOMOBILE_IPFS_VERSION env variable not set";	\
@@ -379,6 +395,11 @@ clean.android:
 	@echo '  Android Core: removing build dir  '
 	@echo '------------------------------------'
 	rm -rf $(ANDROID_BUILD_DIR)
+
+	# gomobile cache
+ifneq (, $(wildcard $(ANDROID_GOMOBILE_CACHE)))
+	chmod -R u+wx $(ANDROID_GOMOBILE_CACHE) && rm -rf $(ANDROID_GOMOBILE_CACHE)
+endif
 	@echo 'Done!'
 
 clean.ios:
@@ -386,4 +407,9 @@ clean.ios:
 	@echo '    iOS Core: removing build dir    '
 	@echo '------------------------------------'
 	rm -rf $(IOS_BUILD_DIR)
+
+	# gomobile cache
+ifneq (, $(wildcard $(IOS_GOMOBILE_CACHE)))
+	chmod -R u+wx $(IOS_GOMOBILE_CACHE) && rm -rf $(IOS_GOMOBILE_CACHE)
+endif
 	@echo 'Done!'
