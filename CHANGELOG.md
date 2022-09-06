@@ -1,5 +1,23 @@
 # Global Changelog
 
+## [1.7.4](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.3...v1.7.4) (2022-09-06)
+
+
+### Bug Fixes
+
+* Fix to maven_format_core.py for Java > 1.8. ([1e16e72](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1e16e72b75fa62916fa2cb30babab7f1d361ee28))
+* In bledriver/Scanner.java, we don't need to check the build version. (Already done by the Manifest.) ([1d2941e](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/1d2941e6a32868a9e627fb0446e5aee284bb559c))
+* In values/strings.xml, Lint says that "app_name" is unused, but it is. So ignore the warning. ([9537f9d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/9537f9d2fba35ebea36d780a349480d225a6ff59))
+* Indentation warnings from EditorConfig lint. ([19dab7a](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/19dab7aca70d58eca2cfef7cdd4fcdffb58eb84f))
+* lint.yml: After installing sdkmanager, install Java 11. ([04571c7](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/04571c7e0dff4b1d1e505c3d7d5d2d2d1e4c12b0))
+* Make static method StringUtil.format to avoid lint warnings for Locale with "%d". ([90c084d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/90c084d143fb9951f50ffa2bf721df2e789f2ddc))
+* Move Bluetooth permissions from android/app to android/bridge. ([f80d43e](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/f80d43e50ab99b70e00355bf655f24bb368649f0))
+* node_test.go: Simplify tests. (Go lint) ([3ce9353](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/3ce93534ef5f01e78ffd977f620e1fbf16bd7aca))
+* node.go: Remove unused imports and dead code, catch err in deferred func (Go lint) ([4342217](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/4342217881d4a330a8e53fbb0e42fec2ee6e994a))
+* release.yml: Add starting space in comment (Yaml lint) ([113c9e2](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/113c9e29fe79464feaf2d3071cf1cd738ed2900c))
+* Spacing warnings from Swift lint ([02edf1d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/02edf1d1f2b3399b85808cf751a90afa4410e7a2))
+* Wrap long lines (or ignore warning), fix indents (Yaml lint) ([640c556](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/640c5563967ba9058c9437bdd043e229ed4839a9))
+
 ## [1.7.3](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.2...v1.7.3) (2022-08-23)
 
 
