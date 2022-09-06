@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
+import java.util.Locale;
 
 import ipfs.gomobile.android.IPFS;
 
@@ -57,7 +58,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
             }
 
             int randomIndex = random.nextInt(XKCDLatest) + 1;
-            String formattedIndex = String.format("%04d", randomIndex);
+            String formattedIndex = String.format(Locale.US, "%04d", randomIndex);
 
             byte[] infoRaw = ipfs.newRequest("cat")
                 .withArgument(String.format("%s/%s/info.json", XKCDIPNS, formattedIndex))
@@ -74,7 +75,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
                 .withArgument(String.format("%s/%s/image.%s", XKCDIPNS, formattedIndex, imgExt))
                 .send();
 
-            return String.format("%d. %s", randomIndex, title);
+            return String.format(Locale.US, "%d. %s", randomIndex, title);
         } catch (Exception err) {
             backgroundError = true;
             return MainActivity.exceptionToString(err);

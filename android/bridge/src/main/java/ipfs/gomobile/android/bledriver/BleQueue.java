@@ -41,7 +41,7 @@ public class BleQueue {
         boolean result = mCommandQueue.add(task);
 
         if (result) {
-            mLogger.d(TAG, String.format("id=%s add: index=%d", mLogger.sensitiveObject(mId), task.index));
+            mLogger.d(TAG, StringUtil.format("id=%s add: index=%d", mLogger.sensitiveObject(mId), task.index));
             nextCommand();
         } else {
             mLogger.e(TAG, String.format("id=%s add error: could not enqueue task command", mLogger.sensitiveObject(mId)));
@@ -62,9 +62,9 @@ public class BleQueue {
             mLogger.e(TAG, String.format("id=%s completedCommand error: no task found", mLogger.sensitiveObject(mId)));
             return;
         }
-        mLogger.d(TAG, String.format("id=%s completedCommand: index=%d", mLogger.sensitiveObject(mId), currentCommand.index));
+        mLogger.d(TAG, StringUtil.format("id=%s completedCommand: index=%d", mLogger.sensitiveObject(mId), currentCommand.index));
         if (currentCommand.callback != null) {
-            mLogger.d(TAG, String.format("id=%s completedCommand: callback for index=%d", mLogger.sensitiveObject(mId), currentCommand.index));
+            mLogger.d(TAG, StringUtil.format("id=%s completedCommand: callback for index=%d", mLogger.sensitiveObject(mId), currentCommand.index));
             mHandler.post(() -> currentCommand.callback.run(status));
         }
         mIsRetrying = false;
@@ -147,7 +147,7 @@ public class BleQueue {
             return;
         }
 
-        mLogger.d(TAG, String.format("id=%s nextCommand: running index=%d", mLogger.sensitiveObject(mId), bluetoothCommand.index));
+        mLogger.d(TAG, StringUtil.format("id=%s nextCommand: running index=%d", mLogger.sensitiveObject(mId), bluetoothCommand.index));
 
         // Execute the next command in the queue
         mCommandQueueBusy = true;
