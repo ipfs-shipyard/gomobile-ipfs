@@ -227,14 +227,6 @@ public class IPFS {
         return try node.serveAPI(onTCPPort: onTCPPort)
     }
 
-    /// Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
-    /// - Parameters:
-    ///   - primary: The primary DNS address in the form `<ip4>:<port>`
-    ///   - secondary: The secondary DNS address in the form `<ip4>:<port>`
-    public class func setDNSPair(_ primary: String, _ secondary: String) {
-        CoreSetDNSPair(primary, secondary, false)
-    }
-
     /// Internal helper that opens the repo if it is closed
     /// - Throws: `RepoError`: If the opening of the repo failed
     private func openRepoIfClosed() throws {

@@ -36,6 +36,18 @@ type Node struct {
 }
 
 func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
+	var dialer net.Dialer
+	net.DefaultResolver = &net.Resolver{
+		PreferGo: false,
+		Dial: func(context context.Context, _, _ string) (net.Conn, error) {
+			conn, err := dialer.DialContext(context, "udp", "84.200.69.80:53")
+			if err != nil {
+				return nil, err
+			}
+			return conn, nil
+		},
+	}
+
 	ctx := context.Background()
 
 	if _, err := loadPlugins(r.mr.Path); err != nil {
