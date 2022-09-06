@@ -127,7 +127,7 @@ public class GattServer {
             try {
                 mBluetoothServerSocket = mBluetoothManager.getAdapter().listenUsingInsecureL2capChannel();
                 PSM = mBluetoothServerSocket.getPsm();
-                mLogger.d(TAG, String.format("start: listenUsingL2capChannel: PSM=%d", PSM));
+                mLogger.d(TAG, StringUtil.format("start: listenUsingL2capChannel: PSM=%d", PSM));
             } catch (IOException e) {
                 mLogger.e(TAG, "start error: listenUsingL2capChannel: ", e);
                 mBluetoothServerSocket = null;
@@ -266,7 +266,7 @@ public class GattServer {
 
     private boolean _writeAndNotify(PeerDevice device, byte[] payload) {
         if (mLogger.showSensitiveData()) {
-            mLogger.v(TAG, String.format("_writeAndNotify: writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+            mLogger.v(TAG, StringUtil.format("_writeAndNotify: writing chunk of data: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
         } else {
             mLogger.v(TAG, "_writeAndNotify called");
         }
@@ -322,7 +322,7 @@ public class GattServer {
 
     public boolean writeAndNotify(PeerDevice device, byte[] payload) {
         if (mLogger.showSensitiveData()) {
-            mLogger.v(TAG, String.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+            mLogger.v(TAG, StringUtil.format("writeAndNotify: device=%s base64=%s value=%s length=%d", device.getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
         } else {
             mLogger.v(TAG, "writeAndNotify called");
         }

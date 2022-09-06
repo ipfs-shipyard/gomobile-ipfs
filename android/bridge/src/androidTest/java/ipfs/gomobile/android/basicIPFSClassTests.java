@@ -76,16 +76,16 @@ public class basicIPFSClassTests {
         } catch (Exception e) { /* ignore */ }
 
 
-         // DNS pair setter tests
-         try {
-             IPFS.setDNSPair(null, "foo");
-             fail("setDNSPair() should fail with a null primary");
-         } catch (Exception e) { /* ignore */ }
+        // DNS pair setter tests
+        try {
+            IPFS.setDNSPair(null, "foo");
+            fail("setDNSPair() should fail with a null primary");
+        } catch (Exception e) { /* ignore */ }
 
-         try {
-             IPFS.setDNSPair("foo", null);
-             fail("setDNSPair() should fail with a null secondary");
-         } catch (Exception e) { /* ignore */ }
+        try {
+            IPFS.setDNSPair("foo", null);
+            fail("setDNSPair() should fail with a null secondary");
+        } catch (Exception e) { /* ignore */ }
 
 
         // Request tests

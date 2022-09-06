@@ -100,30 +100,30 @@ class ViewController: UIViewController {
             print(code)
             self.navigationController!.popViewController(animated: true)
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now(), execute: {
-                 var error: String?
-                 var title: String = ""
-                 var image: UIImage = UIImage()
+                var error: String?
+                var title: String = ""
+                var image: UIImage = UIImage()
      
-                 do {
-                     let fetchedData = try ViewController.ipfs!.newRequest("cat")
-                         .with(argument: code)
-                         .send()
+                do {
+                    let fetchedData = try ViewController.ipfs!.newRequest("cat")
+                        .with(argument: code)
+                        .send()
      
-                     title = "IPFS File"
-                     image = UIImage(data: fetchedData)!
-                 } catch let err as IPFSError {
-                     error = err.localizedFullDescription
-                 } catch let err {
-                     error = err.localizedDescription
-                 }
-                 DispatchQueue.main.async {
-                     if let err = error {
-                         self.displayFetchError(err)
-                     } else {
-                         self.displayFetchSuccess(title, image)
-                     }
-                 }
-             })
+                    title = "IPFS File"
+                    image = UIImage(data: fetchedData)!
+                } catch let err as IPFSError {
+                    error = err.localizedFullDescription
+                } catch let err {
+                    error = err.localizedDescription
+                }
+                DispatchQueue.main.async {
+                    if let err = error {
+                        self.displayFetchError(err)
+                    } else {
+                        self.displayFetchSuccess(title, image)
+                    }
+                }
+            })
         }
 
         DispatchQueue.global(qos: .background).async {

@@ -82,14 +82,14 @@ public class Node {
     /// - Parameter onMultiaddr: The multiaddr to serve on
     /// - Parameter writable: If true: will also support support `POST`, `PUT`, and `DELETE` methods.
     /// - Throws: `NodeError`: If the node failed to serve
-    public func serveGateway(onMultiaddr: String, writable: Bool = false) throws -> String{
+    public func serveGateway(onMultiaddr: String, writable: Bool = false) throws -> String {
         var err: NSError?
 
         let maddr = self.node.serveGatewayMultiaddr(onMultiaddr, writable: writable, error: &err)
         if err != nil {
             throw NodeError("unable to serve gateway on \(onMultiaddr)", err)
         }
-        
+
         return maddr
     }
 

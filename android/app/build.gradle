@@ -31,6 +31,7 @@ android {
 
 	lintOptions {
 		htmlReport false
+		textReport true
 		abortOnError true
 	}
 }

@@ -99,7 +99,7 @@ public class PeerDevice {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 super.onConnectionStateChange(gatt, status, newState);
-                mLogger.v(TAG, String.format("onConnectionStateChange(): device=%s status=%d newState=%d", mLogger.sensitiveObject(gatt.getDevice().getAddress()), status, newState));
+                mLogger.v(TAG, StringUtil.format("onConnectionStateChange(): device=%s status=%d newState=%d", mLogger.sensitiveObject(gatt.getDevice().getAddress()), status, newState));
                 BluetoothDevice device = gatt.getDevice();
 
                 cancelTimer();
@@ -132,7 +132,7 @@ public class PeerDevice {
                         closeClient();
                     }
                 } else {
-                    mLogger.e(TAG, String.format("onConnectionStateChange(): status error=%d for device %s", status, mLogger.sensitiveObject(device.getAddress())));
+                    mLogger.e(TAG, StringUtil.format("onConnectionStateChange(): status error=%d for device %s", status, mLogger.sensitiveObject(device.getAddress())));
 
                     setClientState(CONNECTION_STATE.DISCONNECTED);
                     closeClient();
@@ -148,7 +148,7 @@ public class PeerDevice {
                     mLogger.e(TAG, String.format("service discovery failed due to internal error '%s', disconnecting", status));
                     disconnect();
                 } else {
-                    mLogger.d(TAG, String.format("discovered %d services: device=%s", gatt.getServices().size(), mLogger.sensitiveObject(mBluetoothDevice.getAddress())));
+                    mLogger.d(TAG, StringUtil.format("discovered %d services: device=%s", gatt.getServices().size(), mLogger.sensitiveObject(mBluetoothDevice.getAddress())));
                     // Speed up connection
                     requestMtu(PeerDevice.MAX_MTU);
                 }
@@ -156,13 +156,13 @@ public class PeerDevice {
 
             @Override
             public void onCharacteristicRead(BluetoothGatt gatt,
-                                             BluetoothGattCharacteristic characteristic,
-                                             int status) {
+                                                BluetoothGattCharacteristic characteristic,
+                                                int status) {
                 super.onCharacteristicRead(gatt, characteristic, status);
                 mLogger.v(TAG, String.format("onCharacteristicRead: device=%s", mLogger.sensitiveObject(getMACAddress())));
 
                 if (status != GATT_SUCCESS) {
-                    mLogger.e(TAG, String.format("onCharacteristicRead error: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
+                    mLogger.e(TAG, StringUtil.format("onCharacteristicRead error: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
                     disconnect();
                     mBleQueue.completedCommand(status);
                     return;
@@ -175,7 +175,7 @@ public class PeerDevice {
                         return;
                     } else {
                         if (mLogger.showSensitiveData()) {
-                            mLogger.v(TAG, String.format("onCharacteristicRead: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
+                            mLogger.v(TAG, StringUtil.format("onCharacteristicRead: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
                         }
                         boolean success = BleDriver.mCallbacksHandler.post(() -> {
                             mLogger.v(TAG, String.format("onCharacteristicRead in thread: device=%s", mLogger.sensitiveObject(getMACAddress())));
@@ -198,13 +198,13 @@ public class PeerDevice {
 
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt,
-                                              BluetoothGattCharacteristic characteristic,
-                                              int status) {
+                                                BluetoothGattCharacteristic characteristic,
+                                                int status) {
                 super.onCharacteristicWrite(gatt, characteristic, status);
                 mLogger.v(TAG, String.format("onCharacteristicWrite for device %s", mLogger.sensitiveObject(getMACAddress())));
 
                 if (status != GATT_SUCCESS) {
-                    mLogger.e(TAG, String.format("onCharacteristicWrite error: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
+                    mLogger.e(TAG, StringUtil.format("onCharacteristicWrite error: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
                     disconnect();
                 }
 
@@ -234,7 +234,7 @@ public class PeerDevice {
 
                 byte[] value = characteristic.getValue();
                 if (mLogger.showSensitiveData()) {
-                    mLogger.v(TAG, String.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", mLogger.sensitiveObject(getMACAddress()), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
+                    mLogger.v(TAG, StringUtil.format("onCharacteristicChanged: device=%s base64=%s value=%s length=%d", mLogger.sensitiveObject(getMACAddress()), Base64.encodeToString(value, Base64.DEFAULT), BleDriver.bytesToHex(value), value.length));
                 } else {
                     mLogger.v(TAG, "onCharacteristicChanged called");
                 }
@@ -253,7 +253,7 @@ public class PeerDevice {
             public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 super.onDescriptorWrite(gatt, descriptor, status);
 
-                mLogger.v(TAG, String.format("onDescriptorWrite: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
+                mLogger.v(TAG, StringUtil.format("onDescriptorWrite: device=%s status=%d", mLogger.sensitiveObject(getMACAddress()), status));
                 mBleQueue.completedCommand(status);
             }
         };
@@ -644,7 +644,7 @@ public class PeerDevice {
             }
             byte[] payload = Arrays.copyOfRange(buffer, 0, size);
             if (mLogger.showSensitiveData()) {
-                mLogger.v(TAG, String.format("l2capRead: read from l2cap: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
+                mLogger.v(TAG, StringUtil.format("l2capRead: read from l2cap: device=%s base64=%s value=%s length=%d", getMACAddress(), Base64.encodeToString(payload, Base64.DEFAULT), BleDriver.bytesToHex(payload), payload.length));
             } else {
                 mLogger.v(TAG, "l2capRead: data read");
             }
@@ -854,7 +854,7 @@ public class PeerDevice {
             }
         }
         remotePID = new String(Arrays.copyOfRange(payload, 4, payload.length));
-        mLogger.d(TAG, String.format("handleClientPIDReceived: got PSM=%d remotePID=%s for device=%s", mPSM, mLogger.sensitiveObject(remotePID), mLogger.sensitiveObject(getMACAddress())));
+        mLogger.d(TAG, StringUtil.format("handleClientPIDReceived: got PSM=%d remotePID=%s for device=%s", mPSM, mLogger.sensitiveObject(remotePID), mLogger.sensitiveObject(getMACAddress())));
         setRemotePID(remotePID);
 
         // TODO: not necessary?
@@ -985,14 +985,14 @@ public class PeerDevice {
                     int maxOffset;
                     int i = 0;
 
-                    mLogger.v(TAG, String.format("l2capWrite: device=%s payload length=%d", mLogger.sensitiveObject(getMACAddress()), payload.length));
+                    mLogger.v(TAG, StringUtil.format("l2capWrite: device=%s payload length=%d", mLogger.sensitiveObject(getMACAddress()), payload.length));
                     // Send data to fit with MTU value
                     while (minOffset != payload.length) {
                         if ((isClientConnected() || isServerConnected()) && mBluetoothSocket != null && mBluetoothSocket.isConnected() && mOutputStream != null && mInputStream != null) {
                             maxOffset = (minOffset + L2CAP_MPS) > payload.length ? payload.length : (minOffset + L2CAP_MPS);
                             final byte[] toWrite = Arrays.copyOfRange(payload, minOffset, maxOffset);
                             if (mLogger.showSensitiveData()) {
-                                mLogger.v(TAG, String.format("l2capWrite: device=%s chunk=%d/%d minOffset=%d maxOffset=%d length=%d base64=%s", getMACAddress(), ++i, nbOfChunk, minOffset, maxOffset, toWrite.length, Base64.encodeToString(toWrite, Base64.DEFAULT)));
+                                mLogger.v(TAG, StringUtil.format("l2capWrite: device=%s chunk=%d/%d minOffset=%d maxOffset=%d length=%d base64=%s", getMACAddress(), ++i, nbOfChunk, minOffset, maxOffset, toWrite.length, Base64.encodeToString(toWrite, Base64.DEFAULT)));
                                 printLongLog(BleDriver.bytesToHex(toWrite));
                             }
                             minOffset = maxOffset;
@@ -1043,7 +1043,7 @@ public class PeerDevice {
         });
 
         success[0] = mBleQueue.add(() -> {
-            mLogger.v(TAG, String.format("BleQueue: internalWrite: device %s length=%d base64=%s", mLogger.sensitiveObject(getMACAddress()), payload.length, mLogger.sensitiveObject(Base64.encodeToString(payload, Base64.DEFAULT))));
+            mLogger.v(TAG, StringUtil.format("BleQueue: internalWrite: device %s length=%d base64=%s", mLogger.sensitiveObject(getMACAddress()), payload.length, mLogger.sensitiveObject(Base64.encodeToString(payload, Base64.DEFAULT))));
             if (mLogger.showSensitiveData()) {
                 printLongLog(BleDriver.bytesToHex(payload));
             }
@@ -1081,7 +1081,7 @@ public class PeerDevice {
     // write sends payload over the GATT connection.
     // EOD identifies the end of the transfer, useful for the handshake.
     public boolean write(BluetoothGattCharacteristic characteristic, byte[] payload, boolean withEOD) {
-        mLogger.v(TAG, String.format("write called: device=%s length=%d characteristicUUID=%s", mLogger.sensitiveObject(getMACAddress()), payload.length, characteristic.getUuid()));
+        mLogger.v(TAG, StringUtil.format("write called: device=%s length=%d characteristicUUID=%s", mLogger.sensitiveObject(getMACAddress()), payload.length, characteristic.getUuid()));
 
         if (!isClientConnected()) {
             mLogger.e(TAG, "write error: device not connected");
@@ -1291,7 +1291,7 @@ public class PeerDevice {
 
         byte[] payload;
         while ((payload = mDataCache.poll()) != null) {
-            mLogger.d(TAG, String.format("flushServerDataCache: device=%s base64=%s value=%s length=%d", mLogger.sensitiveObject(getMACAddress()), mLogger.sensitiveObject(Base64.encodeToString(payload, Base64.DEFAULT)), mLogger.sensitiveObject(BleDriver.bytesToHex(payload)), payload.length));
+            mLogger.d(TAG, StringUtil.format("flushServerDataCache: device=%s base64=%s value=%s length=%d", mLogger.sensitiveObject(getMACAddress()), mLogger.sensitiveObject(Base64.encodeToString(payload, Base64.DEFAULT)), mLogger.sensitiveObject(BleDriver.bytesToHex(payload)), payload.length));
             BleInterface.BLEReceiveFromPeer(getRemotePID(), payload);
         }
     }

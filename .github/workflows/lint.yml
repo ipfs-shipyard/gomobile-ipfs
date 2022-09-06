@@ -121,6 +121,11 @@ jobs:
           $SDK_MAN --install "$BTOOL" platform-tools "$PLATFORM" ndk-bundle
           > /dev/null
 
+      - name: Install Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
       - name: Build Go Core
         working-directory: packages
         run: make build_core.android GOMOBILE_TARGET=/amd64

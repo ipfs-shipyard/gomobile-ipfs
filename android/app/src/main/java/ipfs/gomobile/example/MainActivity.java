@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] strPerm,
-                                           @NonNull int [] grantResults) {
+                                            @NonNull int [] grantResults) {
         super.onRequestPermissionsResult(requestCode, strPerm, grantResults);
 
         if (grantResults.length > 0

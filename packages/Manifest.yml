@@ -51,7 +51,7 @@ global:
   ios:
     platform: :ios, '10.0'
     repo: gomobile-ipfs-ios
-    package_url: https://github.com/{repo}/releases/download/{version}/{name}-{version}.pod.zip
+    package_url: https://github.com/{repo}/releases/download/{version}/{name}-{version}.pod.zip  # yamllint disable-line rule:line-length
 
   demo_app:
     application_id: example

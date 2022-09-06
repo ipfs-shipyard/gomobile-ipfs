@@ -1,16 +1,19 @@
+# yamllint disable-line rule:document-start
 name: "Bug report"
 description: Report a bug found while using gomobile-ipfs.
 labels: ["bug", "🔍 Ready for Review"]
 assignees:
-- jefft0
+  - jefft0
 body:
   - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the bug you encountered.
+      description: >-
+        Please search to see if an issue already exists for the bug you
+        encountered.
       options:
-      - label: I have searched the existing issues
-        required: true
+        - label: I have searched the existing issues
+          required: true
   - type: input
     id: package-version
     attributes:
@@ -24,7 +27,8 @@ body:
     attributes:
       label: Language version and compiler version
       description: What programming language version and compiler are you using?
-      placeholder: go1.17.13, javac 11.0.12, Android Studio 2021.2.1 for Android 12
+      placeholder: >-
+        go1.17.13, javac 11.0.12, Android Studio 2021.2.1 for Android 12
     validations:
       required: true
   - type: textarea
@@ -33,16 +37,17 @@ body:
       label: Bug description
       description: Provide a bug description and a code snippet if applicable.
       placeholder: |
-       1. Set up this environment ...
-       2. Add this code ...
-       3. Call this function ...
+        1. Set up this environment ...
+        2. Add this code ...
+        3. Call this function ...
     validations:
       required: true
   - type: textarea
     id: current-behavior
     attributes:
       label: Current behavior
-      description: Output after code execution including stack traces, debug logs, etc.
+      description: >-
+        Output after code execution including stack traces, debug logs, etc.
       placeholder: Currently ...
     validations:
       required: true

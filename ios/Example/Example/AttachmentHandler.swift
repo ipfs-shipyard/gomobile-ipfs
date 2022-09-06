@@ -15,11 +15,11 @@ import AVFoundation
 import Photos
 
 /*
- AttachmentHandler.shared.showAttachmentActionSheet(vc: self)
- AttachmentHandler.shared.imagePickedBlock = { (image) in
- /* get your image here */
- }
- */
+AttachmentHandler.shared.showAttachmentActionSheet(vc: self)
+AttachmentHandler.shared.imagePickedBlock = { (image) in
+/* get your image here */
+}
+*/
 
 
 

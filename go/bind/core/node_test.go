@@ -151,7 +151,7 @@ func TestNodeServeGateway(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if bytes.Compare(b, testcontent) != 0 {
+		if !bytes.Equal(b, testcontent) {
 			t.Fatalf("content `%s` are different from `%s`", b, testcontent)
 		}
 	})
@@ -205,7 +205,7 @@ func TestNodeServeGateway(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if bytes.Compare(b, testcontent) != 0 {
+		if !bytes.Equal(b, testcontent) {
 			t.Fatalf("content `%s` are different from `%s`", b, testcontent)
 		}
 	})

@@ -8,9 +8,7 @@ package core
 // Main API exposed to the ios/android
 
 import (
-	"bytes"
 	"context"
-	"encoding/gob"
 	"fmt"
 	"log"
 	"net"
@@ -50,12 +48,20 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 	// Java embedded driver (android)
 	case driver != nil:
 		logger := zap.NewExample()
-		defer logger.Sync()
+		defer func() {
+			if err := logger.Sync(); err != nil {
+				fmt.Println(err)
+			}
+		}()
 		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
 	// Go embedded driver (ios)
 	case ble.Supported:
 		logger := zap.NewExample()
-		defer logger.Sync()
+		defer func() {
+			if err := logger.Sync(); err != nil {
+				fmt.Println(err)
+			}
+		}()
 		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, ble.NewDriver(logger)))
 	default:
 		log.Printf("cannot enable BLE on an unsupported platform")
@@ -187,16 +193,6 @@ func (n *Node) ServeAPIMultiaddr(smaddr string) (string, error) {
 	}(manet.NetListener(ml))
 
 	return ml.Multiaddr().String(), nil
-}
-
-func getBytes(key interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(key)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
 }
 
 func init() {
