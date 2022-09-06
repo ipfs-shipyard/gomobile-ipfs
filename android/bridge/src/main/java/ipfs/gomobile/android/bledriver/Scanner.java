@@ -137,28 +137,26 @@ public class Scanner extends ScanCallback {
         mTask = new TimerTask() {
             @Override
             public void run() {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    if (getScannerState() == SCANNER_STATE_ENABLED) {
-                        mLogger.d(TAG, "stop scanning");
-                        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                            mBluetoothLeScanner.stopScan(callback);
-                        } else {
-                            mLogger.e(TAG, "stop scanner in timer error: BT adapter not running");
-                        }
-                        setScannerState(SCANNER_STATE_PAUSED);
-
-                        // Processing scan result
-                        processResult();
+                if (getScannerState() == SCANNER_STATE_ENABLED) {
+                    mLogger.d(TAG, "stop scanning");
+                    if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+                        mBluetoothLeScanner.stopScan(callback);
                     } else {
-                        if (!isProcessingResult()) {
-                            mLogger.d(TAG, "start scanning");
-                            if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                                mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
-                            } else {
-                                mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
-                            }
-                            setScannerState(SCANNER_STATE_ENABLED);
+                        mLogger.e(TAG, "stop scanner in timer error: BT adapter not running");
+                    }
+                    setScannerState(SCANNER_STATE_PAUSED);
+
+                    // Processing scan result
+                    processResult();
+                } else {
+                    if (!isProcessingResult()) {
+                        mLogger.d(TAG, "start scanning");
+                        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+                            mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
+                        } else {
+                            mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
                         }
+                        setScannerState(SCANNER_STATE_ENABLED);
                     }
                 }
             }
