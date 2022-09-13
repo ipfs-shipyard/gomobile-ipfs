@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.7.5](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.4...v1.7.5) (2022-09-13)
+
+
+### Bug Fixes
+
+* Remove dnsconfig* . Set net.DefaultResolver in NewNode. ([86863cf](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/86863cfce316360ffab477e54ec9b29b266ca82a))
+
 ## [1.7.4](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.3...v1.7.4) (2022-09-06)
 
 
