@@ -333,19 +333,6 @@ public class IPFS {
     }
 
     /**
-    * Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)
-    *
-    * @param primary The primary DNS address in the form {@code <ip4>:<port>}
-    * @param secondary The secondary DNS address in the form {@code <ip4>:<port>}
-    */
-    public static void setDNSPair(@NonNull String primary, @NonNull String secondary) {
-        Objects.requireNonNull(primary, "primary should not be null");
-        Objects.requireNonNull(secondary, "secondary should not be null");
-
-        Core.setDNSPair(primary, secondary, false);
-    }
-
-    /**
     * Internal helper that opens the repo if it is closed.
     *
     * @throws RepoOpenException If the opening of the repo failed
