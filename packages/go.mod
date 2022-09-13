@@ -65,16 +65,16 @@ require (
 	github.com/ipfs/go-ds-leveldb v0.5.0 // indirect
 	github.com/ipfs/go-ds-measure v0.2.0 // indirect
 	github.com/ipfs/go-fetcher v1.6.1 // indirect
-	github.com/ipfs/go-filestore v0.1.0 // indirect
+	github.com/ipfs/go-filestore v1.1.0 // indirect
 	github.com/ipfs/go-fs-lock v0.0.7 // indirect
 	github.com/ipfs/go-graphsync v0.11.0 // indirect
-	github.com/ipfs/go-ipfs v0.11.0 // indirect
-	github.com/ipfs/go-ipfs-blockstore v0.2.1 // indirect
+	github.com/ipfs/go-ipfs v0.12.2 // indirect
+	github.com/ipfs/go-ipfs-blockstore v1.1.2 // indirect
 	github.com/ipfs/go-ipfs-chunker v0.0.5 // indirect
 	github.com/ipfs/go-ipfs-cmds v0.6.0 // indirect
 	github.com/ipfs/go-ipfs-config v0.18.0 // indirect
 	github.com/ipfs/go-ipfs-delay v0.0.1 // indirect
-	github.com/ipfs/go-ipfs-ds-help v0.1.1 // indirect
+	github.com/ipfs/go-ipfs-ds-help v1.1.0 // indirect
 	github.com/ipfs/go-ipfs-exchange-interface v0.1.0 // indirect
 	github.com/ipfs/go-ipfs-exchange-offline v0.1.1 // indirect
 	github.com/ipfs/go-ipfs-files v0.0.9 // indirect
@@ -105,7 +105,7 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.5.2 // indirect
 	github.com/ipfs/tar-utils v0.0.2 // indirect
 	github.com/ipld/go-car v0.3.2 // indirect
-	github.com/ipld/go-codec-dagpb v1.3.0 // indirect
+	github.com/ipld/go-codec-dagpb v1.3.2 // indirect
 	github.com/ipld/go-ipld-prime v0.14.2 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/jbenet/go-temp-err-catcher v0.1.0 // indirect
@@ -239,4 +239,7 @@ require (
 	lukechampine.com/blake3 v1.1.6 // indirect
 )
 
-replace github.com/ipfs-shipyard/gomobile-ipfs/go => ../go
+replace (
+	github.com/ipfs-shipyard/gomobile-ipfs/go => ../go
+	golang.org/x/mobile => github.com/berty/mobile v0.0.7 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
+)
