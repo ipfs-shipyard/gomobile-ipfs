@@ -24,7 +24,8 @@ You can check the packages documentation [here](https://ipfs-shipyard.github.io/
 
 ## Build
 
-TODO
+See the file
+[INSTALL.md](https://github.com/ipfs-shipyard/gomobile-ipfs/blob/master/INSTALL.md).
 
 ## Code example
 
