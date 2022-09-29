@@ -243,5 +243,5 @@ require (
 replace (
 	github.com/ipfs-shipyard/gomobile-ipfs/go => ../go
 	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.25.0
-	golang.org/x/mobile => github.com/berty/mobile v0.0.7 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
+	golang.org/x/mobile => github.com/berty/mobile v0.0.8 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )
