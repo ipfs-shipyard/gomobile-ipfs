@@ -82,7 +82,7 @@ public class Config {
     public func get() throws -> [String: Any] {
         do {
             let rawJson = try self.goConfig.get()
-            let json = try JSONSerialization.jsonObject(with: rawJson, options: [])
+            let json = try JSONSerialization.jsonObject(with: rawJson!, options: [])
             return (json as? [String: Any])!
         } catch let error as NSError {
             throw ConfigError("getting failed", error)

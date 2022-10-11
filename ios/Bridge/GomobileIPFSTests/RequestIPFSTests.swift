@@ -25,12 +25,18 @@ class RequestIPFSTests: XCTestCase {
     func testDNSRequest() throws {
         let domain = "website.ipfs.io"
 
-        let resolveResp = try ipfs.newRequest("resolve")
+        guard let resolveResp = try ipfs.newRequest("resolve")
             .with(argument: "/ipns/\(domain)")
-            .sendToDict()
-        let dnsResp = try ipfs.newRequest("dns")
+                .sendToDict() else {
+            XCTFail("error while casting dict for \"resolve\"")
+            return
+        }
+        guard let dnsResp = try ipfs.newRequest("dns")
             .with(argument: domain)
-            .sendToDict()
+            .sendToDict() else {
+            XCTFail("error while casting dict for \"dns\"")
+            return
+        }
 
         guard let resolvePath = resolveResp["Path"] as? String else {
             XCTFail("error while casting value associated to \"Path\" key")
@@ -61,9 +67,9 @@ class RequestIPFSTests: XCTestCase {
             .send()
 
         do {
-            try JSONSerialization.jsonObject(with: latestRaw, options: [])
+            try JSONSerialization.jsonObject(with: latestRaw!, options: [])
         } catch _ {
-            XCTFail("error while parsing fetched JSON:  \(String(decoding: latestRaw, as: UTF8.self))")
+            XCTFail("error while parsing fetched JSON:  \(String(decoding: latestRaw!	, as: UTF8.self))")
         }
     }
 }
