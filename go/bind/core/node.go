@@ -35,7 +35,11 @@ type Node struct {
 	ipfsMobile *ipfs_mobile.IpfsMobile
 }
 
-func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
+func NewNode(r *Repo, config *NodeConfig) (*Node, error) {
+	if config == nil {
+		config = NewNodeConfig()
+	}
+
 	var dialer net.Dialer
 	net.DefaultResolver = &net.Resolver{
 		PreferGo: false,
@@ -58,14 +62,14 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 
 	switch {
 	// Java embedded driver (android)
-	case driver != nil:
+	case config.bleDriver != nil:
 		logger := zap.NewExample()
 		defer func() {
 			if err := logger.Sync(); err != nil {
 				fmt.Println(err)
 			}
 		}()
-		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, config.bleDriver))
 	// Go embedded driver (ios)
 	case ble.Supported:
 		logger := zap.NewExample()

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import core.Core;
 import core.Config;
 import core.Repo;
+import core.NodeConfig;
 import core.Node;
 import core.Shell;
 import core.SockManager;
@@ -163,11 +164,12 @@ public class IPFS {
             throw new NodeStartException("Node already started");
         }
 
-        BleInterface BLEDriver = new BleInterface(context.get(), true);
+        NodeConfig nodeConfig = Core.newNodeConfig();
+        nodeConfig.setBleDriver(new BleInterface(context.get(), true));
 
         try {
             openRepoIfClosed();
-            node = Core.newNode(repo, BLEDriver);
+            node = Core.newNode(repo, nodeConfig);
             node.serveUnixSocketAPI(absSockPath);
 
             // serve config Addresses API & Gateway
