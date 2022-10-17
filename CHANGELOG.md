@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.7.6](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.5...v1.7.6) (2022-10-17)
+
+
+### Bug Fixes
+
+* Update go.mod berty/mobile version. Fix Swift calls to send(). ([a7b8143](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/a7b814361c085eeb54b50f785adc333197d5098c))
+
 ## [1.7.5](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.4...v1.7.5) (2022-09-13)
 
 
