@@ -110,7 +110,7 @@ class ViewController: UIViewController {
                         .send()
      
                     title = "IPFS File"
-                    image = UIImage(data: fetchedData)!
+                    image = UIImage(data: fetchedData!)!
                 } catch let err as IPFSError {
                     error = err.localizedFullDescription
                 } catch let err {
@@ -257,7 +257,7 @@ class ViewController: UIViewController {
                     .send()
                 
                 title = "\(randomIndex). \(fetchedInfo["title"] as! String)"
-                image = UIImage(data: fetchedData)!
+                image = UIImage(data: fetchedData!)!
             } catch let err as IPFSError {
                 error = err.localizedFullDescription
             } catch let err {

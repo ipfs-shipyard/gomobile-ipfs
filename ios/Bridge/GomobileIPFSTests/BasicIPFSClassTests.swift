@@ -101,7 +101,10 @@ class BasicIPFSClassTests: XCTestCase {
     }
 
     func makeRequest() throws {
-        let res = try ipfs.newRequest("id").sendToDict()
+        guard let res = try ipfs.newRequest("id").sendToDict() else {
+            XCTFail("error while casting dict for \"id\"")
+            return
+        }
 
         // TODO: improve these checks
         guard let peerID = res["ID"] as? String else {

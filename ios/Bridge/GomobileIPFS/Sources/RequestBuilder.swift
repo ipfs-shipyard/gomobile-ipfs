@@ -101,7 +101,7 @@ public class RequestBuilder {
     /// - Throws: `RequestBuilderError`: If sending the request failed
     /// - Returns: A Data object containing the response
     /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
-    public func send() throws -> Data {
+    public func send() throws -> Data? {
         do {
             return try self.requestBuilder.send()
         } catch let error as NSError {
@@ -113,8 +113,10 @@ public class RequestBuilder {
     /// - Throws: `RequestBuilderError`: If sending the request or converting the response failed
     /// - Returns: A dict containing the response
     /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
-    public func sendToDict() throws -> [String: Any] {
-        let res = try self.requestBuilder.send()
+    public func sendToDict() throws -> [String: Any]? {
+        guard let res = try self.requestBuilder.send() else {
+            return nil
+        }
 
         do {
             let json = try JSONSerialization.jsonObject(with: res, options: [])
