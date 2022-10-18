@@ -167,6 +167,16 @@ public class IPFS {
         NodeConfig nodeConfig = Core.newNodeConfig();
         nodeConfig.setBleDriver(new BleInterface(context.get(), true));
 
+        // set net driver
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            NetDriver inet = new NetDriver();
+            nodeConfig.setNetDriver(inet);
+        }
+
+        // set mdns locker driver
+        MDNSLockerDriver imdnslocker = new MDNSLockerDriver(context.get());
+        nodeConfig.setMDNSLocker(imdnslocker);
+
         try {
             openRepoIfClosed();
             node = Core.newNode(repo, nodeConfig);
