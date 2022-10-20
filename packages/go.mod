@@ -243,5 +243,6 @@ require (
 replace (
 	github.com/ipfs-shipyard/gomobile-ipfs/go => ../go
 	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.25.0
+	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
 	golang.org/x/mobile => github.com/berty/mobile v0.0.9 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )

@@ -16,26 +16,34 @@ import (
 
 	ble "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
+	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsutil"
 	proximity "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/proximitytransport"
 	"go.uber.org/zap"
 
+	p2p_mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
+	ipfs_config "github.com/ipfs/go-ipfs-config"
 	ipfs_bs "github.com/ipfs/go-ipfs/core/bootstrap"
-	"github.com/libp2p/go-libp2p"
-	p2p "github.com/libp2p/go-libp2p"
-	// ipfs_log "github.com/ipfs/go-log"
+	libp2p "github.com/libp2p/go-libp2p"
 )
 
 type Node struct {
 	listeners   []manet.Listener
 	muListeners sync.Mutex
+	mdnsLocker  sync.Locker
+	mdnsLocked  bool
+	mdnsService p2p_mdns.Service
 
 	ipfsMobile *ipfs_mobile.IpfsMobile
 }
 
-func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
+func NewNode(r *Repo, config *NodeConfig) (*Node, error) {
+	if config == nil {
+		config = NewNodeConfig()
+	}
+
 	var dialer net.Dialer
 	net.DefaultResolver = &net.Resolver{
 		PreferGo: false,
@@ -54,18 +62,29 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 		return nil, err
 	}
 
+	// Set up netdriver.
+	if config.netDriver != nil {
+		logger, _ := zap.NewDevelopment()
+		inet := &inet{
+			net:    config.netDriver,
+			logger: logger,
+		}
+		ipfsutil.SetNetDriver(inet)
+		manet.SetNetInterface(inet)
+	}
+
 	var bleOpt libp2p.Option
 
 	switch {
 	// Java embedded driver (android)
-	case driver != nil:
+	case config.bleDriver != nil:
 		logger := zap.NewExample()
 		defer func() {
 			if err := logger.Sync(); err != nil {
 				fmt.Println(err)
 			}
 		}()
-		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, driver))
+		bleOpt = libp2p.Transport(proximity.NewTransport(ctx, logger, config.bleDriver))
 	// Go embedded driver (ios)
 	case ble.Supported:
 		logger := zap.NewExample()
@@ -81,7 +100,7 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 
 	ipfscfg := &ipfs_mobile.IpfsConfig{
 		HostConfig: &ipfs_mobile.HostConfig{
-			Options: []p2p.Option{bleOpt},
+			Options: []libp2p.Option{bleOpt},
 		},
 		RepoMobile: r.mr,
 		ExtraOpts: map[string]bool{
@@ -90,9 +109,72 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 		},
 	}
 
+	cfg, err := r.mr.Config()
+	if err != nil {
+		panic(err)
+	}
+
+	mdnsLocked := false
+	if cfg.Discovery.MDNS.Enabled && config.mdnsLockerDriver != nil {
+		config.mdnsLockerDriver.Lock()
+		mdnsLocked = true
+
+		// Force disable mDNS so that ipfs_mobile.NewNode doesn't start the service.
+		err := r.mr.ApplyPatchs(func(cfg *ipfs_config.Config) error {
+			cfg.Discovery.MDNS.Enabled = false
+			return nil
+		})
+		if err != nil {
+			return nil, fmt.Errorf("unable to ApplyPatchs to disable mDNS: %w", err)
+		}
+	}
 	mnode, err := ipfs_mobile.NewNode(ctx, ipfscfg)
 	if err != nil {
+		if mdnsLocked {
+			config.mdnsLockerDriver.Unlock()
+		}
 		return nil, err
+	}
+
+	var mdnsService p2p_mdns.Service = nil
+	if mdnsLocked {
+		// Restore.
+		err := r.mr.ApplyPatchs(func(cfg *ipfs_config.Config) error {
+			cfg.Discovery.MDNS.Enabled = true
+			return nil
+		})
+		if err != nil {
+			return nil, fmt.Errorf("unable to ApplyPatchs to enable mDNS: %w", err)
+		}
+
+		h := mnode.PeerHost()
+		mdnslogger, _ := zap.NewDevelopment()
+
+		dh := ipfsutil.DiscoveryHandler(ctx, mdnslogger, h)
+		mdnsService = ipfsutil.NewMdnsService(mdnslogger, h, ipfsutil.MDNSServiceName, dh)
+
+		// Start the mDNS service.
+		// Get multicast interfaces.
+		ifaces, err := ipfsutil.GetMulticastInterfaces()
+		if err != nil {
+			if mdnsLocked {
+				config.mdnsLockerDriver.Unlock()
+			}
+			return nil, err
+		}
+
+		// If multicast interfaces are found, start the mDNS service.
+		if len(ifaces) > 0 {
+			mdnslogger.Info("starting mdns")
+			if err := mdnsService.Start(); err != nil {
+				if mdnsLocked {
+					config.mdnsLockerDriver.Unlock()
+				}
+				return nil, fmt.Errorf("unable to start mdns service: %w", err)
+			}
+		} else {
+			mdnslogger.Error("unable to start mdns service, no multicast interfaces found")
+		}
 	}
 
 	if err := mnode.IpfsNode.Bootstrap(ipfs_bs.DefaultBootstrapConfig); err != nil {
@@ -100,7 +182,10 @@ func NewNode(r *Repo, driver ProximityDriver) (*Node, error) {
 	}
 
 	return &Node{
-		ipfsMobile: mnode,
+		ipfsMobile:  mnode,
+		mdnsLocker:  config.mdnsLockerDriver,
+		mdnsLocked:  mdnsLocked,
+		mdnsService: mdnsService,
 	}, nil
 }
 
@@ -110,6 +195,12 @@ func (n *Node) Close() error {
 		l.Close()
 	}
 	n.muListeners.Unlock()
+
+	if n.mdnsLocked {
+		n.mdnsService.Close()
+		n.mdnsLocker.Unlock()
+		n.mdnsLocked = false
+	}
 
 	return n.ipfsMobile.Close()
 }

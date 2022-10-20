@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import core.Core;
 import core.Config;
 import core.Repo;
+import core.NodeConfig;
 import core.Node;
 import core.Shell;
 import core.SockManager;
@@ -163,11 +164,22 @@ public class IPFS {
             throw new NodeStartException("Node already started");
         }
 
-        BleInterface BLEDriver = new BleInterface(context.get(), true);
+        NodeConfig nodeConfig = Core.newNodeConfig();
+        nodeConfig.setBleDriver(new BleInterface(context.get(), true));
+
+        // set net driver
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            NetDriver inet = new NetDriver();
+            nodeConfig.setNetDriver(inet);
+        }
+
+        // set mdns locker driver
+        MDNSLockerDriver imdnslocker = new MDNSLockerDriver(context.get());
+        nodeConfig.setMDNSLocker(imdnslocker);
 
         try {
             openRepoIfClosed();
-            node = Core.newNode(repo, BLEDriver);
+            node = Core.newNode(repo, nodeConfig);
             node.serveUnixSocketAPI(absSockPath);
 
             // serve config Addresses API & Gateway
