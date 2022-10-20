@@ -1,5 +1,13 @@
 # Global Changelog
 
+# [1.8.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.6...v1.8.0) (2022-10-20)
+
+
+### Features
+
+* Add core.NodeConfig with ProximityDriver. Change NewNode to use it. ([7f1d1ff](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/7f1d1ffa6645d2825b3b00dd084296a2832d2d0a))
+* Implement Java NetDriver and MDNSLockerDriver. ([f23c6aa](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/f23c6aaa9843b7734fff546477c5644bcc651a76))
+
 ## [1.7.6](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.5...v1.7.6) (2022-10-17)
 
 
