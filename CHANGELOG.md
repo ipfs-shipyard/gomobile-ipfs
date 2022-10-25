@@ -1,5 +1,13 @@
 # Global Changelog
 
+# [1.9.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.8.0...v1.9.0) (2022-10-25)
+
+
+### Features
+
+* implement request using InpuStream on Android and go ([2af8078](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/2af807822a4b70cb3992b0141a3ca5906c3c2766))
+* implement request using InpuStream on iOS ([533fd5c](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/533fd5cf7d2972fd3c429d4cd7965c4f452f7d01))
+
 # [1.8.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.7.6...v1.8.0) (2022-10-20)
 
 
