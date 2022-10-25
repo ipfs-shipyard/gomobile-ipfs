@@ -45,7 +45,7 @@ final class FetchFile extends AsyncTask<Void, Void, String> {
         try {
             fetchedData = ipfs.newRequest("cat")
                 .withArgument(cid)
-                .send();
+                .sendToBytes();
 
 //            Log.d(TAG, "fetched file data=" + MainActivity.bytesToHex(fetchedData));
             return activity.getString(R.string.titleFetchedImage);

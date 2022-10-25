@@ -52,7 +52,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
                 String address = String.format("%s/latest/info.json", XKCDIPNS);
                 byte[] latestRaw = ipfs.newRequest("cat")
                     .withArgument(address)
-                    .send();
+                    .sendToBytes();
 
                 XKCDLatest = new JSONObject(new String(latestRaw)).getInt("num");
             }
@@ -62,7 +62,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
 
             byte[] infoRaw = ipfs.newRequest("cat")
                 .withArgument(String.format("%s/%s/info.json", XKCDIPNS, formattedIndex))
-                .send();
+                .sendToBytes();
             JSONObject infoJSON = new JSONObject(new String(infoRaw));
 
             String title = infoJSON.getString("title");
@@ -73,7 +73,7 @@ final class FetchRandomXKCD extends AsyncTask<Void, Void, String> {
 
             fetchedData = ipfs.newRequest("cat")
                 .withArgument(String.format("%s/%s/image.%s", XKCDIPNS, formattedIndex, imgExt))
-                .send();
+                .sendToBytes();
 
             return String.format(Locale.US, "%d. %s", randomIndex, title);
         } catch (Exception err) {

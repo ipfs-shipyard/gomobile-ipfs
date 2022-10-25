@@ -107,7 +107,7 @@ class ViewController: UIViewController {
                 do {
                     let fetchedData = try ViewController.ipfs!.newRequest("cat")
                         .with(argument: code)
-                        .send()
+                        .sendToBytes()
      
                     title = "IPFS File"
                     image = UIImage(data: fetchedData!)!
@@ -254,7 +254,7 @@ class ViewController: UIViewController {
                 
                 let fetchedData = try ViewController.ipfs!.newRequest("cat")
                     .with(argument: "\(ViewController.XKCDIPNS)/\(formattedIndex)/image.\(imgExt)")
-                    .send()
+                    .sendToBytes()
                 
                 title = "\(randomIndex). \(fetchedInfo["title"] as! String)"
                 image = UIImage(data: fetchedData!)!

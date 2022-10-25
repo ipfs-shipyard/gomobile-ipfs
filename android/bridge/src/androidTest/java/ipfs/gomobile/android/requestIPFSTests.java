@@ -5,13 +5,15 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +25,15 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class requestIPFSTests {
     private IPFS ipfs;
+    // This CID is the IPFS logo in the Wikipedia mirror. It should exist for a long time.
+    private String fileUri = "/ipfs/bafkreifxaqwd63x4bhjj33sfm3pmny2codycx27jo77it33hkexzrawyma";
+    private int expectedFileLength = 2940;
+    private byte[] expectedFileSha256 = new byte[] {
+        (byte)0xb7, (byte)0x04, (byte)0x2c, (byte)0x3f, (byte)0x6e, (byte)0xfc, (byte)0x09, (byte)0xd2,
+        (byte)0x9d, (byte)0xee, (byte)0x45, (byte)0x66, (byte)0xde, (byte)0xc6, (byte)0xe3, (byte)0x42,
+        (byte)0x70, (byte)0xf0, (byte)0x2b, (byte)0xeb, (byte)0xe9, (byte)0x77, (byte)0xfe, (byte)0x89,
+        (byte)0xef, (byte)0x67, (byte)0x51, (byte)0x2f, (byte)0x98, (byte)0x82, (byte)0xd8, (byte)0x60        
+    };
 
     @Rule
     public Timeout globalTimeout = Timeout.seconds(600);
@@ -65,14 +76,46 @@ public class requestIPFSTests {
 
     @Test
     public void testCatFile() throws Exception {
-        byte[] latestRaw = ipfs.newRequest("cat")
-                .withArgument("/ipfs/Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu")
-                .send();
+        byte[] response = ipfs.newRequest("cat")
+                .withArgument(fileUri)
+                .sendToBytes();
 
         assertEquals(
             "response should have the correct length",
-            12435,
-            latestRaw.length
+            expectedFileLength,
+            response.length
         );
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        sha256.update(response);
+        assertTrue(
+            "response should have the correct SHA256",
+            Arrays.equals(sha256.digest(), expectedFileSha256)
+        );
+    }
+
+    @Test
+    public void testCatFileStream() throws Exception {
+        try (InputStream stream = ipfs.newRequest("cat")
+                .withArgument(fileUri)
+                .send()) {
+            byte[] buffer = new byte[1000];
+            int count = 0;
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            int n;
+            while ((n = stream.read(buffer)) != -1) {
+                count += n;
+                sha256.update(buffer, 0, n);
+            }
+
+            assertEquals(
+                "streamed response should have the correct length",
+                expectedFileLength,
+                count
+            );
+            assertTrue(
+                "response should have the correct SHA256",
+                Arrays.equals(sha256.digest(), expectedFileSha256)
+            );
+        }
     }
 }
