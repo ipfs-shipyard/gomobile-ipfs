@@ -85,7 +85,7 @@ class ViewController: UIViewController {
                     .with(body: body)
                     .sendToDict()
 
-                let cid = (res["Hash"] as! String)
+                let cid = (res!["Hash"] as! String)
                 print("cid=\(cid)")
                 
                 let qrcode = self.generateQRCode(from: cid)
@@ -134,7 +134,7 @@ class ViewController: UIViewController {
                 try ViewController.ipfs!.start()
 
                 let res = try ViewController.ipfs!.newRequest("id").sendToDict()
-                self.peerID = (res["ID"] as! String)
+                self.peerID = (res!["ID"] as! String)
             } catch let err as IPFSError {
                 error = err.localizedFullDescription
             } catch let err {
@@ -240,7 +240,7 @@ class ViewController: UIViewController {
                 let list = try ViewController.ipfs!.newRequest("cat")
                     .with(argument: "\(ViewController.XKCDIPNS)/latest/info.json")
                     .sendToDict()
-                self.XKCDLatest = (list["num"] as! Int)
+                self.XKCDLatest = (list!["num"] as! Int)
                 
                 let randomIndex = Int(arc4random_uniform(UInt32(self.XKCDLatest))) + 1
                 let formattedIndex = String(format: "%04d", randomIndex)
@@ -249,14 +249,14 @@ class ViewController: UIViewController {
                     .with(argument: "\(ViewController.XKCDIPNS)/\(formattedIndex)/info.json")
                     .sendToDict()
                 
-                let imgURL = fetchedInfo["img"] as! String
+                let imgURL = fetchedInfo!["img"] as! String
                 let imgExt = imgURL.components(separatedBy: ".").last!.contains("png") ? "png" : "jpg"
                 
                 let fetchedData = try ViewController.ipfs!.newRequest("cat")
                     .with(argument: "\(ViewController.XKCDIPNS)/\(formattedIndex)/image.\(imgExt)")
                     .sendToBytes()
                 
-                title = "\(randomIndex). \(fetchedInfo["title"] as! String)"
+                title = "\(randomIndex). \(fetchedInfo!["title"] as! String)"
                 image = UIImage(data: fetchedData!)!
             } catch let err as IPFSError {
                 error = err.localizedFullDescription
