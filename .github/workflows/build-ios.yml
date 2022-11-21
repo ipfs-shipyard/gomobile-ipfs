@@ -57,7 +57,6 @@ jobs:
           pod setup
 
       - name: Build iOS packages
-        working-directory: packages
         env:
           GOMOBILE_IPFS_VERSION: ${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}  # yamllint disable-line rule:line-length
         run: make build_bridge.ios
@@ -65,27 +64,27 @@ jobs:
       - name: Upload the core archive
         uses: actions/upload-artifact@v2
         with:
-          path: packages/build/ios/cocoapods/core/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Core-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
+          path: build/ios/cocoapods/core/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Core-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
           name: Gomobile-IPFS-Core-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
           if-no-files-found: error
 
       - name: Upload the core podspec
         uses: actions/upload-artifact@v2
         with:
-          path: packages/build/ios/cocoapods/core/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Core.podspec  # yamllint disable-line rule:line-length
+          path: build/ios/cocoapods/core/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Core.podspec  # yamllint disable-line rule:line-length
           name: Gomobile-IPFS-Core.podspec
           if-no-files-found: error
 
       - name: Upload the bridge archive
         uses: actions/upload-artifact@v2
         with:
-          path: packages/build/ios/cocoapods/bridge/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Bridge-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
+          path: build/ios/cocoapods/bridge/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Bridge-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
           name: Gomobile-IPFS-Bridge-v${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}.pod.zip  # yamllint disable-line rule:line-length
           if-no-files-found: error
 
       - name: Upload the bridge podspec
         uses: actions/upload-artifact@v2
         with:
-          path: packages/build/ios/cocoapods/bridge/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Bridge.podspec  # yamllint disable-line rule:line-length
+          path: build/ios/cocoapods/bridge/${{ steps.constants.outputs.GOMOBILE_IPFS_VERSION }}/Gomobile-IPFS-Bridge.podspec  # yamllint disable-line rule:line-length
           name: Gomobile-IPFS-Bridge.podspec
           if-no-files-found: error

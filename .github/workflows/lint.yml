@@ -106,8 +106,8 @@ jobs:
 
       - name: Set TARGET_SDK in env
         run: |
-          pip3 install -r packages/utils/manifest_get/requirements.txt
-          export GET_BIN=packages/utils/manifest_get/manifest_get.py
+          pip3 install -r utils/manifest_get/requirements.txt
+          export GET_BIN=utils/manifest_get/manifest_get.py
           export GET_KEY=global.android.target_sdk_version
           echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
@@ -127,7 +127,6 @@ jobs:
           java-version: 11
 
       - name: Build Go Core
-        working-directory: packages
         run: make build_core.android GOMOBILE_TARGET=/amd64
 
       - name: Lint Java/Android
@@ -158,14 +157,14 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.16
+          go-version: 1.17
 
       - name: Install GolangCI-Lint
         working-directory: go
         run: curl -sSfL
           https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-          | sh -s v1.23.7
+          | sh -s v1.50.1
 
       - name: Lint Golang
         working-directory: go
-        run: ./bin/golangci-lint run -D unused --timeout 5m
+        run: ./bin/golangci-lint run -D unused --timeout 5m --skip-files deps.go

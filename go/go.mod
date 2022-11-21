@@ -17,7 +17,10 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.19.1
+	golang.org/x/mobile v0.0.0-20220112015953-858099ff7816
 )
+
+require github.com/marten-seemann/qtls-go1-18 v0.1.0-beta.1 // indirect
 
 require (
 	bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // indirect
@@ -171,7 +174,7 @@ require (
 	github.com/marten-seemann/tcp v0.0.0-20210406111302-dfbc87cc63fd // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/mattn/go-runewidth v0.0.4 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/miekg/dns v1.1.43 // indirect
@@ -221,7 +224,7 @@ require (
 	go.uber.org/multierr v1.7.0 // indirect
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
+	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c // indirect
@@ -239,4 +242,8 @@ require (
 	lukechampine.com/blake3 v1.1.6 // indirect
 )
 
-replace github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
+replace (
+	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.25.0
+	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
+	golang.org/x/mobile => github.com/berty/mobile v0.0.9 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
+)

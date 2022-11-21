@@ -103,7 +103,7 @@ Ubuntu:
 In a terminal, enter:
 
     git clone https://github.com/ipfs-shipyard/gomobile-ipfs
-    cd gomobile-ipfs/packages
+    cd gomobile-ipfs
 
 To build the core, enter:
 
@@ -125,7 +125,7 @@ terminal, or put the commands in ~/.bash_profile.)
 In a terminal, enter:
 
     git clone https://github.com/ipfs-shipyard/gomobile-ipfs
-    cd gomobile-ipfs/packages
+    cd gomobile-ipfs
 
 To build the core, enter:
 

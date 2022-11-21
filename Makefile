@@ -36,7 +36,7 @@ ANDROID_MINIMUM_VERSION := $(call MANIFEST_GET_FUNC,android.min_sdk_version)
 IOS_CORE_PACKAGE := $(call MANIFEST_GET_FUNC,go_core.ios.package)
 IOS_APP_FILENAME := $(call MANIFEST_GET_FUNC,ios_demo_app.filename)
 
-GO_DIR = $(MAKEFILE_DIR)/../go
+GO_DIR = $(MAKEFILE_DIR)/go
 GO_SRC = $(shell find $(GO_DIR) -name \*.go)
 GO_MOD_FILES = $(GO_DIR)/go.mod $(GO_DIR)/go.sum
 
@@ -47,7 +47,7 @@ GOMOBILE_TARGET ?=
 GOMOBILE_ANDROID_TARGET ?= android
 GOMOBILE_IOS_TARGET ?= ios
 
-ANDROID_DIR = $(MAKEFILE_DIR)/../android
+ANDROID_DIR = $(MAKEFILE_DIR)/android
 ANDROID_SRC = $(shell git ls-files $(ANDROID_DIR) | grep -v '.gitignore')
 ANDROID_BUILD_DIR = $(BUILD_DIR)/android
 ANDROID_BUILD_DIR_INT = $(ANDROID_BUILD_DIR)/intermediates
@@ -60,7 +60,7 @@ ANDROID_OUTPUT_APK = $(ANDROID_DIR)/app/build/outputs/apk/release/app-release.ap
 ANDROID_BUILD_DIR_APP = $(ANDROID_BUILD_DIR)/app/$(VERSION)
 ANDROID_BUILD_DIR_APP_APK = $(ANDROID_BUILD_DIR_APP)/$(ANDROID_APP_FILENAME)-$(VERSION).apk
 
-IOS_DIR = $(MAKEFILE_DIR)/../ios
+IOS_DIR = $(MAKEFILE_DIR)/ios
 IOS_SRC = $(shell git ls-files $(IOS_DIR) | grep -v '.gitignore')
 IOS_BUILD_DIR = $(BUILD_DIR)/ios
 IOS_BUILD_DIR_INT = $(IOS_BUILD_DIR)/intermediates
@@ -79,7 +79,7 @@ IOS_BUILD_DIR_INT_APP_IPA_OUTPUT = $(IOS_BUILD_DIR_INT_APP_IPA)/Example.ipa
 IOS_BUILD_DIR_INT_APP_ARCHIVE = $(IOS_BUILD_DIR_INT_APP)/archive
 IOS_BUILD_DIR_INT_APP_ARCHIVE_OUTPUT = $(IOS_BUILD_DIR_INT_APP_ARCHIVE)/app-release.xcarchive
 
-DOC_DIR = $(MAKEFILE_DIR)/../docs
+DOC_DIR = $(MAKEFILE_DIR)/docs
 ANDROID_DOC_DIR = $(DOC_DIR)/android
 IOS_DOC_DIR = $(DOC_DIR)/ios
 
@@ -113,10 +113,10 @@ $(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	@echo '------------------------------------'
 	@echo '   Android Core: Gomobile binding   '
 	@echo '------------------------------------'
-	go mod download
-	go run golang.org/x/mobile/cmd/gomobile init
+	cd $(GO_DIR) && go mod download
+	cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(ANDROID_GOMOBILE_CACHE) android/libs
-	GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+	GO111MODULE=on cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile bind \
 		-o $(ANDROID_CORE) \
 		-v $(GOMOBILE_OPT) \
 		-cache $(ANDROID_GOMOBILE_CACHE) \
@@ -124,7 +124,7 @@ $(ANDROID_CORE): $(ANDROID_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 		-androidapi $(ANDROID_MINIMUM_VERSION) \
 		$(CORE_PACKAGE) $(EXT_PACKAGE)
 	touch $@
-	go mod tidy
+	cd $(GO_DIR) && go mod tidy
 	@echo 'Done!'
 
 $(ANDROID_BUILD_DIR_INT_CORE):
@@ -150,18 +150,18 @@ $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
 	@echo '------------------------------------'
-	go mod download
-	go install golang.org/x/mobile/cmd/gobind
-	go run golang.org/x/mobile/cmd/gomobile init
+	cd $(GO_DIR) && go mod download
+	cd $(GO_DIR) && go install golang.org/x/mobile/cmd/gobind
+	cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(IOS_GOMOBILE_CACHE) ios/Frameworks
-	go run golang.org/x/mobile/cmd/gomobile bind \
+	cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile bind \
 			-o $(IOS_CORE) \
 			$(GOMOBILE_OPT) \
 			-cache $(IOS_GOMOBILE_CACHE) \
 			-target=$(GOMOBILE_IOS_TARGET)$(GOMOBILE_TARGET) \
 			$(CORE_PACKAGE) $(EXT_PACKAGE)
 	touch $@
-	go mod tidy
+	cd $(GO_DIR) && go mod tidy
 	@echo 'Done!'
 
 $(IOS_BUILD_DIR_INT_CORE):
