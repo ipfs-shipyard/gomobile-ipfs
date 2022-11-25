@@ -71,7 +71,7 @@
 		8DE4ECFA2402C0ED00B70884 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		8DE4ECFB2402C0ED00B70884 /* IPFS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPFS.swift; sourceTree = "<group>"; };
 		8DE4ECFC2402C0ED00B70884 /* Repo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repo.swift; sourceTree = "<group>"; };
-		8DE4ED052402C16B00B70884 /* Core.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Core.xcframework; path = ../../packages/build/ios/intermediates/core/Core.xcframework; sourceTree = "<group>"; };
+		8DE4ED052402C16B00B70884 /* Core.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Core.xcframework; path = ../../build/ios/intermediates/core/Core.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,7 +437,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../packages/build/ios/intermediates/core/**";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../build/ios/intermediates/core/**";
 				INFOPLIST_FILE = GomobileIPFS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -472,7 +472,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../packages/build/ios/intermediates/core/**";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../build/ios/intermediates/core/**";
 				INFOPLIST_FILE = GomobileIPFS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

@@ -54,8 +54,8 @@ jobs:
 
       # - name: Set TARGET_SDK in env
       #   run: |
-      #     pip3 install -r packages/utils/manifest_get/requirements.txt
-      #     export GET_BIN=packages/utils/manifest_get/manifest_get.py
+      #     pip3 install -r utils/manifest_get/requirements.txt
+      #     export GET_BIN=utils/manifest_get/manifest_get.py
       #     export GET_KEY=global.android.target_sdk_version
       #     echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
@@ -155,7 +155,6 @@ jobs:
 
       - name: Build iOS artifacts
         if: steps.semantic.outputs.new_release_published == 'true'
-        working-directory: packages
         env:
           GOMOBILE_IPFS_VERSION: ${{ steps.semantic.outputs.new_release_version }}  # yamllint disable-line rule:line-length
         run: make build_bridge.ios
@@ -166,15 +165,14 @@ jobs:
           tag_name: v${{ steps.semantic.outputs.new_release_version }}
           # yamllint disable rule:line-length
           files: |
-            packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
-            packages/build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core.podspec
-            packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
-            packages/build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge.podspec
+            build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
+            build/ios/cocoapods/core/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Core.podspec
+            build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge-v${{ steps.semantic.outputs.new_release_version }}.pod.zip
+            build/ios/cocoapods/bridge/${{ steps.semantic.outputs.new_release_version }}/Gomobile-IPFS-Bridge.podspec
           # yamllint enable rule:line-length
 
       - name: Publish iOS packages
         if: steps.semantic.outputs.new_release_published == 'true'
-        working-directory: packages
         env:
           # ANDROID_KEYPASS: ${{ secrets.ANDROID_KEYPASS }}
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}

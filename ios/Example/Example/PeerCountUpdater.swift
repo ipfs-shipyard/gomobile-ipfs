@@ -31,7 +31,7 @@ public class PeerCountUpdater: NSObject {
                 var peerCount: Int = 0
                 do {
                     let res = try ViewController.ipfs!.newRequest("/swarm/peers").sendToDict()
-                    let peerList = res["Peers"] as? NSArray
+                    let peerList = res!["Peers"] as? NSArray
                     peerCount = peerList?.count ?? 0
                 } catch let error {
                     print(error)
