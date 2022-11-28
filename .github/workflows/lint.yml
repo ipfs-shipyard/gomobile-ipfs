@@ -76,7 +76,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.18
 
       - name: Set GOPATH in env
         run: |
@@ -157,7 +157,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.18
 
       - name: Install GolangCI-Lint
         working-directory: go
