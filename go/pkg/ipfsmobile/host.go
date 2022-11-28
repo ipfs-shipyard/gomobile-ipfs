@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	p2p "github.com/libp2p/go-libp2p"
-	p2p_host "github.com/libp2p/go-libp2p-core/host"
-	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	p2p_pstore "github.com/libp2p/go-libp2p-core/peerstore"
+	p2p_host "github.com/libp2p/go-libp2p/core/host"
+	p2p_peer "github.com/libp2p/go-libp2p/core/peer"
+	p2p_pstore "github.com/libp2p/go-libp2p/core/peerstore"
 
-	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
+	ipfs_p2p "github.com/ipfs/kubo/core/node/libp2p"
 )
 
 // HostMobile is a p2p_host.Host

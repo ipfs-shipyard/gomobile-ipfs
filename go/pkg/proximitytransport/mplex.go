@@ -1,16 +1,16 @@
 package proximitytransport
 
 /*
-	The mplex struct as NOT relationship with libp2p mplex package!!!
+  The mplex struct as NOT relationship with libp2p mplex package!!!
 
-	This mplex struct is a multiplexer taken multiple inputs for one output.
-	You must initialize mplex by setting input and output before running it.
-	There are two types of input:
-	1) RingBufferMap
-	2) builtin chan []byte
-	There is only one type of output: *io.PipeWriter
-	When you start mplex, its flushed buffers first in the order you set them,
-	and read on its chan []byte.
+  This mplex struct is a multiplexer taken multiple inputs for one output.
+  You must initialize mplex by setting input and output before running it.
+  There are two types of input:
+  1) RingBufferMap
+  2) builtin chan []byte
+  There is only one type of output: *io.PipeWriter
+  When you start mplex, its flushed buffers first in the order you set them,
+  and read on its chan []byte.
 */
 
 import (

@@ -5,9 +5,9 @@ import (
 	"sync"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
-	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
+	ipfs_loader "github.com/ipfs/kubo/plugin/loader"
+	ipfs_repo "github.com/ipfs/kubo/repo"
+	ipfs_fsrepo "github.com/ipfs/kubo/repo/fsrepo"
 )
 
 var (

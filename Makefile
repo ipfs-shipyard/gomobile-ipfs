@@ -145,7 +145,7 @@ $(IOS_BUILD_DIR_CCP_CORE): $(IOS_CORE) $(MANIFEST_FILE)
 # From https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile#hdr-Build_a_library_for_Android_and_iOS
 # To generate a fat XCFramework that supports iOS, macOS, and macCatalyst for all supportec architectures (amd64 and arm64),
 # specify -target ios,macos,maccatalyst
-
+# we need to use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	@echo '------------------------------------'
 	@echo '     iOS Core: Gomobile binding     '
@@ -154,8 +154,10 @@ $(IOS_CORE): $(IOS_BUILD_DIR_INT_CORE) $(GO_SRC) $(GO_MOD_FILES)
 	cd $(GO_DIR) && go install golang.org/x/mobile/cmd/gobind
 	cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(IOS_GOMOBILE_CACHE) ios/Frameworks
+
 	cd $(GO_DIR) && go run golang.org/x/mobile/cmd/gomobile bind \
 			-o $(IOS_CORE) \
+			-tags 'nowatchdog' \
 			$(GOMOBILE_OPT) \
 			-cache $(IOS_GOMOBILE_CACHE) \
 			-target=$(GOMOBILE_IOS_TARGET)$(GOMOBILE_TARGET) \

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ble-driver"
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	ipfs_config "github.com/ipfs/kubo/config"
+	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
+	libp2p_peer "github.com/libp2p/go-libp2p/core/peer"
 )
 
 func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error) {
@@ -39,8 +39,7 @@ func initConfig(out io.Writer, nBitsForKeypair int) (*ipfs_config.Config, error)
 		Identity:  identity,
 		Discovery: ipfs_config.Discovery{
 			MDNS: ipfs_config.MDNS{
-				Enabled:  true,
-				Interval: 10,
+				Enabled: true,
 			},
 		},
 

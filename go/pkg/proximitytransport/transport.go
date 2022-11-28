@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"sync"
 
-	host "github.com/libp2p/go-libp2p-core/host"
-	peer "github.com/libp2p/go-libp2p-core/peer"
-	pstore "github.com/libp2p/go-libp2p-core/peerstore"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
-	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
+	host "github.com/libp2p/go-libp2p/core/host"
+	peer "github.com/libp2p/go-libp2p/core/peer"
+	pstore "github.com/libp2p/go-libp2p/core/peerstore"
+	tpt "github.com/libp2p/go-libp2p/core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	"github.com/pkg/errors"
@@ -26,7 +25,10 @@ var _ tpt.Transport = &proximityTransport{}
 var _ ProximityTransport = &proximityTransport{}
 
 // TransportMap prevents instantiating multiple Transport
-var TransportMap sync.Map
+var TransportMap = make(map[string]*proximityTransport)
+
+// TransportMapMutex is the mutex for the TransportMap var
+var TransportMapMutex sync.RWMutex
 
 // Define log level for driver loggers
 const (
@@ -46,18 +48,19 @@ type ProximityTransport interface {
 
 type proximityTransport struct {
 	host     host.Host
-	upgrader *tptu.Upgrader
+	upgrader tpt.Upgrader
 
-	connMap  sync.Map
-	cache    *RingBufferMap
-	lock     sync.RWMutex
-	listener *Listener
-	driver   ProximityDriver
-	logger   *zap.Logger
-	ctx      context.Context
+	connMap      map[string]*Conn
+	connMapMutex sync.RWMutex
+	cache        *RingBufferMap
+	lock         sync.RWMutex
+	listener     *Listener
+	driver       ProximityDriver
+	logger       *zap.Logger
+	ctx          context.Context
 }
 
-func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
+func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) func(h host.Host, u tpt.Upgrader) (*proximityTransport, error) {
 	if l == nil {
 		l = zap.NewNop()
 	}
@@ -69,11 +72,12 @@ func NewTransport(ctx context.Context, l *zap.Logger, driver ProximityDriver) fu
 		driver = &NoopProximityDriver{}
 	}
 
-	return func(h host.Host, u *tptu.Upgrader) (*proximityTransport, error) {
+	return func(h host.Host, u tpt.Upgrader) (*proximityTransport, error) {
 		l.Debug("NewTransport called", zap.String("driver", driver.ProtocolName()))
 		transport := &proximityTransport{
 			host:     h,
 			upgrader: u,
+			connMap:  make(map[string]*Conn),
 			cache:    NewRingBufferMap(l, 128),
 			driver:   driver,
 			logger:   l,
@@ -109,7 +113,10 @@ func (t *proximityTransport) Dial(ctx context.Context, remoteMa ma.Multiaddr, re
 	}
 
 	// Can't have two connections on the same multiaddr
-	if _, ok := t.connMap.Load(remoteAddr); ok {
+	t.connMapMutex.RLock()
+	_, ok := t.connMap[remoteAddr]
+	t.connMapMutex.RUnlock()
+	if ok {
 		return nil, errors.New("error: proximityTransport.Dial: already connected to this address")
 	}
 
@@ -143,9 +150,11 @@ func (t *proximityTransport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) 
 		}
 	}
 
-	t.lock.RLock()
 	// If the a listener already exists for this driver, returns an error.
-	_, ok := TransportMap.Load(t.driver.ProtocolName())
+	TransportMapMutex.RLock()
+	_, ok := TransportMap[t.driver.ProtocolName()]
+	TransportMapMutex.RUnlock()
+	t.lock.RLock()
 	if ok || t.listener != nil {
 		t.lock.RUnlock()
 		return nil, errors.New("error: proximityTransport.Listen: one listener maximum")
@@ -153,7 +162,9 @@ func (t *proximityTransport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) 
 	t.lock.RUnlock()
 
 	// Register this transport
-	TransportMap.Store(t.driver.ProtocolName(), t)
+	TransportMapMutex.Lock()
+	TransportMap[t.driver.ProtocolName()] = t
+	TransportMapMutex.Unlock()
 
 	t.lock.Lock()
 	defer t.lock.Unlock()
@@ -174,22 +185,24 @@ func (t *proximityTransport) ReceiveFromPeer(remotePID string, payload []byte) {
 	data := make([]byte, len(payload))
 	copy(data, payload)
 
-	c, ok := t.connMap.Load(remotePID)
+	t.connMapMutex.RLock()
+	c, ok := t.connMap[remotePID]
+	t.connMapMutex.RUnlock()
 	if ok {
 		// Put payload in the Conn cache if libp2p connection is not ready
-		if !c.(*Conn).isReady() {
-			c.(*Conn).Lock()
-			if !c.(*Conn).ready {
+		if !c.isReady() {
+			c.Lock()
+			if !c.ready {
 				t.logger.Info("ReceiveFromPeer: connection is not ready to accept incoming packets, add it to cache")
-				c.(*Conn).cache.Add(remotePID, data)
-				c.(*Conn).Unlock()
+				c.cache.Add(remotePID, data)
+				c.Unlock()
 				return
 			}
-			c.(*Conn).Unlock()
+			c.Unlock()
 		}
 
 		// Write the payload into pipe
-		c.(*Conn).mp.input <- data
+		c.mp.input <- data
 	} else {
 		t.logger.Info("ReceiveFromPeer: no Conn found, put payload in cache")
 		t.cache.Add(remotePID, data)

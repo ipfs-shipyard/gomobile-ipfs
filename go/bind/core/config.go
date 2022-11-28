@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-	ipfs_common "github.com/ipfs/go-ipfs/repo/common"
+	ipfs_config "github.com/ipfs/kubo/config"
+	ipfs_common "github.com/ipfs/kubo/repo/common"
 )
 
 type Config struct {
