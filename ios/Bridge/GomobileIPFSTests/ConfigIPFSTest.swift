@@ -77,7 +77,7 @@ class ConfigIPFSTests: XCTestCase {
             "MDNS state should be enabled after setting it in config"
         )
 
-        let mdnsCfg = ["MDNS": ["Enabled": true, "Interval": 10]]
+        let mdnsCfg = ["MDNS": ["Enabled": true]]
         try ipfs.setConfigKey("Discovery", mdnsCfg);
 
         XCTAssertTrue(
