@@ -97,12 +97,6 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ hashFiles('go/go.sum') }}
 
-      - name: Install Go mod
-        if: steps.cache.outputs.cache-hit != 'true'
-        working-directory: go
-        run: |
-          GO111MODULE=on go mod vendor
-
       - name: Install Java
         uses: actions/setup-java@v1
         with:
