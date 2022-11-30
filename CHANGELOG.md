@@ -1,5 +1,22 @@
 # Global Changelog
 
+# [1.10.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.9.0...v1.10.0) (2022-11-30)
+
+
+### Bug Fixes
+
+* Build iOS Example ([a737c2c](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/a737c2c8b8d62c548453a6fac0bbc871134c15d3))
+* bump go ci to 1.17 ([ecee9c8](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/ecee9c89a0fd235ac838a37837567410a2c97c99))
+* ci cache ([7039c4d](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/7039c4d6d8c3ed7031aa2bc1ea3eb14ebc678418))
+* In testConfig, don't configure MDNS with Interval:10 (so that the final config is the same as the backup). ([aafe091](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/aafe0916c4b6d98bfd675ca0f2a6689121079d8d))
+* INSTALL.md: Remove Go 1.17 and macOS 10.15. Add Go 1.19. ([b618910](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/b618910c550ff5ef4e6cb48cdea10c6a0533bd92))
+* link.yml: Remove go mod vendor. ([be2432f](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/be2432f8c81721ffcabf1e30b9b702594be5bf1a))
+
+
+### Features
+
+* bump to kubo 16 & libp2p 23 ([f5e98d1](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/f5e98d15eae0f0466558c2d0c2056a053b7ff07f))
+
 # [1.9.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.8.0...v1.9.0) (2022-10-25)
 
 
