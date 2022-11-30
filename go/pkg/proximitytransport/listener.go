@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
+	peer "github.com/libp2p/go-libp2p/core/peer"
+	tpt "github.com/libp2p/go-libp2p/core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -86,7 +86,9 @@ func (l *Listener) Close() error {
 	l.transport.lock.Unlock()
 
 	// Unregister this transport
-	TransportMap.Delete(l.transport.driver.ProtocolName())
+	TransportMapMutex.Lock()
+	delete(TransportMap, l.transport.driver.ProtocolName())
+	TransportMapMutex.Unlock()
 
 	return nil
 }

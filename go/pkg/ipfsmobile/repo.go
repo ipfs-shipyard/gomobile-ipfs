@@ -1,8 +1,8 @@
 package node
 
 import (
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_config "github.com/ipfs/kubo/config"
+	ipfs_repo "github.com/ipfs/kubo/repo"
 )
 
 var _ ipfs_repo.Repo = (*RepoMobile)(nil)

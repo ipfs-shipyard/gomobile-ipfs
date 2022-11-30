@@ -12,7 +12,7 @@ import (
 	"time"
 
 	ipfs_files "github.com/ipfs/go-ipfs-files"
-	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
+	ipfs_coreapi "github.com/ipfs/kubo/core/coreapi"
 
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"

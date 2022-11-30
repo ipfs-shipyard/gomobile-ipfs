@@ -69,6 +69,10 @@ jobs:
     name: Lint Java/Android
     runs-on: macos-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        golang:
+          - 1.18
     steps:
       - name: Checkout changes
         uses: actions/checkout@v2
@@ -76,7 +80,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: ${{ matrix.golang }}
 
       - name: Set GOPATH in env
         run: |
@@ -91,13 +95,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('go/go.sum') }}
-
-      - name: Install Go mod
-        if: steps.cache.outputs.cache-hit != 'true'
-        working-directory: go
-        run: |
-          GO111MODULE=on go mod vendor
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ hashFiles('go/go.sum') }}
 
       - name: Install Java
         uses: actions/setup-java@v1
@@ -112,7 +110,8 @@ jobs:
           echo "TARGET_SDK=$($GET_BIN $GET_KEY)" >> $GITHUB_ENV
 
       - name: Install Android SDK
-        run: SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
+        run: |
+          SDK_MAN=$HOME/Library/Android/sdk/tools/bin/sdkmanager;
           BTOOLS=$($SDK_MAN --list | grep "build-tools;$TARGET_SDK");
           BTOOL=$(echo $BTOOLS | tail -n1 | cut -d'|' -f1 | tr -d ' ');
           PLATFORMS=$($SDK_MAN --list | grep "platforms;android-$TARGET_SDK");
@@ -150,6 +149,11 @@ jobs:
     name: Lint Golang
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        golang:
+          - 1.18
+
     steps:
       - name: Checkout changes
         uses: actions/checkout@v2
@@ -157,7 +161,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: ${{ matrix.golang }}
 
       - name: Install GolangCI-Lint
         working-directory: go

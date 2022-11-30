@@ -7,9 +7,8 @@ These are instructions to build gomobile-ipfs.
 ## Prerequisites
 
 * Required: Python pip3 version >= 19.2
-* Required: Go version 1.17 or 1.18
+* Required: Go version 1.18 or 1.19 (Go 1.17 not supported)
 * Required on macOS: Command Line Developer Tools
-* Required on macOS 10.15: Python modules pystache and yaml
 * Required to build for Android: Android Studio
 * Required to build on macOS: Xcode
 * Required to build for iOS: cocoapods
@@ -17,7 +16,7 @@ These are instructions to build gomobile-ipfs.
 Following are the steps to install each prerequisite (if it's needed for your
 build target).
 
-### macOS 10.15, macOS 11 and macOS 12
+### macOS 11 and macOS 12
 
 To install the Command Line Developer Tools, in a terminal enter:
 
@@ -26,11 +25,7 @@ To install the Command Line Developer Tools, in a terminal enter:
 After the Developer Tools is installed, we need to make sure it is updated. In
 System Preferences, click Software Update and update it if needed.
 
-macOS 15 only: We need to manually update pip3. In a terminal, enter:
-
-    sudo python3 -m pip install --upgrade pip
-
-Install Go 1.17 or 1.18 with a package manager, or follow instructions at
+Install Go 1.18 or 1.19 with a package manager, or follow instructions at
 https://go.dev/dl .
 
 To install Android Studio, download and install the latest
@@ -44,7 +39,7 @@ https://brew.sh . To install cocoapods, in a terminal enter:
 
 ### Ubuntu 18.04, 20.04 and 22.04
 
-Install go 1.17 or 1.18 with a package manager, or follow instructions at
+Install Go 1.18 or 1.19 with a package manager, or follow instructions at
 https://go.dev/dl.
 
 To install Python pip3, in a terminal enter:

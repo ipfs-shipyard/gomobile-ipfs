@@ -90,7 +90,7 @@ public class configIPFSTests {
                 getMDNSStateFromConfig()
         );
 
-        JSONObject mdnsCfg = new JSONObject("{\"MDNS\":{\"Enabled\":true,\"Interval\":10}}");
+        JSONObject mdnsCfg = new JSONObject("{\"MDNS\":{\"Enabled\":true}}");
         ipfs.setConfigKey("Discovery", mdnsCfg);
 
         assertTrue(

@@ -12,10 +12,9 @@ type ProximityTransport interface {
 	proximity.ProximityTransport
 }
 
-func GetProximityTransport(protocolName string) ProximityTransport {
-	t, ok := proximity.TransportMap.Load(protocolName)
-	if ok {
-		return t.(proximity.ProximityTransport)
-	}
-	return nil
+func GetProximityTransport(protocolName string) (t ProximityTransport) {
+	proximity.TransportMapMutex.RLock()
+	t = proximity.TransportMap[protocolName]
+	proximity.TransportMapMutex.RUnlock()
+	return
 }

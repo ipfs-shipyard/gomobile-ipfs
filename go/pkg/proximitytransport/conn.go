@@ -8,8 +8,9 @@ import (
 	"sync"
 	"time"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
+	"github.com/libp2p/go-libp2p/core/network"
+	peer "github.com/libp2p/go-libp2p/core/peer"
+	tpt "github.com/libp2p/go-libp2p/core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
@@ -40,8 +41,8 @@ type Conn struct {
 }
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
-func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
-	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
+func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr, remotePID peer.ID, inbound bool,
+) (tpt.CapableConn, error) {
 	t.logger.Debug("newConn()", zap.String("remoteMa", remoteMa.String()), zap.Bool("inbound", inbound))
 
 	// Creates a manet.Conn
@@ -62,7 +63,9 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
 	}
 
 	// Stores the conn in connMap, will be deleted during conn.Close()
-	t.connMap.Store(maconn.RemoteAddr().String(), maconn)
+	t.connMapMutex.Lock()
+	t.connMap[maconn.RemoteAddr().String()] = maconn
+	t.connMapMutex.Unlock()
 
 	// Configure mplex and run it
 	maconn.mp.addInputCache(t.cache)
@@ -71,9 +74,10 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
 
 	// Returns an upgraded CapableConn (muxed, addr filtered, secured, etc...)
 	if inbound {
-		return t.upgrader.UpgradeInbound(ctx, t, maconn)
+		return t.upgrader.Upgrade(ctx, t, maconn, network.DirInbound, remotePID, network.NullScope)
 	}
-	return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
+
+	return t.upgrader.Upgrade(ctx, t, maconn, network.DirOutbound, remotePID, network.NullScope)
 }
 
 // Read reads data from the connection.
@@ -134,7 +138,9 @@ func (c *Conn) Close() error {
 	c.readOut.Close()
 
 	// Removes conn from connmgr's connMap
-	c.transport.connMap.Delete(c.RemoteAddr().String())
+	c.transport.connMapMutex.Lock()
+	delete(c.transport.connMap, c.RemoteAddr().String())
+	c.transport.connMapMutex.Unlock()
 
 	// Disconnect the driver
 	c.transport.driver.CloseConnWithPeer(c.RemoteAddr().String())
