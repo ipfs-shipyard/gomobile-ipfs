@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ipfs.gomobile.android"},{"l":"ipfs.gomobile.android.bledriver"}]
