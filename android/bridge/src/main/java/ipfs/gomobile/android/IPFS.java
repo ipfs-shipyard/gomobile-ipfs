@@ -154,7 +154,7 @@ public class IPFS {
     }
 
     /**
-    * Starts this IPFS instance. Also serve config Gateway & API located inside
+    * Starts this IPFS instance. Also serve config Gateway and API located inside
     * the config (if any)
     *
     * @throws NodeStartException If the node is already started or if its startup fails

@@ -12,11 +12,12 @@ These are instructions to build gomobile-ipfs.
 * Required to build for Android: Android Studio
 * Required to build on macOS: Xcode
 * Required to build for iOS: cocoapods
+* Optional to make the iOS docs: jazzy
 
 Following are the steps to install each prerequisite (if it's needed for your
 build target).
 
-### macOS 11 and macOS 12
+### macOS 11, macOS 12 and macOS 13
 
 To install the Command Line Developer Tools, in a terminal enter:
 
@@ -36,6 +37,12 @@ To install cocoapods, we need brew. To install brew, follow the instructions at
 https://brew.sh . To install cocoapods, in a terminal enter:
 
     brew install cocoapods
+
+(Only needed to make the iOS docs.) To install jazzy, we also need to update
+Ruby. In a terminal, enter:
+
+    brew install ruby
+    PATH="/usr/local/opt/ruby/bin:$PATH" sudo gem install jazzy
 
 ### Ubuntu 18.04, 20.04 and 22.04
 
@@ -108,6 +115,10 @@ Or you can make other Android targets which also build the core. See:
 
     make help
 
+To make the Android docs, enter:
+
+    make docgen.android
+
 ## Build for iOS (macOS only)
 
 Open a new terminal to get the setup from the installers. To set the environment
@@ -129,3 +140,8 @@ To build the core, enter:
 Or you can make other iOS targets which also build the core. See:
 
     make help
+
+To make the iOS docs, enter the following.
+(Check `ls /usr/local/lib/ruby/gems` and change `3.1.0` as needed.)
+
+    PATH="/usr/local/lib/ruby/gems/3.1.0/bin:$PATH" make docgen.ios
