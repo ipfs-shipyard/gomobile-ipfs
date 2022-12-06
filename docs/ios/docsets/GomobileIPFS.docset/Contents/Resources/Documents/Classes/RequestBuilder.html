@@ -17,19 +17,19 @@
     <a title="RequestBuilder Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
-        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
-        <p class="header-right">
+        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (72% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png" alt="GitHub"/>View on GitHub</a></p>
+        <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
           </form>
-        </p>
+        </div>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="../index.html">GomobileIPFS Reference</a>
-        <img id="carat" src="../img/carat.png" />
+        <img id="carat" src="../img/carat.png" alt=""/>
         RequestBuilder Class Reference
       </p>
     </div>
@@ -50,6 +50,15 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/IPFSError.html">IPFSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InputStreamFromGo.html">InputStreamFromGo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)InputStreamFromGoError">InputStreamFromGoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InputStreamToGo.html">InputStreamToGo</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Node.html">Node</a>
@@ -112,7 +121,7 @@
             <p>RequestBuilder is an IPFS command request builder</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L39-L126">Show on GitHub</a>
+                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L39-L140">Show on GitHub</a>
               </div>
           </section>
           <section class="section task-group-section">
@@ -377,9 +386,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12GomobileIPFS14RequestBuilderC4send10Foundation4DataVyKF"></a>
+                    <a name="/s:12GomobileIPFS14RequestBuilderC4sendSo13NSInputStreamCyKF"></a>
                     <a name="//apple_ref/swift/Method/send()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12GomobileIPFS14RequestBuilderC4send10Foundation4DataVyKF">send()</a>
+                    <a class="token" href="#/s:12GomobileIPFS14RequestBuilderC4sendSo13NSInputStreamCyKF">send()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -387,7 +396,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sends the request to the underlying go-ipfs node</p>
+                        <p>Sends the request to the underlying go-ipfs node and returns an InputStream</p>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
     <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a></code>: If sending the request failed
@@ -403,13 +412,13 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">InputStream</span></code></pre>
 
                         </div>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>A Data object containing the response</p>
+                        <p>An InputStream from which to read the response</p>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L104-L110">Show on GitHub</a>
@@ -420,9 +429,52 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12GomobileIPFS14RequestBuilderC10sendToDictSDySSypGyKF"></a>
+                    <a name="/s:12GomobileIPFS14RequestBuilderC11sendToBytes10Foundation4DataVSgyKF"></a>
+                    <a name="//apple_ref/swift/Method/sendToBytes()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS14RequestBuilderC11sendToBytes10Foundation4DataVSgyKF">sendToBytes()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sends the request to the underlying go-ipfs node and returns a byte array</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a></code>: If sending the request failed
+
+</div><div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://docs.ipfs.io/reference/api/http/">IPFS API Doc</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sendToBytes</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A Data object containing the response</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L116-L122">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS14RequestBuilderC10sendToDictSDySSypGSgyKF"></a>
                     <a name="//apple_ref/swift/Method/sendToDict()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12GomobileIPFS14RequestBuilderC10sendToDictSDySSypGyKF">sendToDict()</a>
+                    <a class="token" href="#/s:12GomobileIPFS14RequestBuilderC10sendToDictSDySSypGSgyKF">sendToDict()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -446,7 +498,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sendToDict</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sendToDict</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]?</span></code></pre>
 
                         </div>
                       </div>
@@ -455,7 +507,7 @@
                         <p>A dict containing the response</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L116-L125">Show on GitHub</a>
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift#L128-L139">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -465,11 +517,10 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-13)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-12-05)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
   </body>
-</div>
 </html>

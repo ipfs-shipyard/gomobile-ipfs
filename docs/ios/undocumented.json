@@ -1,61 +1,145 @@
 {
   "warnings": [
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/Error.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/Error.swift",
       "line": 41,
       "symbol": "IPFSError.localizedFullDescription",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
       "line": 12,
       "symbol": "FileManager.compatTemporaryDirectory",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
       "line": 28,
       "symbol": "IPFS.defaultRepoPath",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 11,
+      "symbol": "InputStreamFromGoError",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 24,
+      "symbol": "InputStreamFromGo",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 37,
+      "symbol": "InputStreamFromGo.hasBytesAvailable",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 44,
+      "symbol": "InputStreamFromGo.streamStatus",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 48,
+      "symbol": "InputStreamFromGo.streamError",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 52,
+      "symbol": "InputStreamFromGo.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 61,
+      "symbol": "InputStreamFromGo.open()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 67,
+      "symbol": "InputStreamFromGo.close()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 74,
+      "symbol": "InputStreamFromGo.read(_:maxLength:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamFromGo.swift",
+      "line": 107,
+      "symbol": "InputStreamFromGo.getBuffer(_:length:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamToGo.swift",
+      "line": 11,
+      "symbol": "InputStreamToGo",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/InputStreamToGo.swift",
+      "line": 19,
+      "symbol": "InputStreamToGo.read(_:n:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
       "line": 13,
       "symbol": "RequestOption.bool(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
       "line": 14,
       "symbol": "RequestOption.string(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
       "line": 15,
       "symbol": "RequestOption.bytes(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
       "line": 20,
       "symbol": "RequestBody.string(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "file": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
       "line": 21,
       "symbol": "RequestBody.bytes(_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge"
+  "source_directory": "/Users/jefft0/work/berty/gomobile-ipfs/ios/Bridge"
 }

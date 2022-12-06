@@ -18,10 +18,10 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[**/{docs,.idea,.gradle,{b,B}uild,vendor,xcuserdata}/**]
-charset = none
-end_of_line = none
-insert_final_newline = none
-trim_trailing_whitespace = none
-indent_style = none
-indent_size = none
+[**/{docs,javadoc,.idea,.gradle,{b,B}uild,vendor,xcuserdata}/**]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset
