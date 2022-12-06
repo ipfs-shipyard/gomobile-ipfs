@@ -1,5 +1,12 @@
 # Global Changelog
 
+## [1.10.1](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.10.0...v1.10.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* .editorconfig: Use 'unset' instead of 'none' to ignore. Also ignore javadoc. ([7880a8c](https://github.com/ipfs-shipyard/gomobile-ipfs/commit/7880a8cef0b526c6fc66abe1d716ad3b1b6f66db))
+
 # [1.10.0](https://github.com/ipfs-shipyard/gomobile-ipfs/compare/v1.9.0...v1.10.0) (2022-11-30)
 
 
