@@ -18,6 +18,15 @@ class RequestIPFSTests: XCTestCase {
     private var expectedFileLength: Int = 2940
     private var expectedFileSha256: String =
         "SHA256 digest: b7042c3f6efc09d29dee4566dec6e34270f02bebe977fe89ef67512f9882d860"
+    // The boundary for a multipart message is a unique string. See https://en.wikipedia.org/wiki/MIME#Multipart_messages
+    private static var boundary : String = "------------------------f33e457ed9f80969"
+    private var addRequestBody : Data =
+        ("--" + boundary + "\r\n" +
+        "Content-Disposition: form-data; name=\"file\"\r\n" +
+        "Content-Type: application/octet-stream\r\n\r\n" +
+        "hello" +
+        "\r\n--" + boundary + "--\r\n").data(using: .utf8)!;
+    private var addRequestExpectedHash: String = "QmWfVY9y3xjsixTgbd9AorQxH7VtMpzfx2HaWtsoUYecaX";
 
     override func setUp() {
         do {
@@ -111,6 +120,48 @@ class RequestIPFSTests: XCTestCase {
             expectedFileSha256,
             hasher.finalize().description,
             "response should have the correct SHA256"
+        )
+    }
+
+    func testAddWithBytesBody() throws {
+        guard let response = try ipfs.newRequest("add")
+            .with(header: "Content-Type",
+                    value: "multipart/form-data; boundary=" + RequestIPFSTests.boundary)
+            .with(body: RequestBody.bytes(addRequestBody))
+            .sendToDict() else {
+            XCTFail("error while casting dict for \"add\"")
+            return
+        }
+        guard let hash = response["Hash"] as? String else {
+            XCTFail("error while casting value associated to \"Hash\" key")
+            return
+        }
+
+        XCTAssertEqual(
+            addRequestExpectedHash,
+            hash,
+            "Added file should have the correct CID"
+        )
+    }
+
+    func testAddWithStreamBody() throws {
+        guard let response = try ipfs.newRequest("add")
+            .with(header: "Content-Type",
+                    value: "multipart/form-data; boundary=" + RequestIPFSTests.boundary)
+                .with(body: RequestBody.stream(InputStream(data: addRequestBody)))
+            .sendToDict() else {
+            XCTFail("error while casting dict for \"add\"")
+            return
+        }
+        guard let hash = response["Hash"] as? String else {
+            XCTFail("error while casting value associated to \"Hash\" key")
+            return
+        }
+
+        XCTAssertEqual(
+            addRequestExpectedHash,
+            hash,
+            "Added file should have the correct CID"
         )
     }
 }
