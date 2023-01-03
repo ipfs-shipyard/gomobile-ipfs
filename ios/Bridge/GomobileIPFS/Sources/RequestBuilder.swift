@@ -15,8 +15,9 @@ public enum RequestOption {
     case bytes(Data)
 }
 
-/// Enum of the different body types: string and bytes
+/// Enum of the different body types: stream, string and bytes
 public enum RequestBody {
+    case stream(InputStream)
     case string(String)
     case bytes(Data)
 }
@@ -77,6 +78,8 @@ public class RequestBuilder {
     /// - seealso: [IPFS API Doc](https://docs.ipfs.io/reference/api/http/)
     public func with(body: RequestBody) -> RequestBuilder {
         switch body {
+        case .stream(let stream):
+            self.requestBuilder.body(InputStreamToGo(stream))
         case .bytes(let data):
             self.requestBuilder.bodyBytes(data)
         case .string(let string):
