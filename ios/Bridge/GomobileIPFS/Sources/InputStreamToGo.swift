@@ -8,7 +8,7 @@
 import Foundation
 import Core
 
-public class InputStreamToGo: NSObject, CoreReaderProtocol {
+public class InputStreamToGo: NSObject, CoreNativeReaderProtocol {
     private var inputStream: InputStream
 
     init(_ inputStream: InputStream) {
@@ -16,16 +16,24 @@ public class InputStreamToGo: NSObject, CoreReaderProtocol {
         self.inputStream.open()
     }
 
-    public func read(_ buffer: Data?, n len: UnsafeMutablePointer<Int>?) throws {
-        var read: Int
+    public func nativeRead(_ size: Int) throws -> Data {
+        let bytes = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        while true {
+            let read = self.inputStream.read(bytes, maxLength: size)
 
-        let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer((buffer! as NSData).bytes))
-        read = self.inputStream.read(bytes, maxLength: buffer!.count)
-        len?.initialize(to: read)
+            if read < 0 {
+                throw self.inputStream.streamError!
+            }
+            if read == 0 && self.inputStream.streamStatus == .atEnd {
+                self.inputStream.close()
+                // The Swift/Go interface converts this to nil.
+                return Data(count: 0)
+            }
+            if read > 0 {
+                return Data(bytes: bytes, count: read)
+            }
 
-        if read == 0 && self.inputStream.streamStatus == .atEnd {
-            self.inputStream.close()
-            throw NSError(domain: "", code: 0, userInfo: ["NSLocalizedDescription": "EOF"])
+            // Iterate to read more than zero bytes.
         }
     }
 }

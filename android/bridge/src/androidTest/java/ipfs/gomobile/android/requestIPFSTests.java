@@ -11,8 +11,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -34,6 +36,15 @@ public class requestIPFSTests {
         (byte)0x70, (byte)0xf0, (byte)0x2b, (byte)0xeb, (byte)0xe9, (byte)0x77, (byte)0xfe, (byte)0x89,
         (byte)0xef, (byte)0x67, (byte)0x51, (byte)0x2f, (byte)0x98, (byte)0x82, (byte)0xd8, (byte)0x60        
     };
+    // The boundary for a multipart message is a unique string. See https://en.wikipedia.org/wiki/MIME#Multipart_messages
+    private static String boundary = "------------------------f33e457ed9f80969";
+    private byte[] addRequestBody =
+        ("--" + boundary + "\r\n" +
+        "Content-Disposition: form-data; name=\"file\"\r\n" +
+        "Content-Type: application/octet-stream\r\n\r\n" +
+        "hello" +
+        "\r\n--" + boundary + "--\r\n").getBytes();
+    private String addRequestExpectedHash = "QmWfVY9y3xjsixTgbd9AorQxH7VtMpzfx2HaWtsoUYecaX";
 
     @Rule
     public Timeout globalTimeout = Timeout.seconds(600);
@@ -117,5 +128,31 @@ public class requestIPFSTests {
                 Arrays.equals(sha256.digest(), expectedFileSha256)
             );
         }
+    }
+
+    @Test
+    public void testAddWithBytesBody() throws Exception {
+        ArrayList<JSONObject> response = ipfs.newRequest("add")
+            .withHeader("Content-Type",
+                        "multipart/form-data; boundary=" + boundary)
+            .withBody(addRequestBody)
+            .sendToJSONList();
+
+        assertEquals("Added file should have the correct CID",
+                        addRequestExpectedHash,
+                        response.get(0).getString("Hash"));
+    }
+
+    @Test
+    public void testAddWithStreamBody() throws Exception {
+        ArrayList<JSONObject> response = ipfs.newRequest("add")
+            .withHeader("Content-Type",
+                        "multipart/form-data; boundary=" + boundary)
+            .withBody(new ByteArrayInputStream(addRequestBody))
+            .sendToJSONList();
+
+        assertEquals("Added file should have the correct CID",
+            addRequestExpectedHash,
+            response.get(0).getString("Hash"));
     }
 }

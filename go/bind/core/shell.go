@@ -75,8 +75,8 @@ func (req *RequestBuilder) StringOptions(key string, value string) {
 	req.rb.Option(key, value)
 }
 
-func (req *RequestBuilder) Body(body Reader) {
-	req.rb.Body(body)
+func (req *RequestBuilder) Body(body NativeReader) {
+	req.rb.Body(&ReaderWrapper{body})
 }
 
 func (req *RequestBuilder) BodyString(body string) {
@@ -91,8 +91,8 @@ func (req *RequestBuilder) BodyBytes(body []byte) {
 	req.rb.BodyBytes(dest)
 }
 
-func (req *RequestBuilder) FileBody(name string, body Reader) {
-	fr := files.NewReaderFile(body)
+func (req *RequestBuilder) FileBody(name string, body NativeReader) {
+	fr := files.NewReaderFile(&ReaderWrapper{body})
 	slf := files.NewSliceDirectory([]files.DirEntry{files.FileEntry(name, fr)})
 	req.rb.Body(files.NewMultiFileReader(slf, false))
 }
@@ -101,8 +101,27 @@ func (req *RequestBuilder) Header(name, value string) {
 	req.rb.Header(name, value)
 }
 
-type Reader interface {
-	io.Reader
+type NativeReader interface {
+	// Read up to size bytes and return a new byte array, or nil for EOF.
+	// Name this function differently to distinguish from io.Reader.
+	NativeRead(size int) (b []byte, err error)
+}
+
+type ReaderWrapper struct {
+	reader NativeReader
+}
+
+func (r *ReaderWrapper) Read(p []byte) (int, error) {
+	b, err := r.reader.NativeRead(len(p))
+	if err != nil {
+		return 0, err
+	}
+	if b == nil {
+		return 0, io.EOF
+	}
+	copy(p, b)
+
+	return len(b), nil
 }
 
 type ReadCloser struct {
