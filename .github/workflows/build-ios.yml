@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set constants
-        run: echo "::set-output name=GOMOBILE_IPFS_VERSION::0.42.0-dev-${{ github.sha }}"  # yamllint disable-line rule:line-length
+        run: echo "GOMOBILE_IPFS_VERSION=0.42.0-dev-${{ github.sha }}" >> $GITHUB_OUTPUT # yamllint disable-line rule:line-length
         id: constants
 
       - name: Install Go
