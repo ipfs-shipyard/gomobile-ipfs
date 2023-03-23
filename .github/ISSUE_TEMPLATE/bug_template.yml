@@ -1,7 +1,7 @@
 # yamllint disable-line rule:document-start
 name: "Bug report"
 description: Report a bug found while using gomobile-ipfs.
-labels: ["bug", "🔍 Ready for Review"]
+labels: ["bug"]
 assignees:
   - jefft0
 body:
