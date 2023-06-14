@@ -77,7 +77,7 @@ jobs:
           make build_core.ios
 
       - name: Save build outputs
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: build-${{ github.run_id }}
           path: build
