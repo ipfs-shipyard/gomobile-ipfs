@@ -95,7 +95,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Restore build outputs
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: build-${{ github.run_id }}
           path: build
@@ -148,7 +148,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Restore build outputs
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: build-${{ github.run_id }}
           path: build
