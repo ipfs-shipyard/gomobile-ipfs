@@ -23,7 +23,7 @@ jobs:
         id: constants
 
       - name: Install Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.golang }}
 
