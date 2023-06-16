@@ -15,9 +15,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Lint EditorConfig
-        uses: snow-actions/eclint@v1.0.1
-        with:
-          args: "check"
+        run: |
+          npm install -g eclint
+          eclint check
+        shell: bash
 
   lint_markdown:
     name: Lint Markdown
