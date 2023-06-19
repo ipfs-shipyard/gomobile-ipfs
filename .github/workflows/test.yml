@@ -33,7 +33,7 @@ jobs:
 
       - name: Restore Go mod cache
         id: cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ hashFiles('go/go.sum') }}
