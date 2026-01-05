@@ -1,3 +1,8 @@
+> [!CAUTION]
+> # ⛔️ Archived Project
+> This repository has been archived and is no longer maintained. It has not been modified since 2023. If you are looking for more up-to-date IPFS node examples, see [**IPFS Implementations**](https://docs.ipfs.tech/concepts/ipfs-implementations/).
+
+
 # gomobile-ipfs
 
 This repo aims to provide packages for Android, iOS and React-Native that
