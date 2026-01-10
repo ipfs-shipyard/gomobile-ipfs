@@ -1,0 +1,41 @@
+{
+  "name": "react-native-go-ipfs",
+  "title": "React Native gomobile-ipfs module",
+  "version": "0.4.0",
+  "description": "Embeded go-ipfs instance exposed through a js class with asynchronous methods. Alpha software, use at your own risk!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipfs-shipyard/gomobile-ipfs.git",
+    "directory": "js/react-native-go-ipfs"
+  },
+  "keywords": [
+    "react-native",
+    "gomobile",
+    "ipfs",
+    "gomobile-ipfs",
+    "go",
+    "go-ipfs"
+  ],
+  "author": {
+    "name": "berty team",
+    "email": "norman@berty.tech"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "react": "^16.8.3",
+    "react-native": "^0.59.10"
+  },
+  "dependencies": {
+    "base-64": "^0.1.0"
+  }
+}
