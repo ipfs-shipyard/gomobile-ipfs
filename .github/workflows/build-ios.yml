@@ -16,7 +16,7 @@ jobs:
           - 1.18
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set constants
         run: echo "::set-output name=GOMOBILE_IPFS_VERSION::0.42.0-dev-${{ github.sha }}"  # yamllint disable-line rule:line-length

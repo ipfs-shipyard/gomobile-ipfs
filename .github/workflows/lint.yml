@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint EditorConfig
         run: |
@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint Markdown
         uses: nosborn/github-action-markdown-cli@v1.1.1
@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint Yaml
         uses: ibiqlik/action-yamllint@master
@@ -61,7 +61,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint Python
         uses: andymckay/pycodestyle-action@0.1.3
@@ -76,7 +76,7 @@ jobs:
           - 1.18
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Go
         uses: actions/setup-go@v4
@@ -139,7 +139,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint Swift
         uses: norio-nomura/action-swiftlint@3.1.0
@@ -157,7 +157,7 @@ jobs:
 
     steps:
       - name: Checkout changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Go
         uses: actions/setup-go@v4
